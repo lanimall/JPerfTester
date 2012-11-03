@@ -14,10 +14,11 @@ The main advantages of this Java library are:
  - Simplicity of build / install / run
  
 Build and Install the library using maven:
- 1 - Navigate to JPerfTester root folder
- 2 - Run: mvn install
+ 1. Navigate to JPerfTester root folder
+ 2. Run: mvn install
  
 To refer to this library from another project, simply add the following in your maven pom.xml (make sure to use the right version number):
+
 	...
 	<dependencies>
 	...
@@ -30,7 +31,7 @@ To refer to this library from another project, simply add the following in your 
 	</dependencies>
 	...
 
-If you want to create a test project for ehcache / terracotta, add the following (instead of the above) in your maven pom.xml:
+If you want to create a test project for [Terracotta BigMemory or Ehcache](http://terracotta.org/), add the following (instead of the above) in your maven pom.xml:
 
 	...
 	<dependencies>
@@ -44,7 +45,6 @@ If you want to create a test project for ehcache / terracotta, add the following
 	</dependencies>
 	...
 
-more doc to come...
-
-+ sample client application to come as well...
+- more doc to come...
+- sample client application to come as well...
 
