@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.terracotta.utils</groupId>
+		<artifactId>jperftester-parent</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../basebuild/pom.xml</relativePath>
+	</parent>
+	<artifactId>jperftester-cacheengine</artifactId>
+	<version>0.0.1</version>
+	<name>Cache Performance Tester</name>
+	<description>Cache Performance Tester</description>
+	
+	<properties>
+		<ehcache-core-ee.version>2.5.2</ehcache-core-ee.version>
+		<ehcache-terracotta-ee.version>2.5.2</ehcache-terracotta-ee.version>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.terracotta.utils</groupId>
+			<artifactId>jperftester-engine</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<!-- EhCache -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core-ee</artifactId>
+			<version>${ehcache-core-ee.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-terracotta-ee</artifactId>
+			<version>${ehcache-terracotta-ee.version}</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>terracotta-snapshots</id>
+			<url>http://www.terracotta.org/download/reflector/snapshots</url>
+		</repository>
+		<repository>
+			<id>terracotta-releases</id>
+			<url>http://www.terracotta.org/download/reflector/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+</project>
