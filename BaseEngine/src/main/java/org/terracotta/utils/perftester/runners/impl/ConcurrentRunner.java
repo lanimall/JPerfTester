@@ -68,6 +68,8 @@ public class ConcurrentRunner implements Runner {
 	public void run() {
 		log.info("Starting parallel runner with executor pool size:" + operations.size());
 
+		stats.reset();
+		
 		Date startDateTime = new Date();
 		try {
 			doBeforeRun();
@@ -85,20 +87,11 @@ public class ConcurrentRunner implements Runner {
 				log.error("Error in during execution of the afterLoad().", e);
 			}
 
-			log.info("All tasks have been processed ...");
-			Date endDateTime = new Date();
-			long totalOperationTime = endDateTime.getTime() - startDateTime.getTime();
-			log.info("Start time: " + startDateTime.toString());
-			log.info("End time: " + endDateTime.toString());
-			log.info("Operation Duration time (ms): " + totalOperationTime);
-
+			stats.finalise();
+			
 			stats.add(getStatsOperationObserver().getAggregateStats());
-			log.info("Total operation count: " + getStats().getTxnCount());
-			log.info("Throughput: " + getStats().getThroughput());
-			log.info("Average Operation Latency: " + getStats().getAvgLatency());
-			log.info("Min Operation Latency: " + getStats().getMinLatency());
-			log.info("Max Operation Latency: " + getStats().getMaxLatency());
-			log.info("Parallel runner execution complete!");
+			
+			stats.printToConsole("\n***************************************\nFinal Stats for:" + getName());
 		}
 	}
 

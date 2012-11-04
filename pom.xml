@@ -12,5 +12,6 @@
 	<modules>
 		<module>BaseEngine</module>
 		<module>CacheEngine</module>
+		<module>SampleCacheClient</module>
 	</modules>
 </project>

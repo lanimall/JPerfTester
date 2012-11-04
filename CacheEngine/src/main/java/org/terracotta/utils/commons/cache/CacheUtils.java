@@ -51,16 +51,20 @@ public class CacheUtils {
 		Barrier barrier = null;
 		if(null != barrierName && !"".equals(barrierName)){
 			try {
-				//instanciate the toolkit and create a barrier
-				ClusteringToolkit toolkit = new org.terracotta.api.TerracottaClient(cacheManager.getConfiguration().getTerracottaConfiguration().getUrl()).getToolkit();
-				barrier = toolkit.getBarrier(barrierName, numberOfClients);
+				if(null != cacheManager.getConfiguration().getTerracottaConfiguration()){
+					//instanciate the toolkit and create a barrier
+					ClusteringToolkit toolkit = new org.terracotta.api.TerracottaClient(cacheManager.getConfiguration().getTerracottaConfiguration().getUrl()).getToolkit();
+					barrier = toolkit.getBarrier(barrierName, numberOfClients);
+				} else {
+					log.error("Terracotta configuration could not be found...cannot instanciate barrier");
+				}
 			} catch (Exception e) {
 				log.error("Could not implement a terracotta toolkit barrier", e);
 			}
 		} else {
 			log.warn("Barriername was not provided...cannot instanciate barrier");
 		}
-		
+
 		return barrier;
 	}
 }

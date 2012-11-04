@@ -14,8 +14,11 @@ public class RandomNumberGenerator extends RandomGenerator<Long> {
 	private int prependDigits;
 	private int appendDigits;
 	
-	public RandomNumberGenerator(int nbDigits, int prependDigits,
-			int appendDigits) {
+	public RandomNumberGenerator(int nbDigits) {
+		this(nbDigits,-1,-1);
+	}
+	
+	public RandomNumberGenerator(int nbDigits, int prependDigits, int appendDigits) {
 		super();
 		this.nbDigits = nbDigits;
 		this.prependDigits = prependDigits;
@@ -26,5 +29,4 @@ public class RandomNumberGenerator extends RandomGenerator<Long> {
 	protected Long generateSafe() throws Exception {
 		return randomUtil.generateRandomNumeric(nbDigits, prependDigits, appendDigits);
 	}
-	
 }

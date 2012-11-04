@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
+import org.terracotta.utils.perftester.generators.impl.RandomNumberGenerator;
 import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
 
 /**
@@ -43,21 +44,34 @@ public class CacheGetOperation extends AbstractCacheRunner<Long> {
 	}
 	
 	public static class CacheGetOperationFactory extends CacheRunnerFactory {
-		private final long keyStart;
+		private final ObjectGenerator keyGen;
 		
-		public CacheGetOperationFactory(Cache cache, int numThreads, long numOperations) {
-			this(cache, numThreads, numOperations, 0);
-		}
-		
-		public CacheGetOperationFactory(Cache cache, int numThreads, long numOperations, long keyStart) {
+		public CacheGetOperationFactory(Cache cache, int numThreads, long numOperations, ObjectGenerator keyGen) {
 			super(cache, numThreads, numOperations);
-			this.keyStart = keyStart;
+			this.keyGen = keyGen;
 		}
 
 		@Override
 		public CacheGetOperation create() {
-			SequentialGenerator keyGen = new SequentialGenerator(keyStart);
-			return new CacheGetOperation(getCache(), new IterationCondition(getNumOperations() / getNumThreads()),keyGen);	
+			if(null == keyGen)
+				throw new IllegalArgumentException("KenGen object may not be null");
+			
+			return new CacheGetOperation(getCache(), new IterationCondition(getNumOperations() / getNumThreads()), keyGen);	
+		}
+	}
+	
+	public static class CacheSequentialGetOperationFactory extends CacheGetOperationFactory {
+		public CacheSequentialGetOperationFactory(Cache cache, int numThreads, long numOperations, long keyStart) {
+			super(cache, numThreads, numOperations, new SequentialGenerator(keyStart));
+		}
+	}
+	
+	public static class CacheRandomGetOperationFactory extends CacheGetOperationFactory {
+		public CacheRandomGetOperationFactory(Cache cache, int numThreads, long numOperations, int nbRandomDigits) {
+			super(cache, numThreads, numOperations, new RandomNumberGenerator(nbRandomDigits));
+		}
+		public CacheRandomGetOperationFactory(Cache cache, int numThreads, long numOperations, int nbRandomDigits, int randomPrependDigits, int randomAppendDigits) {
+			super(cache, numThreads, numOperations, new RandomNumberGenerator(nbRandomDigits, randomPrependDigits, randomAppendDigits));
 		}
 	}
 }

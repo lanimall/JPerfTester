@@ -15,23 +15,21 @@ public class CachePutLauncher extends BaseCacheLauncher {
 	private static Logger log = LoggerFactory.getLogger(CachePutLauncher.class);
 	private final boolean bulkLoadEnabled;
 	private final boolean removeAllEntriesFirst;
-	
+
 	public CachePutLauncher(Cache cache, int numThreads, long numOperations, ObjectGenerator valueGenerator, long keyStart, boolean bulkLoadEnabled, boolean removeAllFirst) {
 		super(new CachePutOperationFactory(cache, numThreads, numOperations, valueGenerator, keyStart));
 
 		this.bulkLoadEnabled = bulkLoadEnabled;
 		this.removeAllEntriesFirst = removeAllFirst;
 
-		if(log.isInfoEnabled()){
-			log.info("*********** Loading up the cache *************");
-			log.info("Params:");
-			log.info("Number of Loader Threads: " + numThreads);
-			log.info("Number of objects to load: " + numOperations);
-			log.info("Key number ot start with: " + keyStart);
-			log.info("Enable Bulk Load: " + bulkLoadEnabled);
-			log.info("Remove all before reloading: " + removeAllFirst);
-			log.info("Number of operations per thread: " + (numOperations/numThreads));
-		}
+		System.out.println("*********** Loading up the cache *************");
+		System.out.println("Params:");
+		System.out.println("Number of Loader Threads: " + numThreads);
+		System.out.println("Number of objects to load: " + numOperations);
+		System.out.println("Key number ot start with: " + keyStart);
+		System.out.println("Enable Bulk Load: " + bulkLoadEnabled);
+		System.out.println("Remove all before reloading: " + removeAllFirst);
+		System.out.println("Number of operations per thread: " + (numOperations/numThreads));
 	}
 
 	public boolean isBulkLoadEnabled() {

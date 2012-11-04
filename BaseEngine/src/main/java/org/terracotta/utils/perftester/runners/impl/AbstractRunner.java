@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
 import org.terracotta.utils.perftester.monitoring.Stats;
-import org.terracotta.utils.perftester.monitoring.StatsOperationObserver;
 import org.terracotta.utils.perftester.runners.Runner;
 
 /**
@@ -131,7 +130,6 @@ public abstract class AbstractRunner<T> implements Runner {
 		
 		stats.finalise();
 
-		if(log.isInfoEnabled())
-			log.info("Operation Finished. Thread transaction stats:" + stats.toString());
+		stats.printToConsole("Final Stats for:" + getName());
 	}
 }

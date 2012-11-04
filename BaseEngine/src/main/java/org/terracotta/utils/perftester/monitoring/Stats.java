@@ -164,6 +164,27 @@ public class Stats implements Cloneable {
 		this.endTime = System.currentTimeMillis();
 	}
 
+	public void printToConsole(){
+		printToConsole(null, null);
+	}
+	
+	public void printToConsole(String headerMessage){
+		printToConsole(headerMessage, null);
+	}
+	
+	public void printToConsole(String headerMessage, String footerMessage){
+		if(null != headerMessage && !"".equals(headerMessage)){
+			System.out.println(headerMessage);
+		} else {
+			System.out.println("Thread Stats:");
+		}
+		System.out.println(this.toString());
+		
+		if(null != footerMessage && !"".equals(footerMessage)){
+			System.out.println(footerMessage);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return String
