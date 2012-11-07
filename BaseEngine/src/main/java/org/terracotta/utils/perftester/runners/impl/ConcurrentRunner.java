@@ -1,15 +1,11 @@
 package org.terracotta.utils.perftester.runners.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.perftester.monitoring.Stats;
 import org.terracotta.utils.perftester.monitoring.StatsOperationObserver;
 import org.terracotta.utils.perftester.runners.Runner;
 import org.terracotta.utils.perftester.runners.RunnerFactory;
@@ -20,43 +16,25 @@ import org.terracotta.utils.perftester.runners.RunnerFactory;
  * A multi-threaded Runner that uses a fixed thread pool to execute other Runner Operations, 1 Runner per thread.
  * 
  */
-public class ConcurrentRunner implements Runner {
+public class ConcurrentRunner extends BaseRunner implements Runner {
 	private static Logger log = LoggerFactory.getLogger(ConcurrentRunner.class);
 
-	private final Collection<? extends Runner> operations;
+	private final Runner[] operations;
 	private ExecutorService executorService;
-	private StatsOperationObserver statsOperationObserver;
-	private Stats stats = new Stats();
-
+	
 	public static ConcurrentRunner create(RunnerFactory runnerFactory){
-		ArrayList<Runner> ops = new ArrayList<Runner>(runnerFactory.getNumThreads());
+		Runner[] ops = new Runner[runnerFactory.getNumThreads()];
 		for(int i=0 ; i < runnerFactory.getNumThreads(); i++){
-			ops.add(runnerFactory.create());
+			ops[i]=runnerFactory.create();
 		}
 		return new ConcurrentRunner(ops);
 	}
 
-	public ConcurrentRunner(Collection<? extends Runner> operations) {
+	public ConcurrentRunner(Runner[] operations) {
+		super(null);
 		this.operations = operations;
-		this.executorService = Executors.newFixedThreadPool(operations.size());
+		this.executorService = Executors.newFixedThreadPool(operations.length);
 		this.statsOperationObserver = new StatsOperationObserver(operations);
-	}
-
-	@Override
-	public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
-		}
-	}
-
-	public StatsOperationObserver getStatsOperationObserver() {
-		return statsOperationObserver;
-	}
-
-	public Stats getStats() {
-		return stats;
 	}
 
 	@Override
@@ -65,34 +43,19 @@ public class ConcurrentRunner implements Runner {
 	}
 
 	@Override
-	public void run() {
-		log.info("Starting parallel runner with executor pool size:" + operations.size());
+	protected void execute() {
+		log.info("Starting " + getName() + " with executor pool size:" + operations.length);
 
-		stats.reset();
-		
-		Date startDateTime = new Date();
 		try {
-			doBeforeRun();
 			submitOperations();
 		} catch(Exception e) {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
 			//make sure to wait until all threads are done before moving forward...
 			shutdownAndAwaitTermination(executorService);
-
-			try {
-				//make sure we execute the after load
-				doAfterRun();
-			} catch (Exception e) {
-				log.error("Error in during execution of the afterLoad().", e);
-			}
-
-			stats.finalise();
-			
-			stats.add(getStatsOperationObserver().getAggregateStats());
-			
-			stats.printToConsole("\n***************************************\nFinal Stats for:" + getName());
 		}
+		
+		log.info("End " + getName());
 	}
 
 	private void shutdownAndAwaitTermination(ExecutorService pool) {
@@ -125,15 +88,5 @@ public class ConcurrentRunner implements Runner {
 		for (Runner op : operations) {
 			executorService.submit(op);
 		}
-	}
-
-	@Override
-	public void doBeforeRun() {
-		//do nothing
-	}
-
-	@Override
-	public void doAfterRun() {
-		//do nothing
 	}
 }

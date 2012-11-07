@@ -8,11 +8,13 @@ import java.util.Random;
 import java.util.UUID;
 
 /**
+ * @author Karthik Lalithraj
+ * @author Eric Mizell
  * @author Fabien Sanglier
  * 
  */
 public class RandomUtil {
-	private Random hdrRndm = new Random();
+	private Random hdrRndm = new Random(System.currentTimeMillis());
 
 	public RandomUtil(){
 		hdrRndm.setSeed(System.currentTimeMillis());

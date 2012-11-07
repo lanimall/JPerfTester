@@ -15,6 +15,10 @@ import org.terracotta.utils.perftester.runners.impl.SimpleRunner.SimpleIterative
 public class SimpleRunnerTest {
 	private static Logger log = LoggerFactory.getLogger(SimpleRunnerTest.class);
 
+	private RunnerFactory createRunnerFactory(int numThreads, long numOperations){
+		return new SimpleIterativeRunnerFactory(numThreads, numOperations);
+	}
+	
 	@Test
 	public void testStartProcess() throws Exception {
 		//get the number of threads and number of customers to create
@@ -23,8 +27,7 @@ public class SimpleRunnerTest {
 		//number of iteration per thread
 		long numOperations = 100000000;
 		
-		RunnerFactory runnerFactory = new SimpleIterativeRunnerFactory(numThreads, numOperations);
-		ConcurrentRunner runner = ConcurrentRunner.create(runnerFactory);
+		ConcurrentRunner runner = ConcurrentRunner.create(createRunnerFactory(numThreads, numOperations));
 		runner.run();
 		
 		assertEquals(numOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
@@ -38,8 +41,7 @@ public class SimpleRunnerTest {
 		//number of iteration per thread
 		long numOperations = 100000000;
 		
-		RunnerFactory runnerFactory = new SimpleIterativeRunnerFactory(numThreads, numOperations);
-		ConcurrentRunner runner = ConcurrentRunner.create(runnerFactory);
+		ConcurrentRunner runner = ConcurrentRunner.create(createRunnerFactory(numThreads, numOperations));
 		runner.run();
 		
 		assertEquals(numOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());

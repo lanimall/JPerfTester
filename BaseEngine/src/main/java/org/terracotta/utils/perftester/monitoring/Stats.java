@@ -1,5 +1,6 @@
 package org.terracotta.utils.perftester.monitoring;
 
+import java.io.StringWriter;
 import java.text.NumberFormat;
 
 import org.slf4j.Logger;
@@ -173,16 +174,21 @@ public class Stats implements Cloneable {
 	}
 	
 	public void printToConsole(String headerMessage, String footerMessage){
+		StringWriter toPrint = new StringWriter();
+		toPrint.append("[" + Thread.currentThread().getName() + "] ");
 		if(null != headerMessage && !"".equals(headerMessage)){
-			System.out.println(headerMessage);
+			toPrint.append(headerMessage);
 		} else {
-			System.out.println("Thread Stats:");
+			toPrint.append("Thread Stats:");
 		}
-		System.out.println(this.toString());
+		
+		toPrint.append(" [").append(this.toString()).append("] ");
 		
 		if(null != footerMessage && !"".equals(footerMessage)){
-			System.out.println(footerMessage);
+			toPrint.append(footerMessage);
 		}
+		
+		System.out.println(toPrint);
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package org.terracotta.utils.perftester.monitoring;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class StatsOperationObserver {
 		super();
 	}
 
-	public StatsOperationObserver(Collection<? extends Runner> operations) {
+	public StatsOperationObserver(Runner[] operations) {
 		super();
 		registerMultiple(operations);
 	}
@@ -31,7 +30,7 @@ public class StatsOperationObserver {
 		monitoredOperations.add(operation);
 	}
 
-	public void registerMultiple(Collection<? extends Runner> operations) {
+	public void registerMultiple(Runner[] operations) {
 		for(Runner op : operations){
 			register(op);
 		}

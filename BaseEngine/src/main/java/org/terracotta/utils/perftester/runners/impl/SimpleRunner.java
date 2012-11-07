@@ -12,12 +12,18 @@ import org.terracotta.utils.perftester.runners.RunnerFactory;
  * @author Fabien Sanglier
  * 
  */
-public class SimpleRunner extends AbstractRunner<Long> {
+public class SimpleRunner extends KeyValueRunner<Long> {
+	
 	private static Logger log = LoggerFactory.getLogger(SimpleRunner.class);
 	private static final boolean isDebug = log.isDebugEnabled();
 
 	public SimpleRunner(Condition termination, ObjectGenerator<Long> generator) {
 		super(termination,generator);
+	}
+
+	@Override
+	public String getName() {
+		return "Simple Key/Value Runner";
 	}
 
 	@Override
