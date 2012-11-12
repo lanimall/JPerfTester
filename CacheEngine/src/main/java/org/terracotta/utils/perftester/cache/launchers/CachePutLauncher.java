@@ -17,7 +17,7 @@ public class CachePutLauncher extends BaseCacheLauncher {
 	private final boolean removeAllEntriesFirst;
 
 	public CachePutLauncher(Cache cache, int numThreads, long numOperations, ObjectGenerator valueGenerator, long keyStart, boolean bulkLoadEnabled, boolean removeAllFirst) {
-		super(new CachePutOperationFactory(cache, numThreads, numOperations, valueGenerator, keyStart));
+		super(numThreads, new CachePutOperationFactory(cache, numOperations, valueGenerator, keyStart));
 
 		this.bulkLoadEnabled = bulkLoadEnabled;
 		this.removeAllEntriesFirst = removeAllFirst;

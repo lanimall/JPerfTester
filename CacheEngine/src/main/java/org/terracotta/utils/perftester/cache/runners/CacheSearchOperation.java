@@ -48,15 +48,15 @@ public class CacheSearchOperation extends AbstractCacheRunner<Query> {
 	
 	public static class CacheSearchOperationFactory extends CacheRunnerFactory {
 		private Query[] queries = null;
-		public CacheSearchOperationFactory(Cache cache, int numThreads, long numOperations, Query[] queries) {
-			super(cache, numThreads, numOperations);
+		public CacheSearchOperationFactory(Cache cache, long numOperations, Query[] queries) {
+			super(cache, numOperations);
 			this.queries = queries;
 		}
 
 		@Override
 		public CacheSearchOperation create() {
 			RandomSearchQueryGenerator queryGenerator = new RandomSearchQueryGenerator(queries);
-			return new CacheSearchOperation(getCache(), new IterationCondition(getNumOperations() / getNumThreads()), queryGenerator);	
+			return new CacheSearchOperation(getCache(), new IterationCondition(getNumOperations()), queryGenerator);	
 		}
 	}
 }

@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner;
+import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner.ConcurrentRunnerFactory;
 import org.terracotta.utils.perftester.runners.impl.SimpleRunner.SimpleIterativeRunnerFactory;
 
 /**
@@ -15,8 +16,8 @@ import org.terracotta.utils.perftester.runners.impl.SimpleRunner.SimpleIterative
 public class SimpleRunnerTest {
 	private static Logger log = LoggerFactory.getLogger(SimpleRunnerTest.class);
 
-	private RunnerFactory createRunnerFactory(int numThreads, long numOperations){
-		return new SimpleIterativeRunnerFactory(numThreads, numOperations);
+	private OpsCountRunnerFactory createRunnerFactory(long numOperations){
+		return new SimpleIterativeRunnerFactory(numOperations);
 	}
 	
 	@Test
@@ -25,12 +26,12 @@ public class SimpleRunnerTest {
 		int numThreads = 1;
 		
 		//number of iteration per thread
-		long numOperations = 100000000;
+		long numTotalOperations = 100000000;
 		
-		ConcurrentRunner runner = ConcurrentRunner.create(createRunnerFactory(numThreads, numOperations));
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
 		runner.run();
 		
-		assertEquals(numOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
+		assertEquals(numTotalOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
 	}
 	
 	@Test
@@ -39,11 +40,11 @@ public class SimpleRunnerTest {
 		int numThreads = 4;
 		
 		//number of iteration per thread
-		long numOperations = 100000000;
+		long numTotalOperations = 100000000;
 		
-		ConcurrentRunner runner = ConcurrentRunner.create(createRunnerFactory(numThreads, numOperations));
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
 		runner.run();
 		
-		assertEquals(numOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
+		assertEquals(numTotalOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
 	}
 }

@@ -8,6 +8,7 @@ import org.terracotta.coordination.Barrier;
 import org.terracotta.utils.commons.cache.CacheUtils;
 import org.terracotta.utils.perftester.cache.runners.CacheRunnerFactory;
 import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner;
+import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner.ConcurrentRunnerFactory;
 
 /**
  * @author Fabien Sanglier
@@ -15,13 +16,16 @@ import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner;
  */
 public abstract class BaseCacheLauncher {
 	private static Logger log = LoggerFactory.getLogger(BaseCacheLauncher.class);
-	private CacheRunnerFactory runnerFactory;
 	private Barrier barrier = null;
 	private boolean multiClientEnabled = false;
 	private int numClients = 1;
 	
-	public BaseCacheLauncher(CacheRunnerFactory runnerFactory) {
+	private final int numThreads;
+	private final CacheRunnerFactory runnerFactory;
+	
+	public BaseCacheLauncher(int numThreads, CacheRunnerFactory runnerFactory) {
 		super();
+		this.numThreads = numThreads;
 		this.runnerFactory = runnerFactory;
 	}
 	
@@ -67,7 +71,7 @@ public abstract class BaseCacheLauncher {
 	}
 
 	private void run_internal() {
-		ConcurrentRunner runner = ConcurrentRunner.create(runnerFactory);
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,runnerFactory).create();
 		runner.run();
 	}
 	

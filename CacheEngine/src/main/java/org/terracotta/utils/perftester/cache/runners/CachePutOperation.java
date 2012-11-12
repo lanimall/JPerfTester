@@ -41,12 +41,12 @@ public class CachePutOperation extends AbstractCacheRunner<Long> {
 		private final long keyStart;
 		private final ObjectGenerator valueGenerator;
 		
-		public CachePutOperationFactory(Cache cache, int numThreads, long numOperations, ObjectGenerator valueGenerator) {
-			this(cache, numThreads, numOperations, valueGenerator, 0);
+		public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator) {
+			this(cache, numOperations, valueGenerator, 0);
 		}
 		
-		public CachePutOperationFactory(Cache cache, int numThreads, long numOperations, ObjectGenerator valueGenerator, long keyStart) {
-			super(cache, numThreads, numOperations);
+		public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator, long keyStart) {
+			super(cache, numOperations);
 			this.keyStart = keyStart;
 			this.valueGenerator = valueGenerator;
 		}
@@ -54,7 +54,7 @@ public class CachePutOperation extends AbstractCacheRunner<Long> {
 		@Override
 		public CachePutOperation create() {
 			SequentialGenerator keyGen = new SequentialGenerator(keyStart);
-			return new CachePutOperation(getCache(), new IterationCondition(getNumOperations() / getNumThreads()), keyGen, valueGenerator);	
+			return new CachePutOperation(getCache(), new IterationCondition(getNumOperations()), keyGen, valueGenerator);	
 		}
 	}
 }

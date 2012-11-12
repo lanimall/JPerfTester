@@ -1,20 +1,22 @@
 package org.terracotta.utils.perftester.monitoring;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terracotta.utils.commons.RandomUtil;
 import org.terracotta.utils.perftester.runners.Runner;
+import org.terracotta.utils.perftester.runners.impl.BaseRunner;
 
 /**
  * @author Fabien Sanglier
  * 
  */
-public class StatsOperationObserver {
+public class StatsOperationObserver implements Cloneable {
 	private static Logger logger = LoggerFactory.getLogger(StatsOperationObserver.class);
 
-	private final List<Runner> monitoredOperations = new LinkedList<Runner>();
+	private final List<Runner> monitoredOperations = new ArrayList<Runner>();
 
 	public StatsOperationObserver() {
 		super();
@@ -23,6 +25,15 @@ public class StatsOperationObserver {
 	public StatsOperationObserver(Runner[] operations) {
 		super();
 		registerMultiple(operations);
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 	public void register(Runner operation) {
@@ -36,6 +47,28 @@ public class StatsOperationObserver {
 		}
 	}
 
+	public void resetMonitoredOpsStats(){
+		for(int i=0; i<monitoredOperations.size(); i++){
+			monitoredOperations.get(i).getStats().reset();
+		}
+	}
+	
+	public void finalizeMonitoredOpsStats(){
+		for(int i=0; i<monitoredOperations.size(); i++){
+			monitoredOperations.get(i).getStats().finalise();
+		}
+	}
+	
+	public void printMonitoredOpsStats(){
+		for(int i=0; i<monitoredOperations.size(); i++){
+			monitoredOperations.get(i).getStats().printToConsole(monitoredOperations.get(i).getName());
+		}
+	}
+	
+	public Stats getMonitoredOpsStats(int operationIndex){
+		return monitoredOperations.get(operationIndex).getStats();
+	}
+	
 	public Stats getAggregateStats() {
 		logger.info("Entering getAggregateStats...");
 		Stats overallStats = new Stats();

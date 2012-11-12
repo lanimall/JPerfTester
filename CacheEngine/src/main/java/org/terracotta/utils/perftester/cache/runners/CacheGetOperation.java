@@ -46,8 +46,8 @@ public class CacheGetOperation extends AbstractCacheRunner<Long> {
 	public static class CacheGetOperationFactory extends CacheRunnerFactory {
 		private final ObjectGenerator keyGen;
 		
-		public CacheGetOperationFactory(Cache cache, int numThreads, long numOperations, ObjectGenerator keyGen) {
-			super(cache, numThreads, numOperations);
+		public CacheGetOperationFactory(Cache cache, long numOperations, ObjectGenerator keyGen) {
+			super(cache, numOperations);
 			this.keyGen = keyGen;
 		}
 
@@ -56,22 +56,22 @@ public class CacheGetOperation extends AbstractCacheRunner<Long> {
 			if(null == keyGen)
 				throw new IllegalArgumentException("KenGen object may not be null");
 			
-			return new CacheGetOperation(getCache(), new IterationCondition(getNumOperations() / getNumThreads()), keyGen);	
+			return new CacheGetOperation(getCache(), new IterationCondition(getNumOperations()), keyGen);	
 		}
 	}
 	
 	public static class CacheSequentialGetOperationFactory extends CacheGetOperationFactory {
-		public CacheSequentialGetOperationFactory(Cache cache, int numThreads, long numOperations, long keyStart) {
-			super(cache, numThreads, numOperations, new SequentialGenerator(keyStart));
+		public CacheSequentialGetOperationFactory(Cache cache, long numOperations, long keyStart) {
+			super(cache, numOperations, new SequentialGenerator(keyStart));
 		}
 	}
 	
 	public static class CacheRandomGetOperationFactory extends CacheGetOperationFactory {
-		public CacheRandomGetOperationFactory(Cache cache, int numThreads, long numOperations, int nbRandomDigits) {
-			super(cache, numThreads, numOperations, new RandomNumberGenerator(nbRandomDigits));
+		public CacheRandomGetOperationFactory(Cache cache, long numOperations, int nbRandomDigits) {
+			super(cache, numOperations, new RandomNumberGenerator(nbRandomDigits));
 		}
-		public CacheRandomGetOperationFactory(Cache cache, int numThreads, long numOperations, int nbRandomDigits, int randomPrependDigits, int randomAppendDigits) {
-			super(cache, numThreads, numOperations, new RandomNumberGenerator(nbRandomDigits, randomPrependDigits, randomAppendDigits));
+		public CacheRandomGetOperationFactory(Cache cache, long numOperations, int nbRandomDigits, int randomPrependDigits, int randomAppendDigits) {
+			super(cache, numOperations, new RandomNumberGenerator(nbRandomDigits, randomPrependDigits, randomAppendDigits));
 		}
 	}
 }

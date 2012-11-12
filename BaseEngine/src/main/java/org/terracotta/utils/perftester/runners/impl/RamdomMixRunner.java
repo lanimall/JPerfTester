@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.monitoring.StatsOperationObserver;
+import org.terracotta.utils.perftester.runners.OpsCountRunnerFactory;
 import org.terracotta.utils.perftester.runners.Runner;
-import org.terracotta.utils.perftester.runners.RunnerFactory;
 
 /**
  * @author Fabien Sanglier
@@ -17,9 +17,9 @@ import org.terracotta.utils.perftester.runners.RunnerFactory;
  */
 public class RamdomMixRunner extends BaseRunner {
 	private static Logger log = LoggerFactory.getLogger(RamdomMixRunner.class);
-	private StatsOperationObserver statsOperationObserver;
 	private static final int OPS_COUNT_WINDOW = 100;
 
+	//private final Stats[] operationStats;
 	private final Runner[] operations;
 	private final Integer[] randomOperationsPercentMix;
 
@@ -44,6 +44,9 @@ public class RamdomMixRunner extends BaseRunner {
 		this.opsIterationsCountDown = new LinkedList<OperationsCounter>();
 		resetCounterOperationMix();
 
+		//this.operationStats = new Stats[operations.length];
+		//resetOperationsStats();
+		
 		this.statsOperationObserver = new StatsOperationObserver(operations);
 	}
 
@@ -69,7 +72,16 @@ public class RamdomMixRunner extends BaseRunner {
 	@Override
 	protected void execute() {
 		log.info("Starting run for " + getName());
-
+		
+		if(log.isInfoEnabled()){
+			log.info("Ramdom Operation Mix:");
+			for(int i=0; i<operations.length; i++){
+				log.info(operations[i].getName() + " - " + randomOperationsPercentMix[i] + "%");
+			}
+		}
+		
+		getStatsOperationObserver().resetMonitoredOpsStats();
+		
 		try {
 			do {
 				try {
@@ -81,7 +93,9 @@ public class RamdomMixRunner extends BaseRunner {
 		} catch(Exception e) {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
-			//stats.add(getStatsOperationObserver().getAggregateStats());
+			getStatsOperationObserver().finalizeMonitoredOpsStats();
+			
+			getStatsOperationObserver().printMonitoredOpsStats();
 		}
 
 		log.info("End run for " + getName());
@@ -99,9 +113,9 @@ public class RamdomMixRunner extends BaseRunner {
 		OperationsCounter opCounter = opsIterationsCountDown.get(opsIndex);
 		
 		//execute the operation related to that pair, through the stored array index
-		long iterationStartTime = System.currentTimeMillis();
+		//long iterationStartTime = System.currentTimeMillis();
 		operations[opCounter.getOperationIndex()].run();
-		stats.add(System.currentTimeMillis() - iterationStartTime);
+		//operationStats[opCounter.getOperationIndex()].add(System.currentTimeMillis() - iterationStartTime);
 		
 		//decrement the counter
 		decrementAndGetCountOperation(opsIndex);
@@ -130,12 +144,12 @@ public class RamdomMixRunner extends BaseRunner {
 		}
 	}
 	
-	public static class RamdomMixRunnerFactory extends RunnerFactory {
+	public static class RamdomMixRunnerFactory extends OpsCountRunnerFactory {
 		private List<Runner> operations = new LinkedList<Runner>();
 		private List<Integer> randomOperationsPercentMix = new LinkedList<Integer>();
 		
-		public RamdomMixRunnerFactory(int numThreads, long numOperations) {
-			super(numThreads, numOperations);
+		public RamdomMixRunnerFactory(long numOperations) {
+			super(numOperations);
 		}
 
 		public void addOperationMix(Runner operation, int mix){
@@ -145,9 +159,15 @@ public class RamdomMixRunner extends BaseRunner {
 		
 		@Override
 		public RamdomMixRunner create() {
+			//make sure the operations are cloned properly between each create()
+			Runner[] ops = new Runner[operations.size()];
+			for(int i=0; i<operations.size(); i++){
+				ops[i] = (Runner)operations.get(i).clone();
+			}
+			
 			return new RamdomMixRunner(
-					new IterationCondition(getNumOperations() / getNumThreads()), 
-					(Runner[])operations.toArray(new Runner[operations.size()]),
+					new IterationCondition(getNumOperations()), 
+					ops,
 					(Integer[])randomOperationsPercentMix.toArray(new Integer[randomOperationsPercentMix.size()]));	
 		}
 	}

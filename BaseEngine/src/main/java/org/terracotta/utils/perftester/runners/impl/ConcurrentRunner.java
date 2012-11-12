@@ -21,16 +21,8 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 
 	private final Runner[] operations;
 	private ExecutorService executorService;
-	
-	public static ConcurrentRunner create(RunnerFactory runnerFactory){
-		Runner[] ops = new Runner[runnerFactory.getNumThreads()];
-		for(int i=0 ; i < runnerFactory.getNumThreads(); i++){
-			ops[i]=runnerFactory.create();
-		}
-		return new ConcurrentRunner(ops);
-	}
 
-	public ConcurrentRunner(Runner[] operations) {
+	private ConcurrentRunner(Runner[] operations) {
 		super(null);
 		this.operations = operations;
 		this.executorService = Executors.newFixedThreadPool(operations.length);
@@ -54,7 +46,7 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 			//make sure to wait until all threads are done before moving forward...
 			shutdownAndAwaitTermination(executorService);
 		}
-		
+
 		log.info("End " + getName());
 	}
 
@@ -87,6 +79,25 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 
 		for (Runner op : operations) {
 			executorService.submit(op);
+		}
+	}
+
+	public static class ConcurrentRunnerFactory implements RunnerFactory {
+		private final int numThread;
+		private final RunnerFactory runnerFactory;
+
+		public ConcurrentRunnerFactory(int numThread, RunnerFactory runnerFactory) {
+			this.numThread = numThread;
+			this.runnerFactory = runnerFactory;
+		}
+
+		@Override
+		public ConcurrentRunner create() {
+			Runner[] ops = new Runner[numThread];
+			for(int i=0 ; i < numThread; i++){
+				ops[i]=runnerFactory.create();
+			}
+			return new ConcurrentRunner(ops);
 		}
 	}
 }

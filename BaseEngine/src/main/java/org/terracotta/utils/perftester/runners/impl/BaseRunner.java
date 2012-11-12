@@ -39,7 +39,12 @@ public abstract class BaseRunner implements Runner {
 	@Override
 	public Object clone() {
 		try {
-			return super.clone();
+			BaseRunner cloned = (BaseRunner)super.clone();
+			cloned.stats = new Stats(stats);
+			if(this.statsOperationObserver != null)
+				cloned.statsOperationObserver = (StatsOperationObserver)this.statsOperationObserver.clone();
+			
+			return cloned;
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}

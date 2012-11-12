@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
 import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner;
+import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner.ConcurrentRunnerFactory;
 import org.terracotta.utils.perftester.runners.impl.RamdomMixRunner.RamdomMixRunnerFactory;
 import org.terracotta.utils.perftester.runners.impl.SimpleRunner;
 
@@ -18,12 +19,12 @@ import org.terracotta.utils.perftester.runners.impl.SimpleRunner;
 public class RandomMixRunnerTest {
 	private static Logger log = LoggerFactory.getLogger(RandomMixRunnerTest.class);
 
-	private RunnerFactory createRunnerFactory(int numThreads, long numOperations){
-		RamdomMixRunnerFactory runnerFactory = new RamdomMixRunnerFactory(numThreads, numOperations);
+	private OpsCountRunnerFactory createRunnerFactory(long numOperations){
+		RamdomMixRunnerFactory runnerFactory = new RamdomMixRunnerFactory(numOperations);
 		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator()){
 			@Override
 			public String getName() {
-				return super.getName() + "1 - 45%";
+				return super.getName() + "1";
 			}
 
 			@Override
@@ -44,7 +45,7 @@ public class RandomMixRunnerTest {
 		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator()){
 			@Override
 			public String getName() {
-				return super.getName() + "2 - 35%";
+				return super.getName() + "2";
 			}
 
 			@Override
@@ -65,7 +66,7 @@ public class RandomMixRunnerTest {
 		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator()){
 			@Override
 			public String getName() {
-				return super.getName() + "3 - 20%";
+				return super.getName() + "3";
 			}
 
 			@Override
@@ -93,12 +94,12 @@ public class RandomMixRunnerTest {
 		int numThreads = 1;
 		
 		//number of iteration per thread
-		long numOperations = 100000;
+		long numTotalOperations = 100000;
 		
-		ConcurrentRunner runner = ConcurrentRunner.create(createRunnerFactory(numThreads, numOperations));
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
 		runner.run();
 		
-		assertEquals(numOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
+		assertEquals(numTotalOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
 	}
 	
 	@Test
@@ -107,11 +108,11 @@ public class RandomMixRunnerTest {
 		int numThreads = 4;
 		
 		//number of iteration per thread
-		long numOperations = 100000;
+		long numTotalOperations = 100000;
 		
-		ConcurrentRunner runner = ConcurrentRunner.create(createRunnerFactory(numThreads, numOperations));
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
 		runner.run();
 		
-		assertEquals(numOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
+		assertEquals(numTotalOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
 	}
 }

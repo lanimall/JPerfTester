@@ -195,7 +195,7 @@ public class Stats implements Cloneable {
 	public String toString() {
 		return String
 		.format("Exec Time(ms): %s, Txns: %s, TPS: %s, Latency(ms): Avg: %s, Min: %s, Max: %s",
-				nf.format(endTime-startTime),
+				(endTime > 0)?nf.format(endTime-startTime):"N/A (endTime null)",
 				nf.format(this.getTxnCount()),
 				nf.format(this.getThroughput()),
 				nf.format(this.getAvgLatency()),
