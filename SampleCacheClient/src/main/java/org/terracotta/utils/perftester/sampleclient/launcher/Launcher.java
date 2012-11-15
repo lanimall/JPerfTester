@@ -81,7 +81,7 @@ public class Launcher extends InteractiveLauncher {
 		if(null != cacheLauncher){
 			cacheLauncher.setMultiClientEnabled(AppConfig.getInstance().isAppMultiClientsSyncEnabled());
 			cacheLauncher.setNumClients(AppConfig.getInstance().getAppNbClients());
-			cacheLauncher.run();
+			cacheLauncher.launch();
 		}
 		
 		return true;

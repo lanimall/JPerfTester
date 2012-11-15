@@ -41,7 +41,9 @@ public class CachePutLauncher extends BaseCacheLauncher {
 	}
 
 	@Override
-	public void doBeforeRun() throws Exception {
+	public void doBefore() throws Exception {
+		super.doBefore();
+		
 		//if requested, putting cache in bulkload mode
 		if(isBulkLoadEnabled() && !getCache().isNodeBulkLoadEnabled()){
 			log.info("Putting cache " + getCache().getName() + " in Bulk Mode.");
@@ -64,7 +66,9 @@ public class CachePutLauncher extends BaseCacheLauncher {
 	}
 
 	@Override
-	public void doAfterRun() throws Exception {
+	public void doAfter() throws Exception {
+		super.doAfter();
+		
 		if(null != getBarrier()){
 			//wait for all client to reach that point
 			log.info("Waiting for all clients to finish bulk loading");

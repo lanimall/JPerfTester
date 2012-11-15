@@ -7,76 +7,20 @@ import org.slf4j.LoggerFactory;
 import org.terracotta.coordination.Barrier;
 import org.terracotta.utils.commons.cache.CacheUtils;
 import org.terracotta.utils.perftester.cache.runners.CacheRunnerFactory;
-import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner;
-import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner.ConcurrentRunnerFactory;
+import org.terracotta.utils.perftester.launchers.ConcurrentLauncher;
 
 /**
  * @author Fabien Sanglier
  * 
  */
-public abstract class BaseCacheLauncher {
+public abstract class BaseCacheLauncher extends ConcurrentLauncher {
 	private static Logger log = LoggerFactory.getLogger(BaseCacheLauncher.class);
 	private Barrier barrier = null;
 	private boolean multiClientEnabled = false;
 	private int numClients = 1;
 	
-	private final int numThreads;
-	private final CacheRunnerFactory runnerFactory;
-	
 	public BaseCacheLauncher(int numThreads, CacheRunnerFactory runnerFactory) {
-		super();
-		this.numThreads = numThreads;
-		this.runnerFactory = runnerFactory;
-	}
-	
-	public CacheRunnerFactory getRunnerFactory() {
-		return runnerFactory;
-	}
-
-	public Barrier getBarrier() {
-		return barrier;
-	}
-
-	public void doBeforeRun() throws Exception {
-		//noop
-	}
-	
-	public void doAfterRun() throws Exception {
-		//noop
-	}
-	
-	public void run() throws Exception {
-		log.info("Starting load operation...");
-		
-		if(isMultiClientEnabled()){
-			this.barrier = CacheUtils.getBarrier(getCache().getCacheManager(), CachePutLauncher.class.toString(), getNumClients());
-		}
-
-		long start = System.currentTimeMillis();
-		try {
-			doBeforeRun();
-			run_internal();
-		} catch(Exception e) {
-			log.error("Error in processing runner", e);
-		} finally {
-			try {
-				//make sure we execute the after load
-				doAfterRun();
-			} catch (Exception e) {
-				log.error("Error in during execution of the doAfterRun().", e);
-			}
-			long stop = System.currentTimeMillis();
-			log.debug("Runner operation done in {}ms", stop - start);
-		}
-	}
-
-	private void run_internal() {
-		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,runnerFactory).create();
-		runner.run();
-	}
-	
-	public Cache getCache() {
-		return (null != getRunnerFactory())?getRunnerFactory().getCache(): null;
+		super(numThreads, runnerFactory);
 	}
 	
 	public boolean isMultiClientEnabled() {
@@ -93,5 +37,26 @@ public abstract class BaseCacheLauncher {
 
 	public void setNumClients(int numClients) {
 		this.numClients = numClients;
+	}
+	
+	public Barrier getBarrier() {
+		return barrier;
+	}
+	
+	public Cache getCache() {
+		return (null != getRunnerFactory())?((CacheRunnerFactory)getRunnerFactory()).getCache(): null;
+	}
+	
+	@Override
+	public void doBefore() throws Exception {
+		super.doBefore();
+		log.info("Begin doBefore()");
+		
+		Cache cache = null;
+		if(isMultiClientEnabled() && null != (cache = getCache())){
+			log.info("Implementing a thread barrier with name=" + this.getClass().toString() + " and barrier count=" + getNumClients());
+			this.barrier = CacheUtils.getBarrier(cache.getCacheManager(), this.getClass().toString(), getNumClients());
+		}
+		log.info("End doBefore()");
 	}
 }

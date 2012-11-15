@@ -253,10 +253,10 @@ public class RandomUtil {
 
 	public Date getRandomDate(int year, Date cutOff, boolean afterCutOff) {
 		Calendar cal = Calendar.getInstance();
-		cal.set(year, 1, 1);
+		cal.set(year, 0, 1);
 
 		Calendar cal2 = Calendar.getInstance();
-		cal2.set(year, 12, 31);
+		cal2.set(year, 11, 31);
 
 		if(cutOff != null){
 			if(afterCutOff){
@@ -271,18 +271,18 @@ public class RandomUtil {
 	}
 
 	public Date getRandomDateBetween(Date from, Date to) {
-		Calendar cal1 = Calendar.getInstance();
-		cal1.setTime(from);
-		BigDecimal decFrom = new BigDecimal(cal1.getTimeInMillis());
+		Calendar calFrom = Calendar.getInstance();
+		calFrom.setTime(from);
+		BigDecimal decFrom = new BigDecimal(calFrom.getTimeInMillis());
 
-		Calendar cal2 = Calendar.getInstance();
-		cal2.setTime(to);
-		BigDecimal decTo = new BigDecimal(cal2.getTimeInMillis());
+		Calendar calTo = Calendar.getInstance();
+		calTo.setTime(to);
+		BigDecimal decTo = new BigDecimal(calTo.getTimeInMillis());
 
-		BigDecimal selisih = decTo.subtract(decFrom);
-		BigDecimal factor = selisih.multiply(new BigDecimal(Math.random()));
+		BigDecimal range = decTo.subtract(decFrom);
+		BigDecimal factorWithinRange = range.multiply(new BigDecimal(Math.random()));
 
-		return new Date((factor.add(decFrom)).longValue());
+		return new Date((decFrom.add(factorWithinRange)).longValue());
 	}
 
 	private String[] getCharacterMap() throws Exception{
