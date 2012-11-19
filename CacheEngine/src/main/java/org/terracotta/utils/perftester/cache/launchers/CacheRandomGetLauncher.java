@@ -14,7 +14,7 @@ public class CacheRandomGetLauncher extends BaseCacheLauncher {
 	private static Logger log = LoggerFactory.getLogger(CacheRandomGetLauncher.class);
 
 	public CacheRandomGetLauncher(Cache cache, int numThreads, long numOperations, int nbRandomDigits, int randomPrependDigits, int randomAppendDigits) {
-		super(numThreads, new CacheRandomGetOperationFactory(cache, numOperations, nbRandomDigits, randomPrependDigits, randomAppendDigits));
+		super(numThreads, new CacheRandomGetOperationFactory(cache, numOperations/numThreads, nbRandomDigits, randomPrependDigits, randomAppendDigits));
 
 		System.out.println("*********** Getting random cache entries *************");
 		System.out.println("Params:");

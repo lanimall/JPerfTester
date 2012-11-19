@@ -26,6 +26,10 @@ public abstract class BaseRunner implements Runner {
 	protected final RandomUtil randomUtil = new RandomUtil();
 	protected StatsOperationObserver statsOperationObserver;
 	
+	private boolean resetStatsBtwExecute = true;
+	private boolean finalizeStatsBtwExecute = true;
+	private boolean printStatsAfterExecute = true;
+	
 	protected BaseRunner(Condition termination) {
 		super();
 		this.termination = termination;
@@ -87,12 +91,27 @@ public abstract class BaseRunner implements Runner {
 	}
 	
 	@Override
+	public void setResetStatsBtwExecute(boolean enableReset) {
+		this.resetStatsBtwExecute = enableReset;
+	}
+
+	@Override
+	public void setFinalizeStatsBtwExecute(boolean enableFinalize) {
+		this.finalizeStatsBtwExecute = enableFinalize;
+	}
+
+	@Override
+	public void setPrintStatsAfterExecute(boolean enablePrint) {
+		this.printStatsAfterExecute = enablePrint;
+	}
+
+	@Override
 	public void run() {
 		try {
 			doBeforeRun();
 			
 			//reset stat before execute
-			if(resetStatsBeforeEachExecute())
+			if(isResetStatsBtwExecute())
 				stats.reset();
 			
 			execute();
@@ -100,7 +119,7 @@ public abstract class BaseRunner implements Runner {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
 			//finalize stats after execute
-			if(resetStatsBeforeEachExecute())
+			if(isFinalizeStatsBtwExecute())
 				stats.finalise();
 			
 			try {
@@ -113,19 +132,23 @@ public abstract class BaseRunner implements Runner {
 			if(null != getStatsOperationObserver())
 				stats.add(getStatsOperationObserver().getAggregateStats());
 			
-			if(printStatsAfterEachExecute())
+			if(isPrintStatsAfterExecute())
 				stats.printToConsole(printStatsHeaderText(),printStatsFooterText());
 		}
 	}
 	
-	protected boolean resetStatsBeforeEachExecute(){
-		return true;
+	public boolean isResetStatsBtwExecute() {
+		return resetStatsBtwExecute;
 	}
-	
-	protected boolean printStatsAfterEachExecute(){
-		return true;
+
+	public boolean isFinalizeStatsBtwExecute() {
+		return finalizeStatsBtwExecute;
 	}
-	
+
+	public boolean isPrintStatsAfterExecute() {
+		return printStatsAfterExecute;
+	}
+
 	protected String printStatsHeaderText(){
 		return "Final Stats for:" + getName();
 	}

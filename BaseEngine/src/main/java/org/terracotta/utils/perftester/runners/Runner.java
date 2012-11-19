@@ -16,4 +16,10 @@ public interface Runner extends Cloneable, Runnable {
 	Stats getStats();
 	
 	Object clone();
+	
+	void setResetStatsBtwExecute(boolean enableReset);
+
+	void setFinalizeStatsBtwExecute(boolean enableFinalize);
+	
+	void setPrintStatsAfterExecute(boolean enablePrint);
 }

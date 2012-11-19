@@ -5,8 +5,8 @@
 	<artifactId>jperftester-parent</artifactId>
 	<version>0.0.1</version>
 	<packaging>pom</packaging>
-	<name>Terracotta Cache Performance Tester Parent pom</name>
-	<description>Terracotta Cache Performance Tester Parent Pom</description>
+	<name>Performance Tester Parent pom</name>
+	<description>Performance Tester Parent Pom</description>
 	<url>http://terracotta.org/</url>
 
 	<developers>

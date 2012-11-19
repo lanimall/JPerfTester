@@ -1,5 +1,6 @@
 package org.terracotta.utils.perftester.cache.launchers;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 import net.sf.ehcache.Cache;
@@ -14,6 +15,7 @@ import org.terracotta.utils.commons.cache.CacheUtils;
  */
 public abstract class InteractiveLauncher {
 	private static Logger log = LoggerFactory.getLogger(InteractiveLauncher.class);
+	public static final char LAUNCH_INPUT_QUIT = 'Q';
 	private Cache cache = null;
 	
 	public InteractiveLauncher(String cacheName) {
@@ -37,20 +39,21 @@ public abstract class InteractiveLauncher {
 
 	public void printLineSeparator(){
 		String lineSeparator = System.getProperty("line.separator");
-		System.out.println("Line separator = " + lineSeparator);
-
 		byte[] bytes = lineSeparator.getBytes();
 		StringBuilder sb = new StringBuilder();
 		for (byte b : bytes) {
 			sb.append(String.format("%02X", b) + " ");
 		}
-
-		System.out.println("ls hex = " + sb.toString());
+		System.out.println("Line separator = " + lineSeparator + " (hex = " + sb.toString() + ")");
 	}
 
-	protected abstract void printOptions();
+	public abstract void printOptions();
 	
-	protected abstract boolean processInput(String input) throws Exception;
+	public boolean processInput(String input) throws Exception{
+		return processInput(input, null);
+	}
+	
+	public abstract boolean processInput(String input, String[] args) throws Exception;
 	
 	public void run() throws Exception {
 		boolean keepRunning = true;
@@ -61,8 +64,14 @@ public abstract class InteractiveLauncher {
 			if (input.length() == 0) {
 				continue;
 			}
-
-			keepRunning = processInput(input);
+			
+			String[] inputs = input.split(" ");
+			String[] args = null;
+			if(inputs.length > 1){
+				args = Arrays.copyOfRange(inputs, 1, inputs.length);
+			}
+			
+			keepRunning = processInput(inputs[0], args);
 		}
 	}
 

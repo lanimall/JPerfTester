@@ -35,10 +35,25 @@ public class RamdomMixRunner extends BaseRunner {
 	 */
 	public RamdomMixRunner(Condition termination, Runner[] operations, Integer[] randomOperationMix) {
 		super(termination);
+
+		if(termination == null)
+			throw new IllegalArgumentException("Termination object may not be null");
+
 		if(null == operations || null == randomOperationMix || operations.length != randomOperationMix.length)
 			throw new IllegalArgumentException("Arguments operations and/or randomOperationMix are not valid. Make sure the size of both collection is the same.");
 
 		this.operations = operations;
+		
+		//TODO: cleanup the null operations in the array...as well as the operations corresponding to a mix = 0
+		
+		
+		//ensures that all the inner operations are not resetting / finalizing stats
+		for(Runner op : operations){
+			op.setResetStatsBtwExecute(false);
+			op.setFinalizeStatsBtwExecute(false);
+			op.setPrintStatsAfterExecute(false);
+		}
+
 		this.randomOperationsPercentMix = randomOperationMix;
 
 		this.opsIterationsCountDown = new LinkedList<OperationsCounter>();
@@ -46,7 +61,7 @@ public class RamdomMixRunner extends BaseRunner {
 
 		//this.operationStats = new Stats[operations.length];
 		//resetOperationsStats();
-		
+
 		this.statsOperationObserver = new StatsOperationObserver(operations);
 	}
 
@@ -72,16 +87,16 @@ public class RamdomMixRunner extends BaseRunner {
 	@Override
 	protected void execute() {
 		log.info("Starting run for " + getName());
-		
+
 		if(log.isInfoEnabled()){
 			log.info("Ramdom Operation Mix:");
 			for(int i=0; i<operations.length; i++){
 				log.info(operations[i].getName() + " - " + randomOperationsPercentMix[i] + "%");
 			}
 		}
-		
+
 		getStatsOperationObserver().resetMonitoredOpsStats();
-		
+
 		try {
 			do {
 				try {
@@ -94,7 +109,7 @@ public class RamdomMixRunner extends BaseRunner {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
 			getStatsOperationObserver().finalizeMonitoredOpsStats();
-			
+
 			getStatsOperationObserver().printMonitoredOpsStats();
 		}
 
@@ -105,32 +120,32 @@ public class RamdomMixRunner extends BaseRunner {
 		//if the opsIterationsCountDown is empty, it's time to reset
 		if(opsIterationsCountDown.size() == 0)
 			resetCounterOperationMix();
-		
+
 		//generate random number
 		int opsIndex = randomUtil.generateRandom(opsIterationsCountDown.size());
-		
+
 		//find the operation pair in the opsIterationsCountDown list
 		OperationsCounter opCounter = opsIterationsCountDown.get(opsIndex);
-		
+
 		//execute the operation related to that pair, through the stored array index
 		//long iterationStartTime = System.currentTimeMillis();
 		operations[opCounter.getOperationIndex()].run();
 		//operationStats[opCounter.getOperationIndex()].add(System.currentTimeMillis() - iterationStartTime);
-		
+
 		//decrement the counter
 		decrementAndGetCountOperation(opsIndex);
 	}
-	
+
 	private static class OperationsCounter {
 		private final int operationIndex;
 		private int operationCounter;
-		
+
 		public OperationsCounter(int operationIndex, int counterStart) {
 			super();
 			this.operationIndex = operationIndex;
 			this.operationCounter = counterStart;
 		}
-		
+
 		public int getOperationIndex() {
 			return operationIndex;
 		}
@@ -138,25 +153,29 @@ public class RamdomMixRunner extends BaseRunner {
 		public int decrementCounter(){
 			return --operationCounter;
 		}
-		
+
 		public boolean isDone(){
 			return operationCounter <= 0;
 		}
 	}
-	
+
 	public static class RamdomMixRunnerFactory extends OpsCountRunnerFactory {
 		private List<Runner> operations = new LinkedList<Runner>();
 		private List<Integer> randomOperationsPercentMix = new LinkedList<Integer>();
-		
+
 		public RamdomMixRunnerFactory(long numOperations) {
 			super(numOperations);
 		}
 
 		public void addOperationMix(Runner operation, int mix){
-			operations.add(operation);
-			randomOperationsPercentMix.add(mix);
+			if(null != operation && mix > 0){
+				operations.add(operation);
+				randomOperationsPercentMix.add(mix);
+			} else {
+				log.info("Not adding the operation mix because either the mix or the operation is null");
+			}
 		}
-		
+
 		@Override
 		public RamdomMixRunner create() {
 			//make sure the operations are cloned properly between each create()
@@ -164,7 +183,7 @@ public class RamdomMixRunner extends BaseRunner {
 			for(int i=0; i<operations.size(); i++){
 				ops[i] = (Runner)operations.get(i).clone();
 			}
-			
+
 			return new RamdomMixRunner(
 					new IterationCondition(getNumOperations()), 
 					ops,

@@ -31,16 +31,6 @@ public class RandomMixRunnerTest {
 			public void doUnitOfWork(Long key) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
 			}
-
-			@Override
-			protected boolean resetStatsBeforeEachExecute() {
-				return false;
-			}
-
-			@Override
-			protected boolean printStatsAfterEachExecute() {
-				return false;
-			}
 		}, 45);
 		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator()){
 			@Override
@@ -52,16 +42,6 @@ public class RandomMixRunnerTest {
 			public void doUnitOfWork(Long key) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
 			}
-			
-			@Override
-			protected boolean resetStatsBeforeEachExecute() {
-				return false;
-			}
-
-			@Override
-			protected boolean printStatsAfterEachExecute() {
-				return false;
-			}
 		}, 35);
 		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator()){
 			@Override
@@ -72,16 +52,6 @@ public class RandomMixRunnerTest {
 			@Override
 			public void doUnitOfWork(Long key) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
-			}
-			
-			@Override
-			protected boolean resetStatsBeforeEachExecute() {
-				return false;
-			}
-
-			@Override
-			protected boolean printStatsAfterEachExecute() {
-				return false;
 			}
 		}, 20);
 		

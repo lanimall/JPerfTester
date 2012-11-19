@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.terracotta.utils</groupId>
-		<artifactId>jperftester-parent</artifactId>
+		<artifactId>jperftester-cacheparent</artifactId>
 		<version>0.0.1</version>
-		<relativePath>../basebuild/pom.xml</relativePath>
+		<relativePath>../basecachebuild/pom.xml</relativePath>
 	</parent>
 	<groupId>org.terracotta.utils</groupId>
 	<artifactId>SampleCacheClient</artifactId>
@@ -14,8 +14,8 @@
 	<description>This is a sample client to demonstrate what it takes to use the library in order to build a "pounder" client that uses some custom business objects throughout the common tests. </description>
 
 	<properties>
-		<ehcache-core-ee.version>2.5.5</ehcache-core-ee.version>
-		<ehcache-terracotta-ee.version>2.5.5</ehcache-terracotta-ee.version>
+		<ehcache-core-ee.version>2.6.0</ehcache-core-ee.version>
+		<ehcache-terracotta-ee.version>2.6.0</ehcache-terracotta-ee.version>
 	</properties>
 
 	<developers>
@@ -35,6 +35,12 @@
 			<groupId>org.terracotta.utils</groupId>
 			<artifactId>jperftester-cacheengine</artifactId>
 			<version>0.0.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 	</dependencies>
 

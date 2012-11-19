@@ -14,7 +14,7 @@ public class CacheSequentialGetLauncher extends BaseCacheLauncher {
 	private static Logger log = LoggerFactory.getLogger(CacheSequentialGetLauncher.class);
 
 	public CacheSequentialGetLauncher(Cache cache, int numThreads, long numOperations,long keyStart) {
-		super(numThreads, new CacheSequentialGetOperationFactory(cache, numOperations,keyStart));
+		super(numThreads, new CacheSequentialGetOperationFactory(cache, numOperations/numThreads,keyStart));
 
 		System.out.println("*********** Getting cache entries *************");
 		System.out.println("Params:");

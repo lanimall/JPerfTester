@@ -18,6 +18,9 @@ public abstract class AbstractCacheRunner<T> extends KeyValueRunner<T> {
 	
 	protected AbstractCacheRunner(Cache cache, Condition termination, ObjectGenerator<T> generator) {
 		super(termination,generator);
+		
+		if(cache == null)
+			throw new IllegalArgumentException("Cache object may not be null");
 		this.cache = cache;
 	}
 }

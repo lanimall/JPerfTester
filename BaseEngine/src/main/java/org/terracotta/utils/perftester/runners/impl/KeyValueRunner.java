@@ -23,6 +23,10 @@ public abstract class KeyValueRunner<T> extends BaseRunner implements Runner {
 	
 	protected KeyValueRunner(Condition termination, ObjectGenerator<T> objGenerator) {
 		super(termination);
+		
+		if(termination == null)
+			throw new IllegalArgumentException("Termination object may not be null");
+		
 		this.objGenerator = objGenerator;
 	}
 	

@@ -32,6 +32,11 @@ public class CacheSearchOperation extends AbstractCacheRunner<Query> {
 	
 	@Override
 	public void doUnitOfWork(Query query) {
+		if(null == query){
+			log.info("Query is null...doing nothing");
+			return;
+		}
+			
 		if(isDebug)
 			log.debug("Search cache with query:" + query);
 		
@@ -55,6 +60,9 @@ public class CacheSearchOperation extends AbstractCacheRunner<Query> {
 
 		@Override
 		public CacheSearchOperation create() {
+			if(null == queries)
+				return null;
+			
 			RandomSearchQueryGenerator queryGenerator = new RandomSearchQueryGenerator(queries);
 			return new CacheSearchOperation(getCache(), new IterationCondition(getNumOperations()), queryGenerator);	
 		}
