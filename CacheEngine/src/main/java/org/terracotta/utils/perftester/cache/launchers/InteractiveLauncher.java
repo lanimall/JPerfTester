@@ -50,7 +50,21 @@ public abstract class InteractiveLauncher {
 	public abstract void printOptions();
 	
 	public boolean processInput(String input) throws Exception{
-		return processInput(input, null);
+		String[] inputs = input.split(" ");
+		return processInput(inputs);
+	}
+	
+	public boolean processInput(String[] args) throws Exception{
+		String[] inputArgs = null;
+		String inputCommand = "";
+		if(null != args && args.length > 0){
+			inputCommand = args[0];
+			if(args.length > 1){
+				inputArgs = Arrays.copyOfRange(args, 1, args.length);
+			}
+		}
+		
+		return processInput(inputCommand, inputArgs);
 	}
 	
 	public abstract boolean processInput(String input, String[] args) throws Exception;
@@ -65,13 +79,7 @@ public abstract class InteractiveLauncher {
 				continue;
 			}
 			
-			String[] inputs = input.split(" ");
-			String[] args = null;
-			if(inputs.length > 1){
-				args = Arrays.copyOfRange(inputs, 1, inputs.length);
-			}
-			
-			keepRunning = processInput(inputs[0], args);
+			keepRunning = processInput(input);
 		}
 	}
 
