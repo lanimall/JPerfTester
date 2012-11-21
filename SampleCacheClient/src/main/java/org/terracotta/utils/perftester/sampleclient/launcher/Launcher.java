@@ -36,12 +36,12 @@ public class Launcher extends InteractiveLauncher {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Launcher runner = new Launcher(CACHE_NAME);
+		Launcher launcher = new Launcher(CACHE_NAME);
 
 		if(null != args){
-			runner.processInput(args);
+			launcher.processInput(args);
 		} else {
-			runner.run();
+			launcher.run();
 		}
 
 		System.out.println("Completed");
