@@ -38,7 +38,7 @@ public class Launcher extends InteractiveLauncher {
 	public static void main(String[] args) throws Exception {
 		Launcher launcher = new Launcher(CACHE_NAME);
 
-		if(null != args){
+		if(null != args && args.length > 0){
 			launcher.processInput(args);
 		} else {
 			launcher.run();
@@ -65,6 +65,11 @@ public class Launcher extends InteractiveLauncher {
 	public boolean processInput(String input, String[] args) throws Exception {
 		BaseCacheLauncher cacheLauncher = null;
 
+		if(null == input || "".equals(input)){
+			System.out.println("Unrecognized entry...");
+			return true; 
+		}
+			
 		switch (input.charAt(0)) {
 		case LAUNCH_INPUT_FULLTEST1:
 			processInput(String.valueOf(LAUNCH_INPUT_BULKLOAD));
@@ -99,8 +104,8 @@ public class Launcher extends InteractiveLauncher {
 					AppConfig.getInstance().getCacheTxThreads(), 
 					AppConfig.getInstance().getCacheTxNbObjects(), 
 					AppConfig.getInstance().getCacheTxKeyRandomDigitLength(), 
-					AppConfig.getInstance().getCacheTxKeyPrependDigits(),
-					AppConfig.getInstance().getCacheTxKeyAppendDigits());
+					new Integer[] {AppConfig.getInstance().getCacheTxKeyPrependDigits()},
+					new Integer[] {AppConfig.getInstance().getCacheTxKeyAppendDigits()});
 			break;
 		case LAUNCH_INPUT_RDMMIX:
 			cacheLauncher = new CacheRandomMixLauncher(
@@ -121,7 +126,7 @@ public class Launcher extends InteractiveLauncher {
 
 					switch(i){
 					case 0:
-						((CacheRandomMixLauncher)cacheLauncher).addCacheGetOperationMix(mix, getCache(), AppConfig.getInstance().getCacheTxKeyRandomDigitLength(), AppConfig.getInstance().getCacheTxKeyPrependDigits(), AppConfig.getInstance().getCacheTxKeyAppendDigits());
+						((CacheRandomMixLauncher)cacheLauncher).addCacheGetOperationMix(mix, getCache(), AppConfig.getInstance().getCacheTxKeyRandomDigitLength(), new Integer[] {AppConfig.getInstance().getCacheTxKeyPrependDigits()}, new Integer[] {AppConfig.getInstance().getCacheTxKeyAppendDigits()});
 						break;
 					case 1:
 						((CacheRandomMixLauncher)cacheLauncher).addCachePutOperationMix(mix, getCache(), new RandomCustomerGenerator(new RandomAddressGenerator(new RandomAddressCategoryGenerator())), AppConfig.getInstance().getCacheLoaderKeyStart());

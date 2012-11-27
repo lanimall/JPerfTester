@@ -10,15 +10,15 @@ import org.slf4j.LoggerFactory;
 public class RandomNumberGenerator extends RandomGenerator<Long> {
 	private static Logger log = LoggerFactory.getLogger(RandomNumberGenerator.class);
 	
-	private int nbDigits;
-	private int prependDigits;
-	private int appendDigits;
+	private Integer nbDigits;
+	private Integer[] prependDigits;
+	private Integer[] appendDigits;
 	
-	public RandomNumberGenerator(int nbDigits) {
-		this(nbDigits,-1,-1);
+	public RandomNumberGenerator(Integer nbDigits) {
+		this(nbDigits,null,null);
 	}
 	
-	public RandomNumberGenerator(int nbDigits, int prependDigits, int appendDigits) {
+	public RandomNumberGenerator(Integer nbDigits, Integer[] prependDigits, Integer[] appendDigits) {
 		super();
 		this.nbDigits = nbDigits;
 		this.prependDigits = prependDigits;

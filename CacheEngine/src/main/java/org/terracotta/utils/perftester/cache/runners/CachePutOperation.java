@@ -41,6 +41,10 @@ public class CachePutOperation extends AbstractCacheRunner<Long> {
 		private final long keyStart;
 		private final ObjectGenerator valueGenerator;
 		
+		//NOTE: With this type of factory, we must make sure that the sequential generator is not being recreated each time create() is called...
+		//that way multiple thread can all work against the same thread-safe generator
+		private final ObjectGenerator keyGen;
+		
 		public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator) {
 			this(cache, numOperations, valueGenerator, 0);
 		}
@@ -49,11 +53,13 @@ public class CachePutOperation extends AbstractCacheRunner<Long> {
 			super(cache, numOperations);
 			this.keyStart = keyStart;
 			this.valueGenerator = valueGenerator;
+			
+			//see note above
+			this.keyGen = new SequentialGenerator(keyStart);
 		}
 
 		@Override
 		public CachePutOperation create() {
-			SequentialGenerator keyGen = new SequentialGenerator(keyStart);
 			return new CachePutOperation(getCache(), new IterationCondition(getNumOperations()), keyGen, valueGenerator);	
 		}
 	}

@@ -86,19 +86,23 @@ public class RandomUtil {
 		return new BigDecimal(sNums);
 	}
 
-	public Long generateRandomNumeric(int length, int prependDigits, int appendDigits)throws Exception{
+	public Long generateRandomNumeric(Integer length, Integer[] prependDigits, Integer[] appendDigits)throws Exception{
 		if(length == 0){
 			return null;
 		}
 		String sNums = generateRandomNumericString(length);
 
-		if(prependDigits > -1)
-			sNums = prependDigits + sNums;
+		if(prependDigits != null && prependDigits.length > 0)
+			sNums = getRandomObjectFromArray(prependDigits) + sNums;
 
-		if(appendDigits > -1)
-			sNums =  sNums + appendDigits;
+		if(appendDigits != null && appendDigits.length > 0)
+			sNums =  sNums + getRandomObjectFromArray(appendDigits);
 
 		return new Long(sNums);
+	}
+	
+	public Long generateRandomNumeric(int length, int prependDigits, int appendDigits)throws Exception{
+		return generateRandomNumeric(length, (prependDigits > -1)?new Integer[]{prependDigits}:null, (appendDigits > -1)?new Integer[]{appendDigits}:null);
 	}
 
 	public Long generateRandomNumeric(int length, int prependDigits) throws Exception{

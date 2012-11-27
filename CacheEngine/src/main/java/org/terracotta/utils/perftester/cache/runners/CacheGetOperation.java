@@ -70,7 +70,7 @@ public class CacheGetOperation extends AbstractCacheRunner<Long> {
 		public CacheRandomGetOperationFactory(Cache cache, long numOperations, int nbRandomDigits) {
 			super(cache, numOperations, new RandomNumberGenerator(nbRandomDigits));
 		}
-		public CacheRandomGetOperationFactory(Cache cache, long numOperations, int nbRandomDigits, int randomPrependDigits, int randomAppendDigits) {
+		public CacheRandomGetOperationFactory(Cache cache, long numOperations, int nbRandomDigits, Integer[] randomPrependDigits, Integer[] randomAppendDigits) {
 			super(cache, numOperations, new RandomNumberGenerator(nbRandomDigits, randomPrependDigits, randomAppendDigits));
 		}
 	}
