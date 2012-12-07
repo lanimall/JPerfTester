@@ -188,8 +188,8 @@ public class AppConfig {
 					try {
 						String location = "";
 						if(null != System.getProperty(CACHEPOUNDER_CONFIGPATH_ENVPROP)){
-							log.info("Loading application configuration from " + System.getProperty(CACHEPOUNDER_CONFIGPATH_ENVPROP));
 							location = System.getProperty(CACHEPOUNDER_CONFIGPATH_ENVPROP);
+							log.info(CACHEPOUNDER_CONFIGPATH_ENVPROP + " environment property specified: Loading application configuration from " + location);
 						}
 						else{
 							log.info("Loading application configuration from classpath " + CACHEPOUNDER_CONFIGPATH_DEFAULT);

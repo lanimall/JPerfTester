@@ -104,8 +104,9 @@ public class Launcher extends InteractiveLauncher {
 					AppConfig.getInstance().getCacheTxThreads(), 
 					AppConfig.getInstance().getCacheTxNbObjects(), 
 					AppConfig.getInstance().getCacheTxKeyRandomDigitLength(), 
-					new Integer[] {AppConfig.getInstance().getCacheTxKeyPrependDigits()},
-					new Integer[] {AppConfig.getInstance().getCacheTxKeyAppendDigits()});
+					(AppConfig.getInstance().getCacheTxKeyPrependDigits() > -1)?new Integer[] {AppConfig.getInstance().getCacheTxKeyPrependDigits()}:null,
+					(AppConfig.getInstance().getCacheTxKeyAppendDigits() > -1)?new Integer[] {AppConfig.getInstance().getCacheTxKeyAppendDigits()}:null
+					);
 			break;
 		case LAUNCH_INPUT_RDMMIX:
 			cacheLauncher = new CacheRandomMixLauncher(
@@ -126,7 +127,7 @@ public class Launcher extends InteractiveLauncher {
 
 					switch(i){
 					case 0:
-						((CacheRandomMixLauncher)cacheLauncher).addCacheGetOperationMix(mix, getCache(), AppConfig.getInstance().getCacheTxKeyRandomDigitLength(), new Integer[] {AppConfig.getInstance().getCacheTxKeyPrependDigits()}, new Integer[] {AppConfig.getInstance().getCacheTxKeyAppendDigits()});
+						((CacheRandomMixLauncher)cacheLauncher).addCacheGetOperationMix(mix, getCache(), AppConfig.getInstance().getCacheTxKeyRandomDigitLength(), (AppConfig.getInstance().getCacheTxKeyPrependDigits() > -1)?new Integer[] {AppConfig.getInstance().getCacheTxKeyPrependDigits()}:null, (AppConfig.getInstance().getCacheTxKeyAppendDigits() > -1)?new Integer[] {AppConfig.getInstance().getCacheTxKeyAppendDigits()}:null);
 						break;
 					case 1:
 						((CacheRandomMixLauncher)cacheLauncher).addCachePutOperationMix(mix, getCache(), new RandomCustomerGenerator(new RandomAddressGenerator(new RandomAddressCategoryGenerator())), AppConfig.getInstance().getCacheLoaderKeyStart());
