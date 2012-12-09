@@ -45,6 +45,13 @@ If you want to create a test project for [Terracotta BigMemory or Ehcache](http:
 	</dependencies>
 	...
 
-- more doc to come...
-- sample client application to come as well...
+Quick start
+++++++++++++++++++++++++++++++++++++++++
 
+A sample application for [Terracotta BigMemory or Ehcache](http://terracotta.org/) testing has been created for quick execution.
+
+ - Navigate to <JPerfTester-ROOT>/SampleCacheClient/ folder
+ - Run maven package: mvn package
+ - Copy "dist/SampleCacheClient.tar.gz" to the location of your choice (optional) and extract it
+ - [optional] modify parameters in app.properties (i.e. number of threads to use, etc...)
+ - In the extracted location, execute script "run.sh"
