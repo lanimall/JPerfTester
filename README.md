@@ -16,9 +16,21 @@ The main advantages of this Java library are:
  - Extensibility of code + framework under test (easy to add new frameworks to test against)
  - Simplicity of build / install / run
  
-Build and Install the library using maven:
- 1. Navigate to JPerfTester root folder
- 2. Run: mvn install
+Quick start
+---------------------------------------------
+
+A sample application for [Terracotta BigMemory or Ehcache](http://terracotta.org/) testing has been created for quick execution.
+
+ - Navigate to JPerfTester root folder
+ - Run: mvn install
+ - Navigate to <JPerfTester-ROOT>/SampleCacheClient folder
+ - Copy "dist/SampleCacheClient.tar.gz" to the location of your choice (optional) and extract it
+ - [optional] modify parameters in app.properties (i.e. number of threads to use, etc...)
+ - In the extracted location, execute script "run.sh"
+
+
+Extend and Customize
+---------------------------------------------
  
 To refer to this library from another project, simply add the following in your maven pom.xml (make sure to use the right version number):
 
@@ -48,13 +60,3 @@ If you want to create a test project for [Terracotta BigMemory or Ehcache](http:
 	</dependencies>
 	...
 
-Quick start
----------------------------------------------
-
-A sample application for [Terracotta BigMemory or Ehcache](http://terracotta.org/) testing has been created for quick execution.
-
- - Navigate to <JPerfTester-ROOT>/SampleCacheClient/ folder
- - Run maven package: mvn package
- - Copy "dist/SampleCacheClient.tar.gz" to the location of your choice (optional) and extract it
- - [optional] modify parameters in app.properties (i.e. number of threads to use, etc...)
- - In the extracted location, execute script "run.sh"
