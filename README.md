@@ -1,4 +1,7 @@
 JPerfTester: A Simple Java Benchmark library
+=============================================
+
+Overview
 ---------------------------------------------
 
 This library is built as a modular facade to facilitate the execution of multi-threaded operations against various JAVA libraries and tools.
@@ -46,7 +49,7 @@ If you want to create a test project for [Terracotta BigMemory or Ehcache](http:
 	...
 
 Quick start
-++++++++++++++++++++++++++++++++++++++++
+---------------------------------------------
 
 A sample application for [Terracotta BigMemory or Ehcache](http://terracotta.org/) testing has been created for quick execution.
 
