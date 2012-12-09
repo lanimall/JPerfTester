@@ -67,11 +67,11 @@ public class CacheGetOperation extends AbstractCacheRunner<Long> {
 	}
 	
 	public static class CacheRandomGetOperationFactory extends CacheGetOperationFactory {
-		public CacheRandomGetOperationFactory(Cache cache, long numOperations, int nbRandomDigits) {
-			super(cache, numOperations, new RandomNumberGenerator(nbRandomDigits));
+		public CacheRandomGetOperationFactory(Cache cache, long numOperations, long keyMaxValue) {
+			super(cache, numOperations, new RandomNumberGenerator(keyMaxValue));
 		}
-		public CacheRandomGetOperationFactory(Cache cache, long numOperations, int nbRandomDigits, Integer[] randomPrependDigits, Integer[] randomAppendDigits) {
-			super(cache, numOperations, new RandomNumberGenerator(nbRandomDigits, randomPrependDigits, randomAppendDigits));
+		public CacheRandomGetOperationFactory(Cache cache, long numOperations, long keyMinValue, long keyMaxValue) {
+			super(cache, numOperations, new RandomNumberGenerator(keyMinValue, keyMinValue));
 		}
 	}
 }

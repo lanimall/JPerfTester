@@ -28,9 +28,8 @@ public class AppConfig {
 
 	private static final String CACHEPOUNDER_TX_NBOBJECTS = "cachepounder.txloader.numberofoperations";
 	private static final String CACHEPOUNDER_TX_NBTHREADS = "cachepounder.txloader.threads";
-	private static final String CACHEPOUNDER_TX_KEYGEN_RANDOM_DIGITS = "cachepounder.txloader.keygen.randomdigits";
-	private static final String CACHEPOUNDER_TX_KEYGEN_RANDOMPREPENDDIGITS = "cachepounder.txloader.keygen.randomdigits.prepend";
-	private static final String CACHEPOUNDER_TX_KEYGEN_RANDOMAPPENDDIGITS = "cachepounder.txloader.keygen.randomdigits.append";
+	private static final String CACHEPOUNDER_TX_KEYGEN_MINVALUE = "cachepounder.txloader.keygen.minvalue";
+	private static final String CACHEPOUNDER_TX_KEYGEN_MAXVALUE = "cachepounder.txloader.keygen.maxvalue";
 	private static final String CACHEPOUNDER_TX_DOPRELOAD = "cachepounder.txloader.preloadobjects";
 	private static final String CACHEPOUNDER_TX_DOWARMUP = "cachepounder.txloader.performwarmup";
 
@@ -55,9 +54,8 @@ public class AppConfig {
 	//transactions props
 	private final int cacheTxThreads;
 	private final long cacheTxNbOperations;
-	private final int cacheTxKeyRandomDigitLength;
-	private final int cacheTxKeyPrependDigits;
-	private final int cacheTxKeyAppendDigits;
+	private final int cacheTxKeyMinValue;
+	private final int cacheTxKeyMaxValue;
 	private final boolean cacheTxDoWarmup;
 	private final boolean cacheTxDoPreLoad;
 
@@ -78,9 +76,8 @@ public class AppConfig {
 
 		cacheTxThreads = propWrapper.getPropertyAsInt(CACHEPOUNDER_TX_NBTHREADS, 2);
 		cacheTxNbOperations = propWrapper.getPropertyAsLong(CACHEPOUNDER_TX_NBOBJECTS, 10000);
-		cacheTxKeyRandomDigitLength = propWrapper.getPropertyAsInt(CACHEPOUNDER_TX_KEYGEN_RANDOM_DIGITS, 4);
-		cacheTxKeyPrependDigits = propWrapper.getPropertyAsInt(CACHEPOUNDER_TX_KEYGEN_RANDOMPREPENDDIGITS, -1);
-		cacheTxKeyAppendDigits = propWrapper.getPropertyAsInt(CACHEPOUNDER_TX_KEYGEN_RANDOMAPPENDDIGITS, -1);
+		cacheTxKeyMinValue = propWrapper.getPropertyAsInt(CACHEPOUNDER_TX_KEYGEN_MINVALUE, 0);
+		cacheTxKeyMaxValue = propWrapper.getPropertyAsInt(CACHEPOUNDER_TX_KEYGEN_MAXVALUE, 10000);
 		cacheTxDoWarmup = propWrapper.getPropertyAsBoolean(CACHEPOUNDER_TX_DOWARMUP, true);
 		cacheTxDoPreLoad = propWrapper.getPropertyAsBoolean(CACHEPOUNDER_TX_DOPRELOAD, true);
 
@@ -99,14 +96,14 @@ public class AppConfig {
 			log.debug("*********** Cache Objects Fetcher Params *************");
 			log.debug("Number of Loader Threads: " + cacheFetcherThreads);
 			log.debug("Number of objects to fetch: " + cacheFetcherNbObjects);
-			log.debug("Key number ot start with: " + cacheFetcherKeyStart);
+			log.debug("Key number to start with: " + cacheFetcherKeyStart);
 			log.debug("Number of operations per thread: " + (cacheFetcherNbObjects/cacheFetcherThreads));
 
 			log.debug("*********** Cache Transaction Loader Params *************");
 			log.debug("Number of transaction Threads: " + cacheTxThreads);
 			log.debug("Number of transactions: " + cacheTxNbOperations);
 			log.debug("Number of operations per thread: " + (cacheTxNbOperations/cacheTxThreads));
-			log.debug("Key length for the transaction object fetch: " + cacheTxKeyRandomDigitLength);
+			log.debug("Key number between " + cacheTxKeyMinValue + " and " + cacheTxKeyMaxValue);
 			log.debug("Perform warmup of cache? " + cacheTxDoWarmup);
 			log.debug("Force reloading the cache with objects? " + cacheTxDoPreLoad);
 		}
@@ -160,16 +157,16 @@ public class AppConfig {
 		return cacheTxNbOperations;
 	}
 
-	public int getCacheTxKeyRandomDigitLength() {
-		return cacheTxKeyRandomDigitLength;
+	public long getCacheTxNbOperations() {
+		return cacheTxNbOperations;
 	}
 
-	public int getCacheTxKeyPrependDigits() {
-		return cacheTxKeyPrependDigits;
+	public int getCacheTxKeyMinValue() {
+		return cacheTxKeyMinValue;
 	}
 
-	public int getCacheTxKeyAppendDigits() {
-		return cacheTxKeyAppendDigits;
+	public int getCacheTxKeyMaxValue() {
+		return cacheTxKeyMaxValue;
 	}
 
 	public boolean isCacheTxDoWarmup() {

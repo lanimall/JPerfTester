@@ -10,8 +10,8 @@ public class RandomAddressCategoryGenerator extends RandomGenerator<AddressCateg
 	@Override
 	protected AddressCategory generateSafe() throws Exception {
 		AddressCategory addressCategory = new AddressCategory();
-		addressCategory.setType(AddressCategory.valuesCategoryType[randomUtil.generateRandom(AddressCategory.valuesCategoryType.length)]);
-		addressCategory.setSubType(AddressCategory.valuesCategorySubType[randomUtil.generateRandom(AddressCategory.valuesCategorySubType.length)]);
+		addressCategory.setType(AddressCategory.valuesCategoryType[randomUtil.generateRandomInt(AddressCategory.valuesCategoryType.length)]);
+		addressCategory.setSubType(AddressCategory.valuesCategorySubType[randomUtil.generateRandomInt(AddressCategory.valuesCategorySubType.length)]);
 		return addressCategory;
 	}
 }

@@ -122,7 +122,7 @@ public class RamdomMixRunner extends BaseRunner {
 			resetCounterOperationMix();
 
 		//generate random number
-		int opsIndex = randomUtil.generateRandom(opsIterationsCountDown.size());
+		int opsIndex = randomUtil.generateRandomInt(opsIterationsCountDown.size());
 
 		//find the operation pair in the opsIterationsCountDown list
 		OperationsCounter opCounter = opsIterationsCountDown.get(opsIndex);

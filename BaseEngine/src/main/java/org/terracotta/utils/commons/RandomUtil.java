@@ -20,6 +20,10 @@ public class RandomUtil {
 		hdrRndm.setSeed(System.currentTimeMillis());
 	}
 
+	public String generateRandomUUID(){
+		return UUID.randomUUID().toString();
+	}
+
 	//convert the int value into a "xxx-xxx-xxxx" string
 	public String generateRandomSSN() throws Exception{
 		return generateRandomNumericString(3)+"-"+generateRandomNumericString(2)+"-"+generateRandomNumericString(4);
@@ -36,15 +40,15 @@ public class RandomUtil {
 	}
 
 	public boolean generateRandomBoolean(int ratioTrueFalse){
-		return generateRandom(ratioTrueFalse) == 0;
+		return generateRandomInt(ratioTrueFalse) == 0;
 	}
 
-	public int generateRandom(int length){
+	public int generateRandomInt(int length){
 		int value = hdrRndm.nextInt(length);
 		return value;
 	}
 
-	public int generateRandom(int minValue, int maxValue, boolean maxInclusive) throws Exception{
+	public int generateRandomInt(int minValue, int maxValue, boolean maxInclusive) throws Exception{
 		if(maxValue < minValue)
 			throw new Exception("max value should be higher than min value");
 
@@ -57,15 +61,25 @@ public class RandomUtil {
 		return minValue + rdmValue;
 	}
 
-	public String generateRandomUUID(){
-		return UUID.randomUUID().toString();
-	}
-
 	public long generateRandomLong(){
 		long value = hdrRndm.nextLong();
 		return value;
 	}
 
+	public long generateRandomLong(long to) {
+		return generateRandomLong(0, to);
+	}
+	
+	public long generateRandomLong(long from, long to) {
+		BigDecimal decFrom = new BigDecimal(from);
+		BigDecimal decTo = new BigDecimal(to);
+
+		BigDecimal range = decTo.subtract(decFrom);
+		BigDecimal factorWithinRange = range.multiply(new BigDecimal(Math.random()));
+
+		return decFrom.add(factorWithinRange).longValue();
+	}
+	
 	public Double generateRandomDouble(){
 		Double value = hdrRndm.nextDouble();
 		return value;
@@ -86,33 +100,6 @@ public class RandomUtil {
 		return new BigDecimal(sNums);
 	}
 
-	public Long generateRandomNumeric(Integer length, Integer[] prependDigits, Integer[] appendDigits)throws Exception{
-		if(length == 0){
-			return null;
-		}
-		String sNums = generateRandomNumericString(length);
-
-		if(prependDigits != null && prependDigits.length > 0)
-			sNums = getRandomObjectFromArray(prependDigits) + sNums;
-
-		if(appendDigits != null && appendDigits.length > 0)
-			sNums =  sNums + getRandomObjectFromArray(appendDigits);
-
-		return new Long(sNums);
-	}
-	
-	public Long generateRandomNumeric(int length, int prependDigits, int appendDigits)throws Exception{
-		return generateRandomNumeric(length, (prependDigits > -1)?new Integer[]{prependDigits}:null, (appendDigits > -1)?new Integer[]{appendDigits}:null);
-	}
-
-	public Long generateRandomNumeric(int length, int prependDigits) throws Exception{
-		return generateRandomNumeric(length, prependDigits, -1);
-	}
-
-	public Long generateRandomNumeric(int length) throws Exception{
-		return generateRandomNumeric(length, -1, -1);
-	}
-
 	public String generateRandomAlphaString(int StringLength)throws Exception{
 		if(StringLength == 0){
 			return null;
@@ -121,7 +108,7 @@ public class RandomUtil {
 		String[] vals = {"a","b","c","d","e","f","g","h","i","j","k","l","m",
 				"n","o","p","q","r","s","t","u","v","w","x","y","z"};
 		for(int lp = 0;lp < StringLength; lp++){
-			returnVal.append(vals[generateRandom(vals.length)]);
+			returnVal.append(vals[generateRandomInt(vals.length)]);
 		}
 		return returnVal.toString();
 	}
@@ -133,7 +120,7 @@ public class RandomUtil {
 		String[] vals = {"a","b","c","d","e","f","g","h","i","j",
 				"k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 		for(int lp = 0;lp < StringLength; lp++){
-			returnVal.append(vals[generateRandom(vals.length)]);
+			returnVal.append(vals[generateRandomInt(vals.length)]);
 		}
 		return returnVal.toString();
 	}
@@ -144,38 +131,15 @@ public class RandomUtil {
 		StringBuffer returnVal = new StringBuffer();
 		String[] vals = {"0","1","2","3","4","5","6","7","8","9"};
 		for(int lp = 0;lp < StringLength; lp++){
-			returnVal.append(vals[generateRandom(vals.length)]);
+			returnVal.append(vals[generateRandomInt(vals.length)]);
 		}
 		return returnVal.toString();
 	}
 
-	public Integer generateRandomNumbers(int length, int prependDigits, int appendDigits) throws Exception{
-		if(length == 0){
-			return null;
-		}
-		String sNums = generateRandomNumericString(length);
-
-		if(prependDigits > -1)
-			sNums = prependDigits + sNums;
-
-		if(appendDigits > -1)
-			sNums =  sNums + appendDigits;
-
-		return new Integer(sNums);
-	}
-
-	public Integer generateRandomNumbers(int length, int prependDigits) throws Exception{
-		return generateRandomNumbers(length, prependDigits, -1);
-	}
-
-	public Integer generateRandomNumbers(int length)throws Exception{
-		return generateRandomNumbers(length, -1, -1);
-	}
-
-	public int[] generateRandomIntArray(int arrayLength, int randomDigitLength) throws Exception{
+	public int[] generateRandomIntArray(int arrayLength, int from, int to) throws Exception{
 		int[] array = new int[arrayLength];
 		for(int i=0;i<arrayLength; i++){
-			array[i] = generateRandomNumbers(randomDigitLength);
+			array[i] = generateRandomInt(from, to, true);
 		}
 
 		return array;
@@ -190,10 +154,10 @@ public class RandomUtil {
 		return array;
 	}
 	
-	public long[] generateRandomLongArray(int arrayLength, int randomDigitLength) throws Exception{
+	public long[] generateRandomLongArray(int arrayLength, long from, long to) throws Exception{
 		long[] array = new long[arrayLength];
 		for(int i=0;i<arrayLength; i++){
-			array[i] = generateRandomNumeric(randomDigitLength);
+			array[i] = generateRandomLong(from, to);
 		}
 
 		return array;
@@ -214,7 +178,7 @@ public class RandomUtil {
 		} else if(objList.size() == 1){
 			return objList.get(0);
 		}
-		int lGetObjIndex = generateRandom(objList.size());
+		int lGetObjIndex = generateRandomInt(objList.size());
 		return objList.get(lGetObjIndex);
 	}
 
@@ -224,7 +188,7 @@ public class RandomUtil {
 		}else if(objArray.length == 1){
 			return objArray[0];
 		}
-		int lGetObjIndex = generateRandom(objArray.length);
+		int lGetObjIndex = generateRandomInt(objArray.length);
 		return objArray[lGetObjIndex];
 	}
 
@@ -233,7 +197,7 @@ public class RandomUtil {
 	 * @param length the total length of random characters you wish returned
 	 * @return <b>string</b> a randomly generated string of alphanumeric characters only
 	 */
-	public String getAlphaNumericRandom(int length) throws Exception{
+	public String generateAlphaNumericRandom(int length) throws Exception{
 		Random generator = new Random();
 		String[] mapOfCharacters = getCharacterMap();
 		StringBuffer sRandomString = new StringBuffer();
@@ -247,15 +211,15 @@ public class RandomUtil {
 		return sRandomString.toString();
 	}
 
-	public Date getRandomDate() {
-		return getRandomDateBetween(getRandomDate(1900), Calendar.getInstance().getTime());
+	public Date generateRandomDate() {
+		return generateRandomDateBetween(generateRandomDate(1900), Calendar.getInstance().getTime());
 	}
 
-	public Date getRandomDate(int year) {
-		return getRandomDate(year, null, true);
+	public Date generateRandomDate(int year) {
+		return generateRandomDate(year, null, true);
 	}
 
-	public Date getRandomDate(int year, Date cutOff, boolean afterCutOff) {
+	public Date generateRandomDate(int year, Date cutOff, boolean afterCutOff) {
 		Calendar cal = Calendar.getInstance();
 		cal.set(year, 0, 1);
 
@@ -264,31 +228,26 @@ public class RandomUtil {
 
 		if(cutOff != null){
 			if(afterCutOff){
-				return getRandomDateBetween(cutOff, cal2.getTime());
+				return generateRandomDateBetween(cutOff, cal2.getTime());
 			}
 			else{
-				return getRandomDateBetween(cal.getTime(), cutOff);
+				return generateRandomDateBetween(cal.getTime(), cutOff);
 			}
 		}
 
-		return getRandomDateBetween(cal.getTime(), cal2.getTime());
+		return generateRandomDateBetween(cal.getTime(), cal2.getTime());
 	}
 
-	public Date getRandomDateBetween(Date from, Date to) {
+	public Date generateRandomDateBetween(Date from, Date to) {
 		Calendar calFrom = Calendar.getInstance();
 		calFrom.setTime(from);
-		BigDecimal decFrom = new BigDecimal(calFrom.getTimeInMillis());
-
+		
 		Calendar calTo = Calendar.getInstance();
 		calTo.setTime(to);
-		BigDecimal decTo = new BigDecimal(calTo.getTimeInMillis());
-
-		BigDecimal range = decTo.subtract(decFrom);
-		BigDecimal factorWithinRange = range.multiply(new BigDecimal(Math.random()));
-
-		return new Date((decFrom.add(factorWithinRange)).longValue());
+		
+		return new Date(generateRandomLong(calFrom.getTimeInMillis(), calTo.getTimeInMillis()));
 	}
-
+	
 	private String[] getCharacterMap() throws Exception{
 		String[] universeValues = new String[62];
 		int asciiAlpha = 65; // The start of the alpha ascii character set

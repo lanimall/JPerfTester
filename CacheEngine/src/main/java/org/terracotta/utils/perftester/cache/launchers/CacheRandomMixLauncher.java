@@ -31,11 +31,11 @@ public final class CacheRandomMixLauncher extends BaseCacheLauncher {
 		((RamdomMixRunnerFactory)getRunnerFactory()).addOperationMix(new CachePutOperationFactory(cache, 1, valueGenerator, keyStart).create(), mix);
 	}
 	
-	public void addCacheGetOperationMix(int mix, Cache cache, int nbRandomDigits, Integer[] randomPrependDigits, Integer[] randomAppendDigits){
+	public void addCacheGetOperationMix(int mix, Cache cache, long keyMinValue, long keyMaxValue){
 		if((totalMix+=mix) > 100)
 			throw new IllegalArgumentException("The total mix is higher than 100%. Please check the mix values.");
 		
-		((RamdomMixRunnerFactory)getRunnerFactory()).addOperationMix(new CacheRandomGetOperationFactory(cache, 1, nbRandomDigits, randomPrependDigits, randomAppendDigits).create(), mix);
+		((RamdomMixRunnerFactory)getRunnerFactory()).addOperationMix(new CacheRandomGetOperationFactory(cache, 1, keyMinValue, keyMaxValue).create(), mix);
 	}
 	
 	public void addCacheSearchOperationMix(int mix, Cache cache, Query[] queries){

@@ -23,7 +23,7 @@ public class RandomCustomerGenerator extends RandomGenerator<Customer> {
 		customer.setFirstName(randomUtil.getRandomObjectFromList(firstNameList));
 		customer.setLastName(randomUtil.getRandomObjectFromList(lastNameList));
 		customer.setMiddleName(randomUtil.getRandomObjectFromList(firstNameList));
-		customer.setDob(randomUtil.getRandomDate());
+		customer.setDob(randomUtil.generateRandomDate());
 		customer.setOccupation(randomUtil.generateRandomText(30));
 		
 		if(null != randomAddressGenerator)

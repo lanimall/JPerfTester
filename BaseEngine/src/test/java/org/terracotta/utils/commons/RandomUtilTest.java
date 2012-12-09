@@ -8,7 +8,6 @@ import java.util.Date;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.terracotta.utils.commons.RandomUtil;
 
 /**
  * @author Fabien Sanglier
@@ -16,7 +15,7 @@ import org.terracotta.utils.commons.RandomUtil;
  */
 public class RandomUtilTest {
 	private RandomUtil randomUtil = null;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		randomUtil = new RandomUtil();
@@ -137,34 +136,107 @@ public class RandomUtilTest {
 	}
 
 	@Test
-	public void testGetRandomDateInt() {
-		int year = 2002;
-		Date date = randomUtil.getRandomDate(year);
+	public void testGenerateRandomLongFromTo() {
+		long from = 123456;
+		long to = 2345000;
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-
-		assertTrue(
-				year == cal.get(Calendar.YEAR)
-		);
+		int i = 0;
+		while(i < 1000000){
+			long rdm = randomUtil.generateRandomLong(from, to);
+			assertTrue(
+					rdm <= to && rdm >= from
+			);
+			i++;
+		}
+		
+		//check the opposite stays true
+		long fromFalse = from - 100000;
+		long toFalse = from-1;
+		i = 0;
+		while(i < 1000000){
+			long rdm = randomUtil.generateRandomLong(fromFalse, toFalse);
+			assertTrue(
+					!(rdm <= to && rdm >= from)
+			);
+			i++;
+		}
 	}
 
 	@Test
-	public void testGetRandomDateBetween() {
-		Calendar cal = Calendar.getInstance();
-		cal.set(1900, 1, 1);
+	public void testGenerateRandomDateYear() {
+		int year = 2002;
 
-		Calendar cal2 = Calendar.getInstance();
-		cal2.set(2012, 1, 1);
+		int i = 0;
+		while(i < 1000000){
+			Date date = randomUtil.generateRandomDate(year);
 
-		Date date = randomUtil.getRandomDateBetween(cal.getTime(), cal2.getTime());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
 
-		Calendar cal3 = Calendar.getInstance();
-		cal3.setTime(date);
+			assertTrue(
+					year == cal.get(Calendar.YEAR)
+			);
+			i++;
+		}
+		
+		//check the opposite stays true
+		int yearFalse = year - 5;
+		i = 0;
+		while(i < 1000000){
+			Date date = randomUtil.generateRandomDate(yearFalse);
 
-		assertTrue(
-				cal3.before(cal2) && cal3.after(cal)
-		);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+
+			assertTrue(
+					year != cal.get(Calendar.YEAR)
+			);
+			i++;
+		}
+	}
+
+	@Test
+	public void testGenerateRandomDateBetween() {
+		Calendar calFrom = Calendar.getInstance();
+		calFrom.set(1900, 1, 1);
+
+		Calendar calTo = Calendar.getInstance();
+		calTo.set(2012, 1, 1);
+
+		int i = 0;
+		while(i < 1000000){
+			Date date = randomUtil.generateRandomDateBetween(calFrom.getTime(), calTo.getTime());
+
+			Calendar calRdm = Calendar.getInstance();
+			calRdm.setTime(date);
+
+			assertTrue(
+					calRdm.before(calTo) && calRdm.after(calFrom)
+			);
+			i++;
+		}
+		
+		//check the opposite stays true
+		Calendar calFromFalse = Calendar.getInstance();
+		calFromFalse.setTime(calFrom.getTime());
+		calFromFalse.add(Calendar.YEAR, -50);
+
+		Calendar calToFalse = Calendar.getInstance();
+		calToFalse.setTime(calFrom.getTime());
+		calToFalse.add(Calendar.YEAR, -1);
+		
+		i = 0;
+		while(i < 1000000){
+			Date dateRdm = randomUtil.generateRandomDateBetween(calFromFalse.getTime(), calToFalse.getTime());
+
+			Calendar calRdm = Calendar.getInstance();
+			calRdm.setTime(dateRdm);
+
+			assertTrue(
+					!(calRdm.before(calTo) && calRdm.after(calFrom))
+			);
+			i++;
+		}
 	}
 
 }

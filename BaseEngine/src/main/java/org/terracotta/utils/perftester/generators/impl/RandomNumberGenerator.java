@@ -10,23 +10,21 @@ import org.slf4j.LoggerFactory;
 public class RandomNumberGenerator extends RandomGenerator<Long> {
 	private static Logger log = LoggerFactory.getLogger(RandomNumberGenerator.class);
 	
-	private Integer nbDigits;
-	private Integer[] prependDigits;
-	private Integer[] appendDigits;
+	private long min;
+	private long max;
 	
-	public RandomNumberGenerator(Integer nbDigits) {
-		this(nbDigits,null,null);
+	public RandomNumberGenerator(long max) {
+		this(0, max);
 	}
 	
-	public RandomNumberGenerator(Integer nbDigits, Integer[] prependDigits, Integer[] appendDigits) {
+	public RandomNumberGenerator(long min, long max) {
 		super();
-		this.nbDigits = nbDigits;
-		this.prependDigits = prependDigits;
-		this.appendDigits = appendDigits;
+		this.min = min;
+		this.max = max;
 	}
 
 	@Override
 	protected Long generateSafe() throws Exception {
-		return randomUtil.generateRandomNumeric(nbDigits, prependDigits, appendDigits);
+		return randomUtil.generateRandomLong(min, max);
 	}
 }
