@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false"
+	monitoring="autodetect" dynamicConfig="true" name="CacheMgrUnderTest">
+	
+	<diskStore path="java.io.tmpdir" />
+
+	<terracottaConfig url="localhost:9510" />
+                
+	<defaultCache eternal="false" maxElementsInMemory="100000"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" maxElementsOnDisk="10000000"
+		statistics="true" />
+
+	<cache name="Customers" 
+		maxEntriesLocalHeap="10000"
+		overflowToOffHeap="true" maxBytesLocalOffHeap="256m"
+		eternal="true" maxElementsOnDisk="1000000"
+		statistics="true">
+		
+		<searchable keys="false" values="false">
+		  <searchAttribute name="firstName" expression="value.firstName.toLowerCase()"/>
+		  <searchAttribute name="lastName" expression="value.lastName.toLowerCase()"/>
+		  <searchAttribute name="age" expression="value.age"/>
+		  <searchAttribute name="dob" expression="value.dob"/>
+          <searchAttribute name="city" expression="value.address.city"/>
+          <searchAttribute name="state" expression="value.address.state"/>
+          <searchAttribute name="zip" expression="value.address.zip"/>
+          <searchAttribute name="country" expression="value.address.country"/>
+        </searchable>
+        
+		<terracotta compressionEnabled="true">
+			<nonstop enabled="true" immediateTimeout="false"
+				timeoutMillis="5000">
+				<timeoutBehavior type="localReads" />
+			</nonstop>
+		</terracotta>
+	</cache>
+</ehcache>
