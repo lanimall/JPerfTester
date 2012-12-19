@@ -12,6 +12,6 @@
 	<modules>
 		<module>BaseEngine</module>
 		<module>CacheEngine</module>
-		<module>SampleCacheClient</module>
+		<module>CacheTesterClient</module>
 	</modules>
 </project>

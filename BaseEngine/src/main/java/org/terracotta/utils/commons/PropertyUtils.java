@@ -8,11 +8,16 @@ import java.util.Properties;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Fabien Sanglier
  *
  */
 public class PropertyUtils {
+	private static Logger log = LoggerFactory.getLogger(PropertyUtils.class);
+	
 	private Properties properties;	
 
 	public PropertyUtils(String propLocation) throws Exception {
@@ -20,12 +25,17 @@ public class PropertyUtils {
 	}
 
 	public String getProperty(String key){
+		if(log.isDebugEnabled())
+			log.debug("Getting key:" + key);
+		
 		String val = System.getProperty(key);
 		if (val == null)
 			val = properties.getProperty(key);
-		if (val == null)
-			return null;
-		return val.trim();
+		
+		if(log.isDebugEnabled())
+			log.debug("value:" + val);
+		
+		return (val == null)?null:val.trim();
 	}
 
 	public Boolean getPropertyAsBoolean(String key){

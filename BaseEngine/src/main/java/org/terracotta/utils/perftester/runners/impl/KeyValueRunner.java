@@ -19,15 +19,15 @@ import org.terracotta.utils.perftester.runners.Runner;
 public abstract class KeyValueRunner<T> extends BaseRunner implements Runner {
 	private static Logger log = LoggerFactory.getLogger(KeyValueRunner.class);
 
-	protected final ObjectGenerator<T> objGenerator;
+	protected final ObjectGenerator<T> keyGenerator;
 	
-	protected KeyValueRunner(Condition termination, ObjectGenerator<T> objGenerator) {
+	protected KeyValueRunner(Condition termination, ObjectGenerator<T> keyGenerator) {
 		super(termination);
 		
 		if(termination == null)
 			throw new IllegalArgumentException("Termination object may not be null");
 		
-		this.objGenerator = objGenerator;
+		this.keyGenerator = keyGenerator;
 	}
 	
 	public abstract void doUnitOfWork(T arg);
@@ -35,17 +35,17 @@ public abstract class KeyValueRunner<T> extends BaseRunner implements Runner {
 	@Override
 	protected void execute() {
 		long iterationStartTime;
-		T arg = null;
+		T key = null;
 		
 		//avoid performing null check at every iteration
-		if(null != objGenerator){
+		if(null != keyGenerator){
 			do {
 				try {
 					//perform the object generation outside the loop timing to avoid timing issues if object generation is slow
-					arg = objGenerator.generate();
+					key = keyGenerator.generate();
 					
 					iterationStartTime = System.currentTimeMillis();
-					doUnitOfWork(arg);
+					doUnitOfWork(key);
 					stats.add(System.currentTimeMillis() - iterationStartTime);
 				} catch (Exception e) {
 					log.error("Error during execution of unit of work. will not count this operation in the timing stats.", e);

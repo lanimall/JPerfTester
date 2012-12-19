@@ -9,6 +9,8 @@ import org.terracotta.utils.perftester.cache.runners.CacheGetOperation.CacheRand
 import org.terracotta.utils.perftester.cache.runners.CachePutOperation.CachePutOperationFactory;
 import org.terracotta.utils.perftester.cache.runners.CacheSearchOperation.CacheSearchOperationFactory;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
+import org.terracotta.utils.perftester.generators.ObjectGeneratorFactory;
+import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
 import org.terracotta.utils.perftester.runners.impl.RamdomMixRunner.RamdomMixRunnerFactory;
 
 /**
@@ -24,11 +26,11 @@ public final class CacheRandomMixLauncher extends BaseCacheLauncher {
 		setCache(cache);
 	}
 	
-	public void addCachePutOperationMix(int mix, Cache cache, ObjectGenerator valueGenerator, long keyStart){
+	public void addCachePutOperationMix(int mix, Cache cache, ObjectGeneratorFactory valueGeneratorFactory, long keyStart){
 		if((totalMix+=mix) > 100)
 			throw new IllegalArgumentException("The total mix is higher than 100%. Please check the mix values.");
 		
-		((RamdomMixRunnerFactory)getRunnerFactory()).addOperationMix(new CachePutOperationFactory(cache, 1, valueGenerator, keyStart).create(), mix);
+		((RamdomMixRunnerFactory)getRunnerFactory()).addOperationMix(new CachePutOperationFactory(cache, 1, new SequentialGenerator(keyStart), (null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null).create(), mix);
 	}
 	
 	public void addCacheGetOperationMix(int mix, Cache cache, long keyMinValue, long keyMaxValue){

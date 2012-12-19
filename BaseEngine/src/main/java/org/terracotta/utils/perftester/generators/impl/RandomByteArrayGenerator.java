@@ -14,6 +14,10 @@ public class RandomByteArrayGenerator extends RandomGenerator<Byte[]> {
 	
 	public RandomByteArrayGenerator(int size) {
 		super();
+		
+		if(log.isDebugEnabled())
+			log.debug("Creating a RandomByteArrayGenerator with size:" + size);
+		
 		this.size = size;
 	}
 

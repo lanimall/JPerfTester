@@ -18,9 +18,12 @@ public class CachePutOperation extends AbstractCacheRunner<Long> {
 	private static Logger log = LoggerFactory.getLogger(CachePutOperation.class);
 	private static final boolean isDebug = log.isDebugEnabled();
 	private final ObjectGenerator valueGenerator;
-	
+
 	public CachePutOperation(Cache cache, Condition termination, ObjectGenerator<Long> keyGenerator, ObjectGenerator valueGenerator) {
 		super(cache, termination, keyGenerator);
+		if(null == valueGenerator)
+			throw new IllegalArgumentException("The valueGenerator object may not be null...");
+
 		this.valueGenerator = valueGenerator;
 	}
 
@@ -28,34 +31,36 @@ public class CachePutOperation extends AbstractCacheRunner<Long> {
 	public String getName() {
 		return "Cache Loader Operation";
 	}
-	
+
 	@Override
 	public void doUnitOfWork(Long key) {
 		if(isDebug)
 			log.debug("Putting cache entry with key:" + key);
-		
-		cache.put(new Element(key, valueGenerator.generate()));
+		if(null != key)
+			cache.put(new Element(key, valueGenerator.generate()));
+		else
+			log.warn("key is null...cannot add a new cache entry");
 	}
-	
+
 	public static class CachePutOperationFactory extends CacheRunnerFactory {
-		private final long keyStart;
 		private final ObjectGenerator valueGenerator;
-		
+
 		//NOTE: With this type of factory, we must make sure that the sequential generator is not being recreated each time create() is called...
 		//that way multiple thread can all work against the same thread-safe generator
 		private final ObjectGenerator keyGen;
-		
+
 		public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator) {
-			this(cache, numOperations, valueGenerator, 0);
+			this(cache, numOperations, null, valueGenerator);
 		}
-		
-		public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator, long keyStart) {
+
+		public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator keyGenerator, ObjectGenerator valueGenerator) {
 			super(cache, numOperations);
-			this.keyStart = keyStart;
 			this.valueGenerator = valueGenerator;
-			
-			//see note above
-			this.keyGen = new SequentialGenerator(keyStart);
+
+			if(null == keyGenerator)
+				this.keyGen = new SequentialGenerator(0);
+			else
+				this.keyGen = keyGenerator;
 		}
 
 		@Override

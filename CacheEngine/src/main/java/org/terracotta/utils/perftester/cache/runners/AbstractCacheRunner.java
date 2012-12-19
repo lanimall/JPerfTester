@@ -16,8 +16,8 @@ public abstract class AbstractCacheRunner<T> extends KeyValueRunner<T> {
 	private static final Logger log = LoggerFactory.getLogger(AbstractCacheRunner.class);
 	protected final Cache cache;
 	
-	protected AbstractCacheRunner(Cache cache, Condition termination, ObjectGenerator<T> generator) {
-		super(termination,generator);
+	protected AbstractCacheRunner(Cache cache, Condition termination, ObjectGenerator<T> keyGenerator) {
+		super(termination,keyGenerator);
 		
 		if(cache == null)
 			throw new IllegalArgumentException("Cache object may not be null");

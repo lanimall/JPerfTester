@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.utils.perftester.cache.runners.CachePutOperation.CachePutOperationFactory;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
+import org.terracotta.utils.perftester.generators.ObjectGeneratorFactory;
 
 /**
  * @author Fabien Sanglier
@@ -16,8 +17,8 @@ public class CachePutLauncher extends BaseCacheLauncher {
 	private final boolean bulkLoadEnabled;
 	private final boolean removeAllEntriesFirst;
 
-	public CachePutLauncher(Cache cache, int numThreads, long numOperations, ObjectGenerator valueGenerator, long keyStart, boolean bulkLoadEnabled, boolean removeAllFirst) {
-		super(numThreads, new CachePutOperationFactory(cache, numOperations/numThreads, valueGenerator, keyStart));
+	public CachePutLauncher(Cache cache, int numThreads, long numOperations, ObjectGeneratorFactory keyGeneratorFactory, ObjectGeneratorFactory valueGeneratorFactory, long keyStart, boolean bulkLoadEnabled, boolean removeAllFirst) {
+		super(numThreads, new CachePutOperationFactory(cache, numOperations/numThreads, (null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null, (null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null));
 
 		this.bulkLoadEnabled = bulkLoadEnabled;
 		this.removeAllEntriesFirst = removeAllFirst;
@@ -26,7 +27,9 @@ public class CachePutLauncher extends BaseCacheLauncher {
 		System.out.println("Params:");
 		System.out.println("Number of Loader Threads: " + numThreads);
 		System.out.println("Number of objects to load: " + numOperations);
-		System.out.println("Key number ot start with: " + keyStart);
+		System.out.println("Key Generator: " + numOperations);
+		System.out.println("Value Generator: " + numOperations);
+		System.out.println("Key number to start with: " + keyStart);
 		System.out.println("Enable Bulk Load: " + bulkLoadEnabled);
 		System.out.println("Remove all before reloading: " + removeAllFirst);
 		System.out.println("Number of operations per thread: " + (numOperations/numThreads));
