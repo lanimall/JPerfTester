@@ -36,7 +36,7 @@
 			<artifactId>jperftester-cacheengine</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -45,7 +45,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>SampleCacheClient</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -126,13 +125,12 @@
 										<include name="*.properties" />
 									</fileset>
 								</copy>
-								
-								<tar
-									destfile="${project.build.directory}/../dist/${project.build.finalName}.tar"
-									basedir="${project.build.directory}/preparedist" />
-								<gzip
-									destfile="${project.build.directory}/../dist/${project.build.finalName}.tar.gz"
-									src="${project.build.directory}/../dist/${project.build.finalName}.tar" />
+
+								<tar compression="gzip" destfile="${project.build.directory}/../dist/${project.build.finalName}.tar.gz">
+									<tarfileset dir="${project.build.directory}/preparedist">
+										<include name="*/**" />
+									</tarfileset>
+								</tar>
 							</target>
 						</configuration>
 						<goals>

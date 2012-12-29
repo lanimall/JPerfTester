@@ -36,7 +36,7 @@ public class CacheUtils {
 	public static CacheManager getCacheManager(){
 		if(null != System.getProperty(ENV_CACHE_CONFIGPATH)){
 			log.info("Loading Cache manager from " + System.getProperty(ENV_CACHE_CONFIGPATH));
-			return CacheManager.newInstance(System.getProperty(ENV_CACHE_CONFIGPATH));
+			return CacheManager.create(System.getProperty(ENV_CACHE_CONFIGPATH));
 		}
 		else{
 			log.info("Loading Cache manager from default classpath");

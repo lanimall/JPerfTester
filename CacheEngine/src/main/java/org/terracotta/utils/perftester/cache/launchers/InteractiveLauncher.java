@@ -46,7 +46,7 @@ public class InteractiveLauncher {
 			System.exit(1);
 		}
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		InteractiveLauncher launcher = new InteractiveLauncher(GlobalConfigSingleton.getInstance().getCacheName());
 
@@ -59,7 +59,7 @@ public class InteractiveLauncher {
 		System.out.println("Completed");
 		System.exit(0);
 	}
-	
+
 	public Cache getCache() {
 		return cache;
 	}
@@ -79,10 +79,10 @@ public class InteractiveLauncher {
 		System.out.println("What do you want to do now?");
 		System.out.println(LAUNCH_INPUT_FULLTEST1 + " - Start Full Sequence 1 (Load, Warmup, Random Gets)");
 		System.out.println(LAUNCH_INPUT_FULLTEST2 + " - Start Full Sequence 2 (Load, Warmup, Random Mix)");
-		System.out.println(LAUNCH_INPUT_BULKLOAD + " - Start BulkLoading Only");
-		System.out.println(LAUNCH_INPUT_WARMUP + " - Start Warmup Only");
-		System.out.println(LAUNCH_INPUT_RDM_GETS + " - Start Random Gets Only");
-		System.out.println(LAUNCH_INPUT_RDMMIX + " - Start Random Mix - 3 Params: [% Gets] [% Puts] [% Search] (default: 60 25 15)");
+		System.out.println(LAUNCH_INPUT_BULKLOAD + " - Start Cache Object Loading");
+		System.out.println(LAUNCH_INPUT_WARMUP + " - Start Cache Warmup");
+		System.out.println(LAUNCH_INPUT_RDM_GETS + " - Start Cache Random Gets");
+		System.out.println(LAUNCH_INPUT_RDMMIX + " - Start Cache Random Mix - 3 Params: [% Gets] [% Puts] [% Search] (default: 60 25 15)");
 		System.out.println(LAUNCH_INPUT_QUIT + " - Quit");
 	}
 
@@ -138,9 +138,12 @@ public class InteractiveLauncher {
 					getCache(),
 					GlobalConfigSingleton.getInstance().getCacheSteadyStateThreads(), 
 					GlobalConfigSingleton.getInstance().getCacheSteadyStateNbOperations());
-
+			
 			if(null == args){
-				args = new String[] {"60", "25", "15"};
+				if(getCache().isSearchable())
+					args = new String[] {"60", "25", "15"};
+				else
+					args = new String[] {"70", "30"};
 			}
 
 			for(int i=0; i<args.length;i++){
@@ -243,7 +246,7 @@ public class InteractiveLauncher {
 		// InputStreamReader(System.in));
 		// return br.readLine();
 	}
-	
+
 	protected ObjectGeneratorFactory getObjectGeneratorFactory(String factoryClass){
 		ObjectGeneratorFactory objGenFactory = null;
 		log.info("Trying to instanciate the ObjectGeneratorFactory defined by:" + factoryClass);

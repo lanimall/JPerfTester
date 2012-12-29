@@ -9,6 +9,7 @@
 bin/
 target/
 out/
+dist/
 
 # Packages #
 ############
