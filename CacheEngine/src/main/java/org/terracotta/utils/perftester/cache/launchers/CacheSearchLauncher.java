@@ -14,7 +14,7 @@ import org.terracotta.utils.perftester.cache.runners.CacheSearchOperation.CacheS
 public class CacheSearchLauncher extends BaseCacheLauncher {
 	private static Logger log = LoggerFactory.getLogger(CacheSearchLauncher.class);
 	
-	public CacheSearchLauncher(Cache cache, int numThreads, long numOperations,Query[] queries) {
+	public CacheSearchLauncher(Cache cache, int numThreads, long numOperations, Query[] queries) {
 		super(numThreads, new CacheSearchOperationFactory(cache, numOperations/numThreads,queries));
 	}
 }

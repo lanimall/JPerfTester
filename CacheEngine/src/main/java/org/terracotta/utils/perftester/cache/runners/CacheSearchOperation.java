@@ -17,9 +17,10 @@ import org.terracotta.utils.perftester.generators.ObjectGenerator;
  * @author Fabien Sanglier
  * 
  */
-public class CacheSearchOperation extends AbstractCacheRunner<Query> {
+public class CacheSearchOperation extends AbstractCacheKeyRunner<Query> {
 	private static Logger log = LoggerFactory.getLogger(CacheSearchOperation.class);
 	private static final boolean isDebug = log.isDebugEnabled();
+	private static final boolean isTrace = log.isTraceEnabled();
 	
 	public CacheSearchOperation(Cache cache, Condition termination, ObjectGenerator<Query> keyGenerator) {
 		super(cache, termination, keyGenerator);
@@ -37,15 +38,17 @@ public class CacheSearchOperation extends AbstractCacheRunner<Query> {
 			return;
 		}
 			
-		if(isDebug)
-			log.debug("Search cache with query:" + query);
-		
 		Results results = query.execute();
 		if(isDebug){
-			log.debug("==========Results Details=============");
+			log.debug("Search cache with query:" + query.toString());
+			log.debug("Search result size:" + results.size());
+		}
+		
+		if(isTrace){
+			log.trace("==========Results Details=============");
 			for (Result result : results.all()) {
 				Element entry = cache.get(result.getKey());
-				log.debug("Entry " + entry.getKey() + " found is " + entry.getValue());
+				log.trace("Entry " + entry.getKey() + " found is " + entry.getValue());
 			}
 		}
 		results.discard();

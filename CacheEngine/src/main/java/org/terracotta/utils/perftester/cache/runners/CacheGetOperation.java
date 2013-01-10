@@ -15,12 +15,12 @@ import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
  * @author Fabien Sanglier
  * 
  */
-public class CacheGetOperation extends AbstractCacheRunner<Long> {
+public class CacheGetOperation<K> extends AbstractCacheKeyRunner<K> {
 	private static Logger log = LoggerFactory.getLogger(CacheGetOperation.class);
 	private static final boolean isDebug = log.isDebugEnabled();
 	
-	public CacheGetOperation(Cache cache, Condition termination, ObjectGenerator<Long> generator) {
-		super(cache, termination, generator);
+	public CacheGetOperation(Cache cache, Condition termination, ObjectGenerator<K> keyGenerator) {
+		super(cache, termination, keyGenerator);
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class CacheGetOperation extends AbstractCacheRunner<Long> {
 	}
 	
 	@Override
-	public void doUnitOfWork(Long key) {
+	public void doUnitOfWork(K key) {
 		if(isDebug)
 			log.debug("Getting cache entry with key:" + key);
 		
@@ -42,7 +42,7 @@ public class CacheGetOperation extends AbstractCacheRunner<Long> {
 				log.debug("Could not find the object in cache for key:" + key);
 		}
 	}
-	
+
 	public static class CacheGetOperationFactory extends CacheRunnerFactory {
 		private final ObjectGenerator keyGen;
 		

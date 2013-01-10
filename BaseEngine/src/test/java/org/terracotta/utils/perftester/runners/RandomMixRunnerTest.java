@@ -21,36 +21,36 @@ public class RandomMixRunnerTest {
 
 	private OpsCountRunnerFactory createRunnerFactory(long numOperations){
 		RamdomMixRunnerFactory runnerFactory = new RamdomMixRunnerFactory(numOperations);
-		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator()){
+		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator(), null){
 			@Override
 			public String getName() {
 				return super.getName() + "1";
 			}
 
 			@Override
-			public void doUnitOfWork(Long key) {
+			public void doUnitOfWork(Long key, Object value) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
 			}
 		}, 45);
-		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator()){
+		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator(), null){
 			@Override
 			public String getName() {
 				return super.getName() + "2";
 			}
 
 			@Override
-			public void doUnitOfWork(Long key) {
+			public void doUnitOfWork(Long key, Object value) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
 			}
 		}, 35);
-		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator()){
+		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator(), null){
 			@Override
 			public String getName() {
 				return super.getName() + "3";
 			}
 
 			@Override
-			public void doUnitOfWork(Long key) {
+			public void doUnitOfWork(Long key, Object value) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
 			}
 		}, 20);

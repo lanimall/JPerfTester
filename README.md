@@ -23,9 +23,10 @@ A sample application for [Terracotta BigMemory or Ehcache](http://terracotta.org
 
  - Navigate to JPerfTester root folder
  - Run: mvn install
- - Navigate to <JPerfTester-ROOT>/SampleCacheClient folder
- - Copy "dist/SampleCacheClient.tar.gz" to the location of your choice (optional) and extract it
- - [optional] modify parameters in app.properties (i.e. number of threads to use, etc...)
+ - Navigate to <JPerfTester-ROOT>/CacheTesterClient folder
+ - Copy "dist/jperftester-cacheclient-0.0.1.tar.gz" to the location of your choice (optional) and extract it
+ - [optional] modify parameters in app.properties (i.e. number of threads to use, cache name tu use, business object factory to use to load objects in cache, etc...)
+ - [optional] modify ehcache.xml (i.e. max elements in memory, time to live, etc...)
  - In the extracted location, execute script "run.sh"
 
 

@@ -16,26 +16,37 @@ import org.terracotta.utils.perftester.runners.Runner;
  * 
  * @param <T>
  */
-public abstract class KeyValueRunner<T> extends BaseRunner implements Runner {
+public abstract class KeyValueRunner<K, V> extends KeyRunner<K> implements Runner {
 	private static Logger log = LoggerFactory.getLogger(KeyValueRunner.class);
 
-	protected final ObjectGenerator<T> keyGenerator;
+	private final ObjectGenerator<V> valueGenerator;
 	
-	protected KeyValueRunner(Condition termination, ObjectGenerator<T> keyGenerator) {
-		super(termination);
+	protected KeyValueRunner(Condition termination, ObjectGenerator<K> keyGenerator, ObjectGenerator<V> valueGenerator) {
+		super(termination, keyGenerator);
 		
-		if(termination == null)
-			throw new IllegalArgumentException("Termination object may not be null");
+		if(null == valueGenerator){
+			log.warn("The valueGenerator object is null...make sure it's intended.");
+		}
 		
-		this.keyGenerator = keyGenerator;
+		this.valueGenerator = valueGenerator;
 	}
 	
-	public abstract void doUnitOfWork(T arg);
+	@Override
+	public void doUnitOfWork(K key) {
+		doUnitOfWork(key, null);
+	}
+
+	public abstract void doUnitOfWork(K key, V value);
 
 	@Override
 	protected void execute() {
 		long iterationStartTime;
-		T key = null;
+		K key = null;
+		V value = null;
+		
+		//generate value outside timing measurements
+		if(null != valueGenerator)
+			value = valueGenerator.generate();
 		
 		//avoid performing null check at every iteration
 		if(null != keyGenerator){
@@ -45,7 +56,7 @@ public abstract class KeyValueRunner<T> extends BaseRunner implements Runner {
 					key = keyGenerator.generate();
 					
 					iterationStartTime = System.currentTimeMillis();
-					doUnitOfWork(key);
+					doUnitOfWork(key, value);
 					stats.add(System.currentTimeMillis() - iterationStartTime);
 				} catch (Exception e) {
 					log.error("Error during execution of unit of work. will not count this operation in the timing stats.", e);
@@ -55,7 +66,7 @@ public abstract class KeyValueRunner<T> extends BaseRunner implements Runner {
 			do {
 				try {
 					iterationStartTime = System.currentTimeMillis();
-					doUnitOfWork(null);
+					doUnitOfWork(null, value);
 					stats.add(System.currentTimeMillis() - iterationStartTime);
 				} catch (Exception e) {
 					log.error("Error during execution of unit of work. will not count this operation in the timing stats.", e);

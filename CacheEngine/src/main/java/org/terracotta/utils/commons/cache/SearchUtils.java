@@ -12,6 +12,10 @@ import net.sf.ehcache.search.expression.Criteria;
 public class SearchUtils {
 
 	public static Query buildSearchTextQuery(Cache cache, Attribute[] attributes, String[] searchText, boolean isOrOperator, int maxResults){
+		return buildSearchTextQuery(cache, attributes, searchText, isOrOperator, maxResults, true);
+	}
+	
+	public static Query buildSearchTextQuery(Cache cache, Attribute[] attributes, String[] searchText, boolean isOrOperator, int maxResults, boolean finalize){
 		Query  query = cache.createQuery();
 		Criteria searchCriteria = null;
 
@@ -29,7 +33,7 @@ public class SearchUtils {
 		} else {
 			throw new IllegalArgumentException("Arguments are not valid");
 		}
-		
+
 		query.addCriteria(searchCriteria);
 		query.includeKeys();
 		//query.includeValues();
@@ -37,7 +41,11 @@ public class SearchUtils {
 		if(maxResults > 0){
 			query.maxResults(maxResults);
 		}
-		query.end();
+
+		if(finalize){
+			query.end();
+		}
+
 		return query;
 	}
 }

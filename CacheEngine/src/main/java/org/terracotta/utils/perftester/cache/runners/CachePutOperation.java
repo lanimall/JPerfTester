@@ -14,17 +14,13 @@ import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
  * @author Fabien Sanglier
  * 
  */
-public class CachePutOperation extends AbstractCacheRunner<Long> {
+public class CachePutOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
 	private static Logger log = LoggerFactory.getLogger(CachePutOperation.class);
 	private static final boolean isDebug = log.isDebugEnabled();
-	private final ObjectGenerator valueGenerator;
 
-	public CachePutOperation(Cache cache, Condition termination, ObjectGenerator<Long> keyGenerator, ObjectGenerator valueGenerator) {
-		super(cache, termination, keyGenerator);
-		if(null == valueGenerator)
-			throw new IllegalArgumentException("The valueGenerator object may not be null...");
-
-		this.valueGenerator = valueGenerator;
+	public CachePutOperation(Cache cache, Condition termination,
+			ObjectGenerator<K> keyGenerator, ObjectGenerator<V> valueGenerator) {
+		super(cache, termination, keyGenerator, valueGenerator);
 	}
 
 	@Override
@@ -33,11 +29,12 @@ public class CachePutOperation extends AbstractCacheRunner<Long> {
 	}
 
 	@Override
-	public void doUnitOfWork(Long key) {
+	public void doUnitOfWork(K key, V value) {
 		if(isDebug)
 			log.debug("Putting cache entry with key:" + key);
+		
 		if(null != key)
-			cache.put(new Element(key, valueGenerator.generate()));
+			cache.put(new Element(key, value));
 		else
 			log.warn("key is null...cannot add a new cache entry");
 	}

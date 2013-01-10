@@ -11,13 +11,15 @@ import org.terracotta.utils.perftester.runners.OpsCountRunnerFactory;
  * @author Fabien Sanglier
  * 
  */
-public class SimpleRunner extends KeyValueRunner<Long> {
+public class SimpleRunner extends KeyValueRunner<Long, Object> {
 	
 	private static Logger log = LoggerFactory.getLogger(SimpleRunner.class);
 	private static final boolean isDebug = log.isDebugEnabled();
 
-	public SimpleRunner(Condition termination, ObjectGenerator<Long> generator) {
-		super(termination,generator);
+	public SimpleRunner(Condition termination,
+			ObjectGenerator<Long> keyGenerator,
+			ObjectGenerator<Object> valueGenerator) {
+		super(termination, keyGenerator, valueGenerator);
 	}
 
 	@Override
@@ -26,7 +28,7 @@ public class SimpleRunner extends KeyValueRunner<Long> {
 	}
 
 	@Override
-	public void doUnitOfWork(Long key) {
+	public void doUnitOfWork(Long key, Object value) {
 		if(isDebug)
 			log.debug("Do something with this key:" + key);
 	}
@@ -38,7 +40,7 @@ public class SimpleRunner extends KeyValueRunner<Long> {
 
 		@Override
 		public SimpleRunner create() {
-			return new SimpleRunner(getTerminationCondition(), new SequentialGenerator());	
+			return new SimpleRunner(getTerminationCondition(), new SequentialGenerator(), null);	
 		}
 	}
 }
