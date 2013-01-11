@@ -5,11 +5,11 @@
 		<groupId>org.terracotta.utils</groupId>
 		<artifactId>jperftester-parent</artifactId>
 		<version>0.0.1</version>
-		<relativePath>../basebuild/pom.xml</relativePath>
+		<relativePath>../JPerfTesterBaseBuild/pom.xml</relativePath>
 	</parent>
 	<artifactId>jperftester-engine</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.1</version>
-	<name>Performance Tester Engine</name>
-	<description>Performance Tester Engine</description>
+	<name>JPerfTester Base Engine</name>
+	<description>JPerfTester Base Engine that deals with all the threading and other general functionnalities</description>
 </project>

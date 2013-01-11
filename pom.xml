@@ -5,12 +5,12 @@
 	<artifactId>jperftester-aggregator</artifactId>
 	<version>0.0.1</version>
 	<packaging>pom</packaging>
-	<name>Java Performance Tester</name>
-	<description>Java Performance Tester</description>
+	<name>JPerfTester Java Performance Tester</name>
+	<description>JPerfTester - A Java Performance Tester</description>
 	<url>http://terracotta.org/</url>
 
 	<modules>
-		<module>BaseEngine</module>
+		<module>JPerfTesterEngine</module>
 		<module>TerracottaPerfTestSuite</module>
 	</modules>
 </project>

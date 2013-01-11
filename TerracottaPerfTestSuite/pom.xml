@@ -10,7 +10,7 @@
 	<url>http://terracotta.org/</url>
 
 	<modules>
-		<module>CacheEngine</module>
+		<module>TerracottaPerfTestEngine</module>
 		<module>TerracottaPerfTestClients</module>
 	</modules>
 </project>

@@ -5,7 +5,7 @@
 		<groupId>org.terracotta.utils</groupId>
 		<artifactId>jperftester-parent</artifactId>
 		<version>0.0.1</version>
-		<relativePath>../../basebuild/pom.xml</relativePath>
+		<relativePath>../../JPerfTesterBaseBuild/pom.xml</relativePath>
 	</parent>
 	<groupId>org.terracotta.utils</groupId>
 	<artifactId>jperftester-terracotta-parent</artifactId>
