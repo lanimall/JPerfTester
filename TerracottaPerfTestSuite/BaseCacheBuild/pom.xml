@@ -1,0 +1,63 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.terracotta.utils</groupId>
+		<artifactId>jperftester-parent</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../../basebuild/pom.xml</relativePath>
+	</parent>
+	<groupId>org.terracotta.utils</groupId>
+	<artifactId>jperftester-terracotta-parent</artifactId>
+	<version>0.0.1</version>
+	<packaging>pom</packaging>
+	<name>Terracotta Cache Performance Tester Parent pom</name>
+	<description>Terracotta Cache Performance Tester Parent Pom</description>
+	<url>http://terracotta.org/</url>
+
+	<developers>
+		<developer>
+			<id>fsanglie</id>
+			<name>Fabien Sanglier</name>
+			<email>fsanglie@terracottatech.com</email>
+			<url>http://www.terracotta.org</url>
+			<organization>Terracotta, Inc.</organization>
+			<organizationUrl>http://www.terracotta.org</organizationUrl>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+	<properties>
+		<ehcache-core-ee.version>2.5.2</ehcache-core-ee.version>
+		<ehcache-terracotta-ee.version>2.5.2</ehcache-terracotta-ee.version>
+	</properties>
+
+	<dependencies>
+		<!-- EhCache -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core-ee</artifactId>
+			<version>${ehcache-core-ee.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-terracotta-ee</artifactId>
+			<version>${ehcache-terracotta-ee.version}</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>terracotta-snapshots</id>
+			<url>http://www.terracotta.org/download/reflector/snapshots</url>
+		</repository>
+		<repository>
+			<id>terracotta-releases</id>
+			<url>http://www.terracotta.org/download/reflector/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+</project>
