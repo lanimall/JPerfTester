@@ -10,6 +10,6 @@
 	<artifactId>jperftester-engine</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.1</version>
-	<name>Terracotta Cache Performance Tester Engine</name>
-	<description>Terracotta Cache Performance Tester Engine</description>
+	<name>Performance Tester Engine</name>
+	<description>Performance Tester Engine</description>
 </project>

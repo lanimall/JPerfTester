@@ -11,7 +11,6 @@
 
 	<modules>
 		<module>BaseEngine</module>
-		<module>CacheEngine</module>
-		<module>CacheTesterClient</module>
+		<module>TerracottaPerfTestSuite</module>
 	</modules>
 </project>
