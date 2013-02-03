@@ -158,7 +158,7 @@ public class InteractiveLauncher {
 						((CacheRandomMixLauncher)cacheLauncher).addCacheGetOperationMix(mix, getCache(), GlobalConfigSingleton.getInstance().getCacheSteadyStateKeyMinValue(), GlobalConfigSingleton.getInstance().getCacheSteadyStateKeyMaxValue());
 						break;
 					case 1:
-						((CacheRandomMixLauncher)cacheLauncher).addCachePutOperationMix(mix, getCache(), getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory()), GlobalConfigSingleton.getInstance().getCacheLoaderKeyStart());
+						((CacheRandomMixLauncher)cacheLauncher).addCachePutOperationMix(mix, getCache(), getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderKeyGenFactory()), getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory()));
 						break;
 					case 2:
 						int maxResults = 50;

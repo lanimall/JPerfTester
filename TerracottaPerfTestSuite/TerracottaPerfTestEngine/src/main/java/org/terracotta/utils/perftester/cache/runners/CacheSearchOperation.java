@@ -12,6 +12,7 @@ import org.terracotta.utils.perftester.cache.generators.RandomSearchQueryGenerat
 import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
+import org.terracotta.utils.perftester.generators.impl.RandomGenerator;
 
 /**
  * @author Fabien Sanglier
@@ -55,18 +56,23 @@ public class CacheSearchOperation extends AbstractCacheKeyRunner<Query> {
 	}
 	
 	public static class CacheSearchOperationFactory extends CacheRunnerFactory {
-		private Query[] queries = null;
+		private final RandomGenerator<Query> queryGenerator;
+		
 		public CacheSearchOperationFactory(Cache cache, long numOperations, Query[] queries) {
 			super(cache, numOperations);
-			this.queries = queries;
+			this.queryGenerator = new RandomSearchQueryGenerator(queries);
+		}
+		
+		public CacheSearchOperationFactory(Cache cache, long numOperations, RandomGenerator<Query> queryGenerator) {
+			super(cache, numOperations);
+			this.queryGenerator = queryGenerator;
 		}
 
 		@Override
 		public CacheSearchOperation create() {
-			if(null == queries)
+			if(null == queryGenerator)
 				return null;
 			
-			RandomSearchQueryGenerator queryGenerator = new RandomSearchQueryGenerator(queries);
 			return new CacheSearchOperation(getCache(), new IterationCondition(getNumOperations()), queryGenerator);	
 		}
 	}

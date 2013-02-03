@@ -5,6 +5,7 @@ import net.sf.ehcache.search.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terracotta.utils.perftester.cache.runners.CacheRunnerFactory;
 import org.terracotta.utils.perftester.cache.runners.CacheSearchOperation.CacheSearchOperationFactory;
 
 /**
@@ -16,5 +17,9 @@ public class CacheSearchLauncher extends BaseCacheLauncher {
 	
 	public CacheSearchLauncher(Cache cache, int numThreads, long numOperations, Query[] queries) {
 		super(numThreads, new CacheSearchOperationFactory(cache, numOperations/numThreads,queries));
+	}
+	
+	public CacheSearchLauncher(int numThreads, CacheRunnerFactory factory) {
+		super(numThreads, factory);
 	}
 }
