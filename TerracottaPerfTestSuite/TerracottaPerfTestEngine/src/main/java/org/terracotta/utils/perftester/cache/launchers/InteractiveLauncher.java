@@ -49,13 +49,7 @@ public class InteractiveLauncher {
 
 	public static void main(String[] args) throws Exception {
 		InteractiveLauncher launcher = new InteractiveLauncher(GlobalConfigSingleton.getInstance().getCacheName());
-
-		if(null != args && args.length > 0){
-			launcher.processInput(args);
-		} else {
-			launcher.run();
-		}
-
+		launcher.run(args);
 		System.out.println("Completed");
 		System.exit(0);
 	}
@@ -219,17 +213,20 @@ public class InteractiveLauncher {
 		return processInput(inputCommand, inputArgs);
 	}
 
-	public void run() throws Exception {
+	public void run(String[] args) throws Exception {
 		boolean keepRunning = true;
 		while (keepRunning) {
-			printOptions();
-
-			String input = getInput();
-			if (input.length() == 0) {
-				continue;
+			if(null != args && args.length > 0){
+				keepRunning = processInput(args);
+				args=null;
+			} else {
+				printOptions();
+				String input = getInput();
+				if (input.length() == 0) {
+					continue;
+				}
+				keepRunning = processInput(input);
 			}
-
-			keepRunning = processInput(input);
 		}
 	}
 
