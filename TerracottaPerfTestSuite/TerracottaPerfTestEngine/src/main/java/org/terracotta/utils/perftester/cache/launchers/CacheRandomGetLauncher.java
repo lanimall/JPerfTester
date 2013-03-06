@@ -4,7 +4,8 @@ import net.sf.ehcache.Cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.perftester.cache.runners.CacheGetOperation.CacheRandomGetOperationFactory;
+import org.terracotta.utils.perftester.cache.runners.CacheGetOperation.CacheGetOperationFactory;
+import org.terracotta.utils.perftester.generators.impl.RandomNumberGenerator;
 
 /**
  * @author Fabien Sanglier
@@ -14,7 +15,7 @@ public class CacheRandomGetLauncher extends BaseCacheLauncher {
 	private static Logger log = LoggerFactory.getLogger(CacheRandomGetLauncher.class);
 
 	public CacheRandomGetLauncher(Cache cache, int numThreads, long numOperations, long keyMinValue, long keyMaxValue) {
-		super(numThreads, new CacheRandomGetOperationFactory(cache, numOperations/numThreads, keyMinValue, keyMaxValue));
+		super(numThreads, new CacheGetOperationFactory(cache, numOperations/numThreads, new RandomNumberGenerator(keyMinValue, keyMinValue)));
 
 		System.out.println("*********** Getting random cache entries *************");
 		System.out.println("Params:");

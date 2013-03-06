@@ -8,11 +8,9 @@ import net.sf.ehcache.search.Results;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.perftester.cache.generators.RandomSearchQueryGenerator;
 import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
-import org.terracotta.utils.perftester.generators.impl.RandomGenerator;
 
 /**
  * @author Fabien Sanglier
@@ -56,14 +54,9 @@ public class CacheSearchOperation extends AbstractCacheKeyRunner<Query> {
 	}
 	
 	public static class CacheSearchOperationFactory extends CacheRunnerFactory {
-		private final RandomGenerator<Query> queryGenerator;
+		private final ObjectGenerator<Query> queryGenerator;
 		
-		public CacheSearchOperationFactory(Cache cache, long numOperations, Query[] queries) {
-			super(cache, numOperations);
-			this.queryGenerator = new RandomSearchQueryGenerator(queries);
-		}
-		
-		public CacheSearchOperationFactory(Cache cache, long numOperations, RandomGenerator<Query> queryGenerator) {
+		public CacheSearchOperationFactory(Cache cache, long numOperations, ObjectGenerator<Query> queryGenerator) {
 			super(cache, numOperations);
 			this.queryGenerator = queryGenerator;
 		}

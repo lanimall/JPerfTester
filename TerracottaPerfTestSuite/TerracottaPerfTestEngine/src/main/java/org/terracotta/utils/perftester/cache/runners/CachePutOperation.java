@@ -34,7 +34,7 @@ public class CachePutOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
 			log.debug("Putting cache entry with key:" + key);
 		
 		if(null != key)
-			cache.put(new Element(key, value));
+			cache.putWithWriter(new Element(key, value));
 		else
 			log.warn("key is null...cannot add a new cache entry");
 	}
@@ -45,7 +45,8 @@ public class CachePutOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
 		//NOTE: With this type of factory, we must make sure that the sequential generator is not being recreated each time create() is called...
 		//that way multiple thread can all work against the same thread-safe generator
 		private final ObjectGenerator keyGen;
-
+		
+		//if using this constrcutor, sequential generator 
 		public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator) {
 			this(cache, numOperations, null, valueGenerator);
 		}

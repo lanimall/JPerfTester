@@ -37,6 +37,8 @@ public class GlobalConfigSingleton {
 	private static final String CACHEPOUNDER_TX_KEYGEN_MINVALUE = "jperftester.cache.terracotta.steadystate.keygen.minvalue";
 	private static final String CACHEPOUNDER_TX_KEYGEN_MAXVALUE = "jperftester.cache.terracotta.steadystate.keygen.maxvalue";
 
+	private static final String CACHEPOUNDER_SEARCH_QUERYGENFACTORY = "jperftester.cache.terracotta.search.querygenfactory";
+	
 	//singleton instance
 	private static GlobalConfigSingleton instance;
 
@@ -64,6 +66,8 @@ public class GlobalConfigSingleton {
 	private final int cacheSteadyStateKeyMinValue;
 	private final int cacheSteadyStateKeyMaxValue;
 
+	private final String cacheSearchQueryGenFactory;
+	
 	//wrapper property
 	private final PropertyUtils propWrapper;
 	
@@ -90,6 +94,8 @@ public class GlobalConfigSingleton {
 		cacheSteadyStateKeyMinValue = propWrapper.getPropertyAsInt(CACHEPOUNDER_TX_KEYGEN_MINVALUE, 0);
 		cacheSteadyStateKeyMaxValue = propWrapper.getPropertyAsInt(CACHEPOUNDER_TX_KEYGEN_MAXVALUE, 10000);
 
+		cacheSearchQueryGenFactory = propWrapper.getProperty(CACHEPOUNDER_SEARCH_QUERYGENFACTORY, "");
+		
 		if(log.isDebugEnabled()){
 			log.debug("*********** General Application Params *************");
 			log.debug("Cache name: " + cacheName);
@@ -117,6 +123,9 @@ public class GlobalConfigSingleton {
 			log.debug("Number of transactions: " + cacheSteadyStateNbOperations);
 			log.debug("Number of operations per thread: " + (cacheSteadyStateNbOperations/cacheSteadyStateThreads));
 			log.debug("Key number between " + cacheSteadyStateKeyMinValue + " and " + cacheSteadyStateKeyMaxValue);
+			
+			log.debug("*********** Cache Object Generation Factories *************");
+			log.debug("Search query generator factory: " + cacheSearchQueryGenFactory);
 		}
 	}
 
@@ -176,6 +185,10 @@ public class GlobalConfigSingleton {
 		return cacheWarmerKeyStart;
 	}
 
+	public String getCacheSearchQueryGenFactory() {
+		return cacheSearchQueryGenFactory;
+	}
+	
 	public int getCacheSteadyStateThreads() {
 		return cacheSteadyStateThreads;
 	}

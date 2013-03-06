@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
-import org.terracotta.utils.perftester.generators.impl.RandomNumberGenerator;
-import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
 
 /**
  * @author Fabien Sanglier
@@ -57,21 +55,6 @@ public class CacheGetOperation<K> extends AbstractCacheKeyRunner<K> {
 				throw new IllegalArgumentException("KenGen object may not be null");
 			
 			return new CacheGetOperation(getCache(), new IterationCondition(getNumOperations()), keyGen);	
-		}
-	}
-	
-	public static class CacheSequentialGetOperationFactory extends CacheGetOperationFactory {
-		public CacheSequentialGetOperationFactory(Cache cache, long numOperations, long keyStart) {
-			super(cache, numOperations, new SequentialGenerator(keyStart));
-		}
-	}
-	
-	public static class CacheRandomGetOperationFactory extends CacheGetOperationFactory {
-		public CacheRandomGetOperationFactory(Cache cache, long numOperations, long keyMaxValue) {
-			super(cache, numOperations, new RandomNumberGenerator(keyMaxValue));
-		}
-		public CacheRandomGetOperationFactory(Cache cache, long numOperations, long keyMinValue, long keyMaxValue) {
-			super(cache, numOperations, new RandomNumberGenerator(keyMinValue, keyMinValue));
 		}
 	}
 }

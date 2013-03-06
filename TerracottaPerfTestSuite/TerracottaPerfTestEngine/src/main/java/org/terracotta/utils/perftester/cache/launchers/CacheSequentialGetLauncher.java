@@ -4,7 +4,8 @@ import net.sf.ehcache.Cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.perftester.cache.runners.CacheGetOperation.CacheSequentialGetOperationFactory;
+import org.terracotta.utils.perftester.cache.runners.CacheGetOperation.CacheGetOperationFactory;
+import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
 
 /**
  * @author Fabien Sanglier
@@ -14,7 +15,7 @@ public class CacheSequentialGetLauncher extends BaseCacheLauncher {
 	private static Logger log = LoggerFactory.getLogger(CacheSequentialGetLauncher.class);
 
 	public CacheSequentialGetLauncher(Cache cache, int numThreads, long numOperations,long keyStart) {
-		super(numThreads, new CacheSequentialGetOperationFactory(cache, numOperations/numThreads,keyStart));
+		super(numThreads, new CacheGetOperationFactory(cache, numOperations/numThreads,new SequentialGenerator(keyStart)));
 
 		System.out.println("*********** Getting cache entries *************");
 		System.out.println("Params:");
