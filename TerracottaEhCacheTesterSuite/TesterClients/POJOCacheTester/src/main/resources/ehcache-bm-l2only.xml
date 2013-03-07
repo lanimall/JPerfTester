@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false"
+	monitoring="autodetect" dynamicConfig="true" name="DemoServicesCache"
+	maxBytesLocalHeap="${ehcache.maxBytesLocalHeap}">
+
+	<diskStore path="${ehcache.tmppath}" />
+
+	<defaultCache eternal="false" overflowToDisk="false"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" maxElementsOnDisk="50000000"
+		diskPersistent="false" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="org.hibernate.cache.StandardQueryCache" eternal="false"
+		statistics="${ehcache.cache.statistics}">
+	</cache>
+
+	<cache name="org.hibernate.cache.UpdateTimestampsCache" eternal="true"
+		statistics="${ehcache.cache.statistics}">
+	</cache>
+
+	<cache name="com.terracotta.data.domain.Filling1040EZForm"
+		eternal="false" timeToIdleSeconds="3600" maxElementsOnDisk="50000000"
+		memoryStoreEvictionPolicy="LFU" statistics="${ehcache.cache.statistics}">
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="true"
+				timeoutMillis="5000">
+				<timeoutBehavior type="localReads" />
+			</nonstop>
+		</terracotta>
+	</cache>
+
+	<cache name="com.terracotta.data.domain.TaxFillerInfo" eternal="false"
+		timeToIdleSeconds="3600" maxElementsOnDisk="50000000"
+		memoryStoreEvictionPolicy="LFU" statistics="${ehcache.cache.statistics}">
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="true"
+				timeoutMillis="5000">
+				<timeoutBehavior type="localReads" />
+			</nonstop>
+		</terracotta>
+	</cache>
+
+	<cache name="com.terracotta.data.domain.TaxFillerInfo.dependants"
+		eternal="false" timeToIdleSeconds="3600" maxElementsOnDisk="50000000"
+		memoryStoreEvictionPolicy="LFU" statistics="${ehcache.cache.statistics}">
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="true"
+				timeoutMillis="5000">
+				<timeoutBehavior type="localReads" />
+			</nonstop>
+		</terracotta>
+	</cache>
+
+	<cache name="com.terracotta.data.domain.BankInfoType" eternal="false"
+		timeToIdleSeconds="3600" maxElementsOnDisk="50000000"
+		memoryStoreEvictionPolicy="LFU" statistics="${ehcache.cache.statistics}">
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="true"
+				timeoutMillis="5000">
+				<timeoutBehavior type="localReads" />
+			</nonstop>
+		</terracotta>
+	</cache>
+
+	<cache name="com.terracotta.data.domain.Address" eternal="false"
+		timeToIdleSeconds="3600" maxElementsOnDisk="50000000"
+		memoryStoreEvictionPolicy="LFU" statistics="${ehcache.cache.statistics}">
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="true"
+				timeoutMillis="5000">
+				<timeoutBehavior type="localReads" />
+			</nonstop>
+		</terracotta>
+	</cache>
+
+	<cache name="com.terracotta.data.domain.Customer" eternal="false"
+		timeToIdleSeconds="3600" maxElementsOnDisk="50000000"
+		memoryStoreEvictionPolicy="LFU" statistics="${ehcache.cache.statistics}">
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="true"
+				timeoutMillis="5000">
+				<timeoutBehavior type="localReads" />
+			</nonstop>
+		</terracotta>
+	</cache>
+
+	<cache name="com.terracotta.data.domain.ThirdPartyDesigneeInfo"
+		eternal="false" timeToIdleSeconds="3600" maxElementsOnDisk="50000000"
+		memoryStoreEvictionPolicy="LFU" statistics="${ehcache.cache.statistics}">
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="true"
+				timeoutMillis="5000">
+				<timeoutBehavior type="localReads" />
+			</nonstop>
+		</terracotta>
+	</cache>
+
+	<cache name="com.terracotta.data.domain.SpecialProcessingType"
+		eternal="true" memoryStoreEvictionPolicy="LFU"
+		statistics="${ehcache.cache.statistics}">
+	</cache>
+
+	<terracottaConfig rejoin="true" url="${tc-connect-serversports}" />
+</ehcache>
