@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false"
+	monitoring="autodetect" dynamicConfig="true" name="CacheMgrUnderTest">
+
+	<diskStore path="${ehcache.tmppath}" />
+
+	<terracottaConfig url="${tc-connect-serversports}" />
+
+	<defaultCache eternal="false" maxElementsInMemory="100000"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" maxElementsOnDisk="10000000"
+		statistics="${ehcache.cache.statistics}" />
+
+	<cache name="CacheUnderTest" maxElementsInMemory="10000" eternal="true"	maxElementsOnDisk="50000">
+		<cacheWriter writeMode="write-behind" notifyListenersOnException="true" maxWriteDelay="5" rateLimitPerSecond="250" writeCoalescing="false" writeBatching="true" 
+           		 	 writeBatchSize="1000" retryAttempts="5" retryAttemptDelaySeconds="30" writeBehindConcurrency="8">
+           		 <cacheWriterFactory class="org.terracotta.utils.perftester.cache.cachewritertester.WriteBehindFactory" />			
+		</cacheWriter>
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="true"
+				timeoutMillis="10000">
+				<timeoutBehavior type="exception" />
+			</nonstop>
+		</terracotta>
+	</cache>
+</ehcache>
