@@ -14,6 +14,7 @@ import org.terracotta.utils.commons.cache.configs.GlobalConfigSingleton;
 public class InteractiveLauncher {
 	private static Logger log = LoggerFactory.getLogger(InteractiveLauncher.class);
 	private final LauncherAPI api;
+	
 	public InteractiveLauncher(LauncherAPI api) {
 		this.api = api;
 		printLineSeparator();

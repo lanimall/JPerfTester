@@ -21,8 +21,6 @@ public class GlobalConfigSingleton {
 	private static final String CACHEPOUNDER_OBJLOADER_NBTHREADS = "jperftester.cache.terracotta.objectload.numberofthreads";
 	private static final String CACHEPOUNDER_OBJLOADER_BULKLOAD = "jperftester.cache.terracotta.objectload.bulkload.enable";
 	private static final String CACHEPOUNDER_OBJLOADER_REMOVEALL = "jperftester.cache.terracotta.objectload.startwithremoveall.enable";
-	private static final String CACHEPOUNDER_OBJLOADER_KEYGENFACTORY = "jperftester.cache.terracotta.objectload.keygenfactory";
-	private static final String CACHEPOUNDER_OBJLOADER_VALUEGENFACTORY = "jperftester.cache.terracotta.objectload.valuegenfactory";
 	//TODO we should find a nicer way to deal with this...in case the key is actually something non-sequential...
 	private static final String CACHEPOUNDER_OBJLOADER_KEYGENSTART = "jperftester.cache.terracotta.objectload.keystart";
 	
@@ -36,8 +34,11 @@ public class GlobalConfigSingleton {
 	//TODO we should find a nicer way to deal with this...in case the key is actually something non-sequential...
 	private static final String CACHEPOUNDER_TX_KEYGEN_MINVALUE = "jperftester.cache.terracotta.steadystate.keygen.minvalue";
 	private static final String CACHEPOUNDER_TX_KEYGEN_MAXVALUE = "jperftester.cache.terracotta.steadystate.keygen.maxvalue";
-
-	private static final String CACHEPOUNDER_SEARCH_QUERYGENFACTORY = "jperftester.cache.terracotta.search.querygenfactory";
+	
+	//various object generator factories
+	private static final String CACHEPOUNDER_OBJLOADER_KEYGENFACTORY = "jperftester.cache.terracotta.objectload.keygenfactory";
+	private static final String CACHEPOUNDER_OBJLOADER_VALUEGENFACTORY = "jperftester.cache.terracotta.objectload.valuegenfactory";
+	private static final String CACHEPOUNDER_SEARCH_QUERYGENFACTORY = "jperftester.cache.terracotta.objectload.querygenfactory";
 	
 	//singleton instance
 	private static GlobalConfigSingleton instance;

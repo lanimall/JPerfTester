@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.api.ClusteringToolkit;
 import org.terracotta.coordination.Barrier;
+import org.terracotta.utils.commons.cache.configs.GlobalConfigSingleton;
 
 /**
  * @author Fabien Sanglier
@@ -17,6 +18,10 @@ public class CacheUtils {
 
 	public static final String ENV_CACHE_CONFIGPATH = "ehcache.config.path";
 
+	public static Cache getCache() throws Exception {
+		return getCache(getCacheManager(), GlobalConfigSingleton.getInstance().getCacheName());
+	}
+	
 	public static Cache getCache(String cacheName) throws Exception {
 		return getCache(getCacheManager(), cacheName);
 	}
