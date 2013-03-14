@@ -45,9 +45,11 @@ bin/**
 # Logs and databases #
 ######################
 *.log
+*.log.*
 *.sql
 *.sqlite
 *.out
+logs/
 
 # OS generated files #
 ######################

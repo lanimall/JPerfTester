@@ -5,7 +5,7 @@ license_path=$HOME/terracotta-license.key
 logs_home=/tmp
 ehcacheconfig=ehcache.xml
 params=$*
-execClass="org.terracotta.utils.perftester.cache.launchers.InteractiveLauncher"
+execClass="org.terracotta.utils.perftester.cache.customcachesearchtester.Launcher"
 
 JAVA_OPTS="-Xms512m -Xmx512m -XX:+UseParallelOldGC -XX:+UseCompressedOops -XX:MaxDirectMemorySize=10G"
 JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration=file:log4j.properties -verbose:gc -Xloggc:$logs_home/run.gc.log -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintGCTimeStamps"

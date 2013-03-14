@@ -4,7 +4,7 @@ import net.sf.ehcache.Cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.perftester.cache.runners.CachePutOperation.CachePutOperationFactory;
+import org.terracotta.utils.perftester.cache.runnerFactories.CachePutOperationFactory;
 import org.terracotta.utils.perftester.generators.ObjectGeneratorFactory;
 
 /**

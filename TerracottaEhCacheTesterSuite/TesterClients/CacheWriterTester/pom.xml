@@ -14,8 +14,8 @@
 	<description>This is a sample client to demonstrate what it takes to use the library in order to build a cache writer "pounder" client that uses some custom business objects throughout the common tests.</description>
 
 	<properties>
-		<ehcache-core-ee.version>2.6.2</ehcache-core-ee.version>
-		<ehcache-terracotta-ee.version>2.6.2</ehcache-terracotta-ee.version>
+		<ehcache-core-ee.version>2.6.4</ehcache-core-ee.version>
+		<ehcache-terracotta-ee.version>2.6.4</ehcache-terracotta-ee.version>
 	</properties>
 
 	<developers>
