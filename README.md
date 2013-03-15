@@ -19,11 +19,11 @@ Sample Applications
 ---------------------------------------------
 Several sample testing applications for [Terracotta BigMemory or Ehcache](http://terracotta.org/) have been created for quick execution. So far:
  - POJOCacheTester
- -- A sample application which demonstrate how to load, get, and search based on custom POJOs cache values (Customer --> Address --> AddressCategory)
+ 	- A sample application which demonstrate how to load, get, and search based on custom POJOs cache values (Customer --> Address --> AddressCategory)
  - CustomCacheSearchTester
- -- A sample application which demonstrate how to load a cache using a custom POJO for the cache keys, and perform multi-threaded searches against the indexed attributes of these cache key objects.
+	- A sample application which demonstrate how to load a cache using a custom POJO for the cache keys, and perform multi-threaded searches against the indexed attributes of these cache key objects.
  - CacheWriterTester
- -- A sample application which demonstrate how to load, get, and search objects using terracotta write-behind mechanism.
+	- A sample application which demonstrate how to load, get, and search objects using terracotta write-behind mechanism.
 
 Quick start
 ---------------------------------------------
@@ -31,10 +31,10 @@ Quick start
  - Run: mvn install
  - Navigate to the sample applications folder: <JPerfTester-ROOT>/TerracottaEhCacheTesterSuite/TesterClients
  - Each of the sample applications have a simple "extractable and runnable" package to deploy anywhere:
- -- Copy the tar.gz package in "<sample application>/dist/" folder to the location of your choice and extract it.
- -- [optional] modify parameters in app.properties (i.e. number of threads to use, cache name tu use, business object factory to use to load objects in cache, etc...)
- -- [optional] modify ehcache.xml (i.e. max elements in memory, time to live, etc...)
- -- In the extracted location, execute script "run.sh" (make sure your $JAVA_HOME is set for this script to run)
+	- Copy the tar.gz package in "<sample application>/dist/" folder to the location of your choice and extract it.
+	- [optional] modify parameters in app.properties (i.e. number of threads to use, cache name tu use, business object factory to use to load objects in cache, etc...)
+	- [optional] modify ehcache.xml (i.e. max elements in memory, time to live, etc...)
+	- In the extracted location, execute script "run.sh" (make sure your $JAVA_HOME is set for this script to run)
 
 Extend and Customize
 ---------------------------------------------
