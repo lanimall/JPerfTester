@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.naming.ldap.Rdn;
+
 /**
  * @author Karthik Lalithraj
  * @author Eric Mizell
@@ -198,13 +200,12 @@ public class RandomUtil {
 	 * @return <b>string</b> a randomly generated string of alphanumeric characters only
 	 */
 	public String generateAlphaNumericRandom(int length) throws Exception{
-		Random generator = new Random();
 		String[] mapOfCharacters = getCharacterMap();
 		StringBuffer sRandomString = new StringBuffer();
 
 		// Now lets return the number of characters requested
 		for (int j = 0; j < length; j++) {
-			int rndm = generator.nextInt(61) + 0;
+			int rndm = hdrRndm.nextInt(61) + 0;
 			String sItem = mapOfCharacters[rndm];
 			sRandomString.append(sItem);
 		}

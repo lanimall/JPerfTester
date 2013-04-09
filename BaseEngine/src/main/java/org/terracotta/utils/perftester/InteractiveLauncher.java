@@ -1,11 +1,10 @@
-package org.terracotta.utils.perftester.cache.launchers;
+package org.terracotta.utils.perftester;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.commons.cache.configs.GlobalConfigSingleton;
 
 /**
  * @author Fabien Sanglier
@@ -16,20 +15,16 @@ public class InteractiveLauncher {
 	private final LauncherAPI api;
 	
 	public InteractiveLauncher(LauncherAPI api) {
+		if (null == api){
+			throw new IllegalArgumentException("Could not find the api to work with.");
+		}
+		
+		if (!api.isReady()){
+			throw new IllegalArgumentException("The api is not ready. Verify config is accurate.");
+		}
+		
 		this.api = api;
 		printLineSeparator();
-
-		if (null == this.api.getCache()){
-			System.out.println("Could not find the cache to work on. Verify config file path for ehcache is accurate.");
-			System.exit(1);
-		}
-	}
-
-	public static void main(String[] args) throws Exception {
-		InteractiveLauncher launcher = new InteractiveLauncher(new LauncherAPI(GlobalConfigSingleton.getInstance().getCacheName()));
-		launcher.run(args);
-		System.out.println("Completed");
-		System.exit(0);
 	}
 
 	public void printLineSeparator(){

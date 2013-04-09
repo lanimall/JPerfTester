@@ -1,4 +1,4 @@
-package org.terracotta.utils.perftester.cache.launchers;
+package org.terracotta.utils.perftester.cache;
 
 import net.sf.ehcache.Cache;
 
@@ -6,10 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.utils.commons.cache.CacheUtils;
 import org.terracotta.utils.commons.cache.configs.GlobalConfigSingleton;
+import org.terracotta.utils.perftester.LauncherAPI;
+import org.terracotta.utils.perftester.cache.launchers.BaseCacheLauncher;
+import org.terracotta.utils.perftester.cache.launchers.CachePutLauncher;
+import org.terracotta.utils.perftester.cache.launchers.CacheRandomGetLauncher;
+import org.terracotta.utils.perftester.cache.launchers.CacheRandomMixLauncher;
+import org.terracotta.utils.perftester.cache.launchers.CacheSearchLauncher;
+import org.terracotta.utils.perftester.cache.launchers.CacheSequentialGetLauncher;
 import org.terracotta.utils.perftester.generators.ObjectGeneratorFactory;
 
-public class LauncherAPI {
-	private static Logger log = LoggerFactory.getLogger(InteractiveLauncher.class);
+public class CacheLauncherAPI implements LauncherAPI {
+	private static Logger log = LoggerFactory.getLogger(CacheLauncher.class);
 	private Cache cache = null;
 
 	private static int operationIdCounter = 1;
@@ -59,7 +66,7 @@ public class LauncherAPI {
 		}
 	}
 	
-	public LauncherAPI(String cacheName) {
+	public CacheLauncherAPI(String cacheName) {
 		try {
 			this.cache = CacheUtils.getCache(cacheName);
 		} catch (Exception e) {
@@ -67,14 +74,16 @@ public class LauncherAPI {
 		}
 	}
 	
-	public LauncherAPI(Cache cache) {
+	public CacheLauncherAPI(Cache cache) {
 		this.cache = cache;
 	}
 
-	protected Cache getCache() {
-		return cache;
+	@Override
+	public boolean isReady() {
+		return null != getCache();
 	}
-	
+
+	@Override
 	public String[] getOptions(){
 		String[] options = new String[OPERATIONS.values().length];
 		int i = 0;
@@ -85,6 +94,7 @@ public class LauncherAPI {
 		return options;
 	}
 	
+	@Override
 	public boolean launch(String command, String[] args) throws Exception{
 		BaseCacheLauncher cacheLauncher = null;
 
@@ -183,6 +193,10 @@ public class LauncherAPI {
 		}
 
 		return true;
+	}
+	
+	protected Cache getCache() {
+		return cache;
 	}
 	
 	//the following method are created to potentially be overwritten by descendant launchers
