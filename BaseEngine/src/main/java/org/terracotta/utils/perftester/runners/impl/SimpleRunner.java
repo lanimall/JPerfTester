@@ -28,9 +28,10 @@ public class SimpleRunner extends KeyValueRunner<Long, Object> {
 	}
 
 	@Override
-	public void doUnitOfWork(Long key, Object value) {
+	public Object doUnitOfWork(Long key, Object value) {
 		if(isDebug)
 			log.debug("Do something with this key:" + key);
+		return null;
 	}
 	
 	public static class SimpleIterativeRunnerFactory extends OpsCountRunnerFactory {

@@ -31,10 +31,10 @@ public class CacheSearchOperation extends AbstractCacheKeyRunner<Query> {
 	}
 	
 	@Override
-	public void doUnitOfWork(Query query) {
+	public Object doUnitOfWork(Query query) {
 		if(null == query){
 			log.info("Query is null...doing nothing");
-			return;
+			return null;
 		}
 			
 		Results results = query.execute();
@@ -50,7 +50,7 @@ public class CacheSearchOperation extends AbstractCacheKeyRunner<Query> {
 				log.trace("Entry " + entry.getKey() + " found is " + entry.getValue());
 			}
 		}
-		results.discard();
+		return results;
 	}
 	
 	public static class CacheSearchOperationFactory extends CacheRunnerFactory {

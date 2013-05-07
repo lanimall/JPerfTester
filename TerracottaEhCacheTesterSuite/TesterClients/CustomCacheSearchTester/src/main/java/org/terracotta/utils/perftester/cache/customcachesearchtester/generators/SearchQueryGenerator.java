@@ -45,6 +45,7 @@ public class SearchQueryGenerator extends RandomGenerator<Query> {
 					cache,
 					new Attribute[] {cache.getSearchAttribute("cUrl")}, 
 					new String[] {queryValuesGenerator.generateRandomUrlSearch(null, null, null)}, 
+					true,
 					false, 
 					maxResults);
 			query.end();
@@ -54,6 +55,7 @@ public class SearchQueryGenerator extends RandomGenerator<Query> {
 					cache,
 					new Attribute[] {cache.getSearchAttribute("cUrl")}, 
 					new String[] {queryValuesGenerator.generateRandomUrlSearch(queryValuesGenerator.generateRandomNodeId(), null, null)}, 
+					true,
 					false, 
 					maxResults);
 			query.end();
@@ -63,6 +65,7 @@ public class SearchQueryGenerator extends RandomGenerator<Query> {
 					cache,
 					new Attribute[] {cache.getSearchAttribute("cUrl")}, 
 					new String[] {queryValuesGenerator.generateRandomUrlSearch(queryValuesGenerator.generateRandomNodeId(), queryValuesGenerator.generateRandomAccountId(), null)}, 
+					true,
 					false, 
 					maxResults);
 			query.end();
@@ -72,6 +75,7 @@ public class SearchQueryGenerator extends RandomGenerator<Query> {
 					cache,
 					new Attribute[] {cache.getSearchAttribute("cUrl")}, 
 					new String[] {queryValuesGenerator.generateRandomUrlSearch(null, null, null)}, 
+					true,
 					false, 
 					maxResults,
 					false);
@@ -83,6 +87,7 @@ public class SearchQueryGenerator extends RandomGenerator<Query> {
 					cache,
 					new Attribute[] {cache.getSearchAttribute("cUrl")}, 
 					new String[] {queryValuesGenerator.generateRandomUrlSearch(null, null, null)}, 
+					true,
 					false, 
 					maxResults,
 					false);
@@ -94,6 +99,7 @@ public class SearchQueryGenerator extends RandomGenerator<Query> {
 					cache,
 					new Attribute[] {cache.getSearchAttribute("cUrl")}, 
 					new String[] {queryValuesGenerator.generateRandomUrlSearch(null, null, null)}, 
+					true,
 					false, 
 					maxResults,
 					false);

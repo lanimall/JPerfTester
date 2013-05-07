@@ -22,4 +22,8 @@ public interface Runner extends Cloneable, Runnable {
 	void setFinalizeStatsBtwExecute(boolean enableFinalize);
 	
 	void setPrintStatsAfterExecute(boolean enablePrint);
+	
+	void setIncludeDoBeforeInTiming(boolean includeDoBeforeInTiming);
+	
+	void setIncludeDoAfterInTiming(boolean includeDoAfterInTiming);
 }

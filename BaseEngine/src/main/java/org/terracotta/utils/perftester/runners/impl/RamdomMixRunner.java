@@ -65,6 +65,24 @@ public class RamdomMixRunner extends BaseRunner {
 		this.statsOperationObserver = new StatsOperationObserver(operations);
 	}
 
+	@Override
+	public boolean isResetStatsBtwExecute() {
+		// TODO Auto-generated method stub
+		return super.isResetStatsBtwExecute();
+	}
+
+	@Override
+	public boolean isFinalizeStatsBtwExecute() {
+		// TODO Auto-generated method stub
+		return super.isFinalizeStatsBtwExecute();
+	}
+
+	@Override
+	public boolean isPrintStatsAfterExecute() {
+		// TODO Auto-generated method stub
+		return super.isPrintStatsAfterExecute();
+	}
+
 	private void resetCounterOperationMix(){
 		opsIterationsCountDown.clear();
 		for(int i=0; i<randomOperationsPercentMix.length; i++){
@@ -104,7 +122,7 @@ public class RamdomMixRunner extends BaseRunner {
 				} catch (Exception e) {
 					log.error("Error during execution of the operation", e);
 				}
-			} while (!termination.isDone());
+			} while (!termination.isDone(null));
 		} catch(Exception e) {
 			log.error("Error in processing Pending Events.", e);
 		} finally {

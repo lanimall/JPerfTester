@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.naming.ldap.Rdn;
-
 /**
  * @author Karthik Lalithraj
  * @author Eric Mizell
@@ -50,9 +48,9 @@ public class RandomUtil {
 		return value;
 	}
 
-	public int generateRandomInt(int minValue, int maxValue, boolean maxInclusive) throws Exception{
+	public int generateRandomInt(int minValue, int maxValue, boolean maxInclusive) {
 		if(maxValue < minValue)
-			throw new Exception("max value should be higher than min value");
+			throw new IllegalArgumentException("max value should be higher than min value");
 
 		int rdmValue;
 		if(maxInclusive)
@@ -92,7 +90,7 @@ public class RandomUtil {
 		return value;
 	}
 
-	public BigDecimal generateRandomDecimal(int Length) throws Exception{
+	public BigDecimal generateRandomDecimal(int Length) {
 		if(Length == 0){
 			return null;
 		}
@@ -102,7 +100,7 @@ public class RandomUtil {
 		return new BigDecimal(sNums);
 	}
 
-	public String generateRandomAlphaString(int StringLength)throws Exception{
+	public String generateRandomAlphaString(int StringLength) {
 		if(StringLength == 0){
 			return null;
 		}
@@ -114,7 +112,7 @@ public class RandomUtil {
 		}
 		return returnVal.toString();
 	}
-	public String generateRandomText(int StringLength)throws Exception{
+	public String generateRandomText(int StringLength) {
 		if(StringLength == 0){
 			return null;
 		}
@@ -126,7 +124,7 @@ public class RandomUtil {
 		}
 		return returnVal.toString();
 	}
-	public String generateRandomNumericString(int StringLength)throws Exception{
+	public String generateRandomNumericString(int StringLength) {
 		if(StringLength == 0){
 			return null;
 		}
@@ -138,7 +136,7 @@ public class RandomUtil {
 		return returnVal.toString();
 	}
 
-	public int[] generateRandomIntArray(int arrayLength, int from, int to) throws Exception{
+	public int[] generateRandomIntArray(int arrayLength, int from, int to) {
 		int[] array = new int[arrayLength];
 		for(int i=0;i<arrayLength; i++){
 			array[i] = generateRandomInt(from, to, true);
@@ -147,7 +145,7 @@ public class RandomUtil {
 		return array;
 	}
 	
-	public float[] generateRandomFloatArray(int arrayLength) throws Exception{
+	public float[] generateRandomFloatArray(int arrayLength) {
 		float[] array = new float[arrayLength];
 		for(int i=0;i<arrayLength; i++){
 			array[i] = generateRandomFloat();
@@ -156,7 +154,7 @@ public class RandomUtil {
 		return array;
 	}
 	
-	public long[] generateRandomLongArray(int arrayLength, long from, long to) throws Exception{
+	public long[] generateRandomLongArray(int arrayLength, long from, long to) {
 		long[] array = new long[arrayLength];
 		for(int i=0;i<arrayLength; i++){
 			array[i] = generateRandomLong(from, to);
@@ -165,7 +163,7 @@ public class RandomUtil {
 		return array;
 	}
 	
-	public String[] generateRandomStringArray(int arrayLength, int randomStringLength) throws Exception{
+	public String[] generateRandomStringArray(int arrayLength, int randomStringLength) {
 		String[] array = new String[arrayLength];
 		for(int i=0;i<arrayLength; i++){
 			array[i] = generateRandomText(randomStringLength);
@@ -174,7 +172,7 @@ public class RandomUtil {
 		return array;
 	}
 
-	public <T> T getRandomObjectFromList(List<T> objList)throws Exception{
+	public <T> T getRandomObjectFromList(List<T> objList) {
 		if(objList == null || objList.size() == 0){
 			return null;
 		} else if(objList.size() == 1){
@@ -184,7 +182,7 @@ public class RandomUtil {
 		return objList.get(lGetObjIndex);
 	}
 
-	public <T> T getRandomObjectFromArray(T[] objArray)throws Exception{
+	public <T> T getRandomObjectFromArray(T[] objArray) {
 		if(objArray == null || objArray.length == 0){
 			return null;
 		}else if(objArray.length == 1){
@@ -199,7 +197,7 @@ public class RandomUtil {
 	 * @param length the total length of random characters you wish returned
 	 * @return <b>string</b> a randomly generated string of alphanumeric characters only
 	 */
-	public String generateAlphaNumericRandom(int length) throws Exception{
+	public String generateAlphaNumericRandom(int length) {
 		String[] mapOfCharacters = getCharacterMap();
 		StringBuffer sRandomString = new StringBuffer();
 
@@ -249,7 +247,7 @@ public class RandomUtil {
 		return new Date(generateRandomLong(calFrom.getTimeInMillis(), calTo.getTimeInMillis()));
 	}
 	
-	private String[] getCharacterMap() throws Exception{
+	private String[] getCharacterMap() {
 		String[] universeValues = new String[62];
 		int asciiAlpha = 65; // The start of the alpha ascii character set
 

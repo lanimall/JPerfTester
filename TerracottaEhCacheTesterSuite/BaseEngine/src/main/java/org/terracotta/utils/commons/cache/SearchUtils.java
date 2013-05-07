@@ -11,23 +11,31 @@ import net.sf.ehcache.search.expression.Criteria;
  */
 public class SearchUtils {
 
-	public static Query buildSearchTextQuery(Cache cache, Attribute[] attributes, String[] searchText, boolean isOrOperator, int maxResults){
-		return buildSearchTextQuery(cache, attributes, searchText, isOrOperator, maxResults, true);
+	public static Query buildSearchTextQuery(Cache cache, Attribute[] attributes, String[] searchText, boolean useLikeOperator, boolean isOrOperator, int maxResults){
+		return buildSearchTextQuery(cache, attributes, searchText, useLikeOperator, isOrOperator, maxResults, true);
 	}
 	
-	public static Query buildSearchTextQuery(Cache cache, Attribute[] attributes, String[] searchText, boolean isOrOperator, int maxResults, boolean finalize){
+	public static Query buildSearchTextQuery(Cache cache, Attribute[] attributes, String[] searchText, boolean useLikeOperator, boolean isOrOperator, int maxResults, boolean finalize){
 		Query  query = cache.createQuery();
 		Criteria searchCriteria = null;
-
+		
 		if(null != attributes && null != searchText && attributes.length == searchText.length){
 			for(int i = 0; i < attributes.length; i++){
 				if(null == searchCriteria) //this is the first time it enters the loop: create the criteria instance
 					searchCriteria = attributes[i].ilike(searchText[i]);
 				else {  //all other times, it goes here and add the OR
-					if(isOrOperator)
-						searchCriteria = searchCriteria.or(attributes[i].ilike(searchText[i]));
-					else
-						searchCriteria = searchCriteria.and(attributes[i].ilike(searchText[i]));
+					if(isOrOperator){
+						if(useLikeOperator)
+							searchCriteria = searchCriteria.or(attributes[i].ilike(searchText[i]));
+						else
+							searchCriteria = searchCriteria.or(attributes[i].eq(searchText[i]));
+					}
+					else {
+						if(useLikeOperator)
+							searchCriteria = searchCriteria.and(attributes[i].ilike(searchText[i]));
+						else
+							searchCriteria = searchCriteria.and(attributes[i].eq(searchText[i]));
+					}
 				}
 			}
 		} else {

@@ -27,7 +27,7 @@ public class CachePutOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
 	}
 
 	@Override
-	public void doUnitOfWork(K key, V value) {
+	public Object doUnitOfWork(K key, V value) {
 		if(isDebug)
 			log.debug("Putting cache entry with key:" + key);
 		
@@ -35,5 +35,7 @@ public class CachePutOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
 			cache.put(new Element(key, value));
 		else
 			log.warn("key is null...cannot add a new cache entry");
+		
+		return null;
 	}
 }

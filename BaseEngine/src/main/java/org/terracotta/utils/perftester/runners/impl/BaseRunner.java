@@ -25,21 +25,23 @@ public abstract class BaseRunner implements Runner {
 	protected Condition termination;
 	protected final RandomUtil randomUtil = new RandomUtil();
 	protected StatsOperationObserver statsOperationObserver;
-	
+
+	private boolean includeDoBeforeInTiming = false;
+	private boolean includeDoAfterInTiming = false;
 	private boolean resetStatsBtwExecute = true;
 	private boolean finalizeStatsBtwExecute = true;
 	private boolean printStatsAfterExecute = true;
-	
+
 	protected BaseRunner(Condition termination) {
 		super();
 		this.termination = termination;
 	}
-	
+
 	@Override
 	public String getName(){
 		return this.getClass().toString();
 	}
-	
+
 	@Override
 	public Object clone() {
 		try {
@@ -47,7 +49,7 @@ public abstract class BaseRunner implements Runner {
 			cloned.stats = new Stats(stats);
 			if(this.statsOperationObserver != null)
 				cloned.statsOperationObserver = (StatsOperationObserver)this.statsOperationObserver.clone();
-			
+
 			return cloned;
 		} catch (CloneNotSupportedException e) {
 			return null;
@@ -62,7 +64,7 @@ public abstract class BaseRunner implements Runner {
 	public void setStats(Stats stats) {
 		this.stats = stats;
 	}
-	
+
 	public StatsOperationObserver getStatsOperationObserver() {
 		return statsOperationObserver;
 	}
@@ -79,7 +81,7 @@ public abstract class BaseRunner implements Runner {
 	public void setTermination(Condition termination) {
 		this.termination = termination;
 	}
-	
+
 	@Override
 	public void doBeforeRun() {
 		//noop
@@ -89,7 +91,54 @@ public abstract class BaseRunner implements Runner {
 	public void doAfterRun() {
 		//noop
 	}
-	
+
+	@Override
+	public void run() {
+		try {
+			if(!isIncludeDoBeforeInTiming())
+				doBeforeRun();
+
+			//reset stat before execute
+			if(isResetStatsBtwExecute())
+				stats.reset();
+
+			if(isIncludeDoBeforeInTiming())
+				doBeforeRun();
+
+			execute();
+		} catch(Exception e) {
+			log.error("Error in processing Pending Events.", e);
+		} finally {
+			if(isIncludeDoAfterInTiming()){
+				try {
+					//make sure we execute the after load
+					doAfterRun();
+				} catch (Exception e) {
+					log.error("Error in during execution of the afterLoad().", e);
+				}
+			}
+			
+			//finalize stats after execute
+			if(isFinalizeStatsBtwExecute())
+				stats.finalise();
+
+			if(!isIncludeDoAfterInTiming()){
+				try {
+					//make sure we execute the after load
+					doAfterRun();
+				} catch (Exception e) {
+					log.error("Error in during execution of the afterLoad().", e);
+				}
+			}
+
+			if(null != getStatsOperationObserver())
+				stats.add(getStatsOperationObserver().getAggregateStats());
+
+			if(isPrintStatsAfterExecute())
+				stats.printToConsole(printStatsHeaderText(),printStatsFooterText());
+		}
+	}
+
 	@Override
 	public void setResetStatsBtwExecute(boolean enableReset) {
 		this.resetStatsBtwExecute = enableReset;
@@ -105,38 +154,22 @@ public abstract class BaseRunner implements Runner {
 		this.printStatsAfterExecute = enablePrint;
 	}
 
-	@Override
-	public void run() {
-		try {
-			doBeforeRun();
-			
-			//reset stat before execute
-			if(isResetStatsBtwExecute())
-				stats.reset();
-			
-			execute();
-		} catch(Exception e) {
-			log.error("Error in processing Pending Events.", e);
-		} finally {
-			//finalize stats after execute
-			if(isFinalizeStatsBtwExecute())
-				stats.finalise();
-			
-			try {
-				//make sure we execute the after load
-				doAfterRun();
-			} catch (Exception e) {
-				log.error("Error in during execution of the afterLoad().", e);
-			}
-			
-			if(null != getStatsOperationObserver())
-				stats.add(getStatsOperationObserver().getAggregateStats());
-			
-			if(isPrintStatsAfterExecute())
-				stats.printToConsole(printStatsHeaderText(),printStatsFooterText());
-		}
+	public void setIncludeDoBeforeInTiming(boolean includeDoBeforeInTiming) {
+		this.includeDoBeforeInTiming = includeDoBeforeInTiming;
 	}
-	
+
+	public void setIncludeDoAfterInTiming(boolean includeDoAfterInTiming) {
+		this.includeDoAfterInTiming = includeDoAfterInTiming;
+	}
+
+	public boolean isIncludeDoBeforeInTiming() {
+		return includeDoBeforeInTiming;
+	}
+
+	public boolean isIncludeDoAfterInTiming() {
+		return includeDoAfterInTiming;
+	}
+
 	public boolean isResetStatsBtwExecute() {
 		return resetStatsBtwExecute;
 	}
@@ -152,10 +185,10 @@ public abstract class BaseRunner implements Runner {
 	protected String printStatsHeaderText(){
 		return "Final Stats for:" + getName();
 	}
-	
+
 	protected String printStatsFooterText(){
 		return "";
 	}
-	
+
 	protected abstract void execute();
 }

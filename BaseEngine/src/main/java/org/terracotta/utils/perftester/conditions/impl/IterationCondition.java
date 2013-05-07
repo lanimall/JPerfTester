@@ -6,7 +6,7 @@ import org.terracotta.utils.perftester.conditions.Condition;
  * @author Fabien Sanglier
  * 
  */
-public class IterationCondition implements Condition {
+public class IterationCondition extends BaseNoParamCondition implements Condition {
 	protected final long nbIterations;
 	private long counter = 0;
 

@@ -27,7 +27,7 @@ public class CacheGetOperation<K> extends AbstractCacheKeyRunner<K> {
 	}
 	
 	@Override
-	public void doUnitOfWork(K key) {
+	public Object doUnitOfWork(K key) {
 		if(isDebug)
 			log.debug("Getting cache entry with key:" + key);
 		
@@ -39,6 +39,8 @@ public class CacheGetOperation<K> extends AbstractCacheKeyRunner<K> {
 			if(isDebug)
 				log.debug("Could not find the object in cache for key:" + key);
 		}
+		
+		return obj;
 	}
 
 	public static class CacheGetOperationFactory extends CacheRunnerFactory {

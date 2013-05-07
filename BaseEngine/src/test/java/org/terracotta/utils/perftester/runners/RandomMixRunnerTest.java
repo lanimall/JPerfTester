@@ -28,8 +28,9 @@ public class RandomMixRunnerTest {
 			}
 
 			@Override
-			public void doUnitOfWork(Long key, Object value) {
+			public Object doUnitOfWork(Long key, Object value) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
+				return null;
 			}
 		}, 45);
 		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator(), null){
@@ -39,8 +40,9 @@ public class RandomMixRunnerTest {
 			}
 
 			@Override
-			public void doUnitOfWork(Long key, Object value) {
+			public Object doUnitOfWork(Long key, Object value) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
+				return null;
 			}
 		}, 35);
 		runnerFactory.addOperationMix(new SimpleRunner(new IterationCondition(1),new SequentialGenerator(), null){
@@ -50,8 +52,9 @@ public class RandomMixRunnerTest {
 			}
 
 			@Override
-			public void doUnitOfWork(Long key, Object value) {
+			public Object doUnitOfWork(Long key, Object value) {
 				//log.info("Running " + getName() + " and do something with this key:" + key);
+				return null;
 			}
 		}, 20);
 		

@@ -4,6 +4,6 @@ package org.terracotta.utils.perftester.conditions;
  * @author Fabien Sanglier
  * 
  */
-public interface Condition extends Cloneable {
-	boolean isDone();
+public interface Condition<T> extends Cloneable {
+	boolean isDone(T obj);
 }
