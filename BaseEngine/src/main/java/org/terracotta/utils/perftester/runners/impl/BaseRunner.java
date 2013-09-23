@@ -26,8 +26,6 @@ public abstract class BaseRunner implements Runner {
 	protected final RandomUtil randomUtil = new RandomUtil();
 	protected StatsOperationObserver statsOperationObserver;
 
-	private boolean includeDoBeforeInTiming = false;
-	private boolean includeDoAfterInTiming = false;
 	private boolean resetStatsBtwExecute = true;
 	private boolean finalizeStatsBtwExecute = true;
 	private boolean printStatsAfterExecute = true;
@@ -83,53 +81,19 @@ public abstract class BaseRunner implements Runner {
 	}
 
 	@Override
-	public void doBeforeRun() {
-		//noop
-	}
-
-	@Override
-	public void doAfterRun() {
-		//noop
-	}
-
-	@Override
 	public void run() {
 		try {
-			if(!isIncludeDoBeforeInTiming())
-				doBeforeRun();
-
 			//reset stat before execute
 			if(isResetStatsBtwExecute())
 				stats.reset();
-
-			if(isIncludeDoBeforeInTiming())
-				doBeforeRun();
 
 			execute();
 		} catch(Exception e) {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
-			if(isIncludeDoAfterInTiming()){
-				try {
-					//make sure we execute the after load
-					doAfterRun();
-				} catch (Exception e) {
-					log.error("Error in during execution of the afterLoad().", e);
-				}
-			}
-			
 			//finalize stats after execute
 			if(isFinalizeStatsBtwExecute())
 				stats.finalise();
-
-			if(!isIncludeDoAfterInTiming()){
-				try {
-					//make sure we execute the after load
-					doAfterRun();
-				} catch (Exception e) {
-					log.error("Error in during execution of the afterLoad().", e);
-				}
-			}
 
 			if(null != getStatsOperationObserver())
 				stats.add(getStatsOperationObserver().getAggregateStats());
@@ -152,22 +116,6 @@ public abstract class BaseRunner implements Runner {
 	@Override
 	public void setPrintStatsAfterExecute(boolean enablePrint) {
 		this.printStatsAfterExecute = enablePrint;
-	}
-
-	public void setIncludeDoBeforeInTiming(boolean includeDoBeforeInTiming) {
-		this.includeDoBeforeInTiming = includeDoBeforeInTiming;
-	}
-
-	public void setIncludeDoAfterInTiming(boolean includeDoAfterInTiming) {
-		this.includeDoAfterInTiming = includeDoAfterInTiming;
-	}
-
-	public boolean isIncludeDoBeforeInTiming() {
-		return includeDoBeforeInTiming;
-	}
-
-	public boolean isIncludeDoAfterInTiming() {
-		return includeDoAfterInTiming;
 	}
 
 	public boolean isResetStatsBtwExecute() {

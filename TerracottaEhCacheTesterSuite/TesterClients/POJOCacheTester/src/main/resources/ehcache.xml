@@ -16,17 +16,6 @@
 		overflowToOffHeap="true" maxBytesLocalOffHeap="${ehcache.maxBytesLocalOffHeap}"
 		eternal="true" maxElementsOnDisk="${ehcache.maxElementsOnDisk}"
 		statistics="${ehcache.cache.statistics}">
-		
-		<searchable keys="false" values="false">
-		  <searchAttribute name="firstName" expression="value.firstName.toLowerCase()"/>
-		  <searchAttribute name="lastName" expression="value.lastName.toLowerCase()"/>
-		  <searchAttribute name="age" expression="value.age"/>
-		  <searchAttribute name="dob" expression="value.dob"/>
-          <searchAttribute name="city" expression="value.address.city"/>
-          <searchAttribute name="state" expression="value.address.state"/>
-          <searchAttribute name="zip" expression="value.address.zip"/>
-          <searchAttribute name="country" expression="value.address.country"/>
-        </searchable>
         
 		<terracotta compressionEnabled="true">
 			<nonstop enabled="true" immediateTimeout="false"
@@ -35,20 +24,4 @@
 			</nonstop>
 		</terracotta>
 	</cache>
-	
-	<!--
-	<cache name="BytesCache" 
-		maxEntriesLocalHeap="${ehcache.maxEntriesLocalHeap}"
-		overflowToOffHeap="true" maxBytesLocalOffHeap="${ehcache.maxBytesLocalOffHeap}"
-		eternal="true" maxElementsOnDisk="${ehcache.maxElementsOnDisk}"
-		statistics="${ehcache.cache.statistics}">
-        
-		<terracotta compressionEnabled="true">
-			<nonstop enabled="true" immediateTimeout="false"
-				timeoutMillis="5000">
-				<timeoutBehavior type="localReads" />
-			</nonstop>
-		</terracotta>
-	</cache>
-	-->
 </ehcache>

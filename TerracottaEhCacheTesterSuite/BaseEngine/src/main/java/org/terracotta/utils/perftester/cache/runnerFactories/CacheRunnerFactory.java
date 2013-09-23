@@ -1,4 +1,4 @@
-package org.terracotta.utils.perftester.cache.runners;
+package org.terracotta.utils.perftester.cache.runnerFactories;
 
 import net.sf.ehcache.Cache;
 

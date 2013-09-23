@@ -9,10 +9,6 @@ import org.terracotta.utils.perftester.monitoring.Stats;
 public interface Runner extends Cloneable, Runnable {
 	String getName();
 	
-	void doBeforeRun();
-	
-	void doAfterRun();
-	
 	Stats getStats();
 	
 	Object clone();
@@ -22,8 +18,4 @@ public interface Runner extends Cloneable, Runnable {
 	void setFinalizeStatsBtwExecute(boolean enableFinalize);
 	
 	void setPrintStatsAfterExecute(boolean enablePrint);
-	
-	void setIncludeDoBeforeInTiming(boolean includeDoBeforeInTiming);
-	
-	void setIncludeDoAfterInTiming(boolean includeDoAfterInTiming);
 }

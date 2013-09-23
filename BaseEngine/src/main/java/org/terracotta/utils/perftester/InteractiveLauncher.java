@@ -47,6 +47,7 @@ public class InteractiveLauncher {
 		for(String option : api.getOptions()){
 			System.out.println(option);
 		}
+		System.out.println("Q - Quit program");
 	}
 
 	public boolean processInput(String input) throws Exception{
@@ -122,6 +123,11 @@ public class InteractiveLauncher {
 	}
 
 	public boolean processInput(String input, String[] args) throws Exception {
+		if("Q".equals(input)){
+			System.out.println("Exiting program...");
+			return false;
+		}
+		
 		System.out.println("######################## Processing command '" + input + "' with args:" + joinStringArray(args, ARGS_SEPARATOR) + "");
 		return api.launch(input, args);
 	}

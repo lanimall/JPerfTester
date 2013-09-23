@@ -4,7 +4,6 @@ import net.sf.ehcache.Cache;
 
 import org.terracotta.utils.perftester.cache.runners.CachePutOperation;
 import org.terracotta.utils.perftester.cache.runners.CachePutWithWriterOperation;
-import org.terracotta.utils.perftester.cache.runners.CacheRunnerFactory;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
 import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
@@ -18,7 +17,7 @@ public class CachePutOperationFactory extends CacheRunnerFactory {
 	private final ObjectGenerator keyGen;
 	
 	//if using this constructor, sequential generator 
-	public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator, boolean putWithWriter) {
+	public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator) {
 		this(cache, numOperations, null, valueGenerator);
 	}
 

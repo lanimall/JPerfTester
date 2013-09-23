@@ -5,6 +5,7 @@ import net.sf.ehcache.Element;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terracotta.utils.perftester.cache.runnerFactories.CacheRunnerFactory;
 import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;

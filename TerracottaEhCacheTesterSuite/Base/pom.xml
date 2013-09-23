@@ -28,8 +28,8 @@
 	</developers>
 
 	<properties>
-		<ehcache-core-ee.version>2.5.2</ehcache-core-ee.version>
-		<ehcache-terracotta-ee.version>2.5.2</ehcache-terracotta-ee.version>
+		<ehcache-core-ee.version>2.6.5</ehcache-core-ee.version>
+		<ehcache-terracotta-ee.version>2.6.5</ehcache-terracotta-ee.version>
 	</properties>
 
 	<dependencies>
@@ -38,12 +38,14 @@
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core-ee</artifactId>
 			<version>${ehcache-core-ee.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-terracotta-ee</artifactId>
 			<version>${ehcache-terracotta-ee.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

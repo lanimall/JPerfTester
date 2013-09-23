@@ -43,6 +43,11 @@ public class RandomUtil {
 		return generateRandomInt(ratioTrueFalse) == 0;
 	}
 
+	public int generateRandomInt(){
+		int value = hdrRndm.nextInt();
+		return value;
+	}
+	
 	public int generateRandomInt(int length){
 		int value = hdrRndm.nextInt(length);
 		return value;

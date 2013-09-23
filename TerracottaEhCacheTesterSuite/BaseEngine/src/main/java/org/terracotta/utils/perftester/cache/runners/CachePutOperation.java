@@ -36,6 +36,8 @@ public class CachePutOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
 		else
 			log.warn("key is null...cannot add a new cache entry");
 		
-		return null;
+		//do a get right after
+		Element elem = cache.get(key);
+		return (null != elem)?elem.getObjectValue():null;
 	}
 }

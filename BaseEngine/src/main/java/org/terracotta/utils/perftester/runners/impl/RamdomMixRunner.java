@@ -10,6 +10,7 @@ import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.monitoring.StatsOperationObserver;
 import org.terracotta.utils.perftester.runners.OpsCountRunnerFactory;
 import org.terracotta.utils.perftester.runners.Runner;
+import org.terracotta.utils.perftester.runners.RunnerFactory;
 
 /**
  * @author Fabien Sanglier
@@ -178,16 +179,20 @@ public class RamdomMixRunner extends BaseRunner {
 	}
 
 	public static class RamdomMixRunnerFactory extends OpsCountRunnerFactory {
-		private List<Runner> operations = new LinkedList<Runner>();
+		private List<RunnerFactory> operationFactories = new LinkedList<RunnerFactory>();
 		private List<Integer> randomOperationsPercentMix = new LinkedList<Integer>();
-
+		private int totalMix = 0;
+		
 		public RamdomMixRunnerFactory(long numOperations) {
 			super(numOperations);
 		}
 
-		public void addOperationMix(Runner operation, int mix){
-			if(null != operation && mix > 0){
-				operations.add(operation);
+		public void addOperationMix(RunnerFactory operationFactory, int mix){
+			if(null != operationFactory && mix > 0){
+				if((totalMix+=mix) > 100)
+					throw new IllegalArgumentException("The total mix is higher than 100%. Please check the mix values.");
+				
+				operationFactories.add(operationFactory);
 				randomOperationsPercentMix.add(mix);
 			} else {
 				log.info("Not adding the operation mix because either the mix or the operation is null");
@@ -197,9 +202,9 @@ public class RamdomMixRunner extends BaseRunner {
 		@Override
 		public RamdomMixRunner create() {
 			//make sure the operations are cloned properly between each create()
-			Runner[] ops = new Runner[operations.size()];
-			for(int i=0; i<operations.size(); i++){
-				ops[i] = (Runner)operations.get(i).clone();
+			Runner[] ops = new Runner[operationFactories.size()];
+			for(int i=0; i<operationFactories.size(); i++){
+				ops[i] = (Runner)operationFactories.get(i).create();
 			}
 
 			return new RamdomMixRunner(

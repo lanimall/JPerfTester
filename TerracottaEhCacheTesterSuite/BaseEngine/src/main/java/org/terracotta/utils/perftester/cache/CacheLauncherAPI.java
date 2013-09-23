@@ -4,68 +4,369 @@ import net.sf.ehcache.Cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terracotta.utils.commons.ClazzUtils;
 import org.terracotta.utils.commons.cache.CacheUtils;
 import org.terracotta.utils.commons.cache.configs.GlobalConfigSingleton;
 import org.terracotta.utils.perftester.LauncherAPI;
-import org.terracotta.utils.perftester.cache.launchers.BaseCacheLauncher;
-import org.terracotta.utils.perftester.cache.launchers.CachePutLauncher;
-import org.terracotta.utils.perftester.cache.launchers.CacheRandomGetLauncher;
-import org.terracotta.utils.perftester.cache.launchers.CacheRandomMixLauncher;
-import org.terracotta.utils.perftester.cache.launchers.CacheSearchLauncher;
-import org.terracotta.utils.perftester.cache.launchers.CacheSequentialGetLauncher;
+import org.terracotta.utils.perftester.cache.launchers.HarnessCachePutDecorator;
+import org.terracotta.utils.perftester.cache.launchers.HarnessClientSyncDecorator;
+import org.terracotta.utils.perftester.cache.runnerFactories.CachePutOperationFactory;
+import org.terracotta.utils.perftester.cache.runners.CacheGetOperation.CacheGetOperationFactory;
+import org.terracotta.utils.perftester.cache.runners.CacheSearchOperation.CacheSearchOperationFactory;
 import org.terracotta.utils.perftester.generators.ObjectGeneratorFactory;
+import org.terracotta.utils.perftester.generators.impl.RandomNumberGenerator;
+import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
+import org.terracotta.utils.perftester.launchers.ConcurrentLauncher;
+import org.terracotta.utils.perftester.launchers.HarnessLauncher;
+import org.terracotta.utils.perftester.runners.RunnerFactory;
+import org.terracotta.utils.perftester.runners.impl.RamdomMixRunner.RamdomMixRunnerFactory;
 
 public class CacheLauncherAPI implements LauncherAPI {
 	private static Logger log = LoggerFactory.getLogger(CacheLauncher.class);
 	private Cache cache = null;
 
 	private static int operationIdCounter = 1;
-	private enum OPERATIONS {
-		OP_LOAD("Load cache with elements (Usage: @@opInput@@ <number of elements>)"),
-		OP_WARMUP("Perform cache warmup (Usage: @@opInput@@ <Threads> <iterations>)"),
-		OP_RDM_GETS("Perform random gets (Usage: @@opInput@@ <Threads> <iterations>)"),
-		OP_RDM_PUTS("Perform random puts (Usage: @@opInput@@ <Threads> <iterations>)"),
-		OP_RDM_SEARCH("Perform random searches (Usage: @@opInput@@ <Threads> <iterations>)"),
-		OP_RDM_MIX("Perform cache gets/puts/searches (Usage: @@opInput@@ <% Gets> <% Puts> <% Search> (default: 60 25 15))"),
-		OP_QUIT('Q', "Quit program");
 
-		private char opInput;
+	private enum OPERATIONS {
+		OP_WARMUP_PUTS("Warmup phase: Puts cache elements (Usage: @@opInput@@ <Threads> <Total Operations> <?bulk load=*true*|false> <?clear all first=*true*|false>)", 2)
+		{
+			@Override
+			public HarnessLauncher getHarnessLauncher(Cache cache, String[] args) {
+				boolean doBulkLoad = true;
+				boolean doClearAllFirst = true;
+
+				int nbThreads;
+				try{
+					nbThreads = Integer.parseInt(args[0]);
+				} catch (NumberFormatException nfe){
+					nbThreads = 1;
+				}
+
+				int nbOfOperations;
+				try{
+					nbOfOperations = Integer.parseInt(args[1]);
+				} catch (NumberFormatException nfe){
+					nbOfOperations = 0;
+				}
+
+				if(args.length > 2){
+					doBulkLoad = Boolean.parseBoolean(args[2]);
+					if(args.length > 3){
+						doClearAllFirst = Boolean.parseBoolean(args[3]);
+					}
+				}
+
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory());
+
+				RunnerFactory cacheOpFactory = new CachePutOperationFactory(
+						cache, 
+						nbOfOperations/nbThreads, 
+						(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null, 
+								(null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null
+						);
+
+				return new ConcurrentLauncher(
+						nbThreads, 
+						cacheOpFactory, 
+						new HarnessCachePutDecorator(cache, doBulkLoad, doClearAllFirst, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients()));
+			}
+		},
+		OP_WARMUP_GETS("Warmup phase: Get all cache elements (Usage: @@opInput@@ <Threads> <Total Operations>)", 2)
+		{
+			@Override
+			public HarnessLauncher getHarnessLauncher(Cache cache, String[] args) {
+				int nbThreads;
+				try{
+					nbThreads = Integer.parseInt(args[0]);
+				} catch (NumberFormatException nfe){
+					nbThreads = 1;
+				}
+
+				int nbOfOperations;
+				try{
+					nbOfOperations = Integer.parseInt(args[1]);
+				} catch (NumberFormatException nfe){
+					nbOfOperations = 0;
+				}
+
+				long keyStart = GlobalConfigSingleton.getInstance().getCacheWarmerKeyStart();
+				
+				System.out.println("*********** Getting cache entries *************");
+				System.out.println("Params:");
+				System.out.println("Number of Loader Threads: " + nbThreads);
+				System.out.println("Number of objects to fetch: " + nbOfOperations);
+				System.out.println("Start at key: " + keyStart);
+				System.out.println("Number of operations per thread: " + (nbOfOperations/nbThreads));
+				
+				
+				RunnerFactory cacheOpFactory = new CacheGetOperationFactory(
+						cache, 
+						nbOfOperations/nbThreads,
+						new SequentialGenerator(keyStart)
+						);
+
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients()));
+			}
+		},
+		OP_STEADY_GETS("Steady State phase: Cache Gets (Usage: @@opInput@@ <Threads> <Total Operations>)", 2)
+		{
+			@Override
+			public HarnessLauncher getHarnessLauncher(Cache cache, String[] args) {
+				int nbThreads;
+				try{
+					nbThreads = Integer.parseInt(args[0]);
+				} catch (NumberFormatException nfe){
+					nbThreads = 1;
+				}
+
+				int nbOfOperations;
+				try{
+					nbOfOperations = Integer.parseInt(args[1]);
+				} catch (NumberFormatException nfe){
+					nbOfOperations = 0;
+				}
+
+				long keyMinValue = GlobalConfigSingleton.getInstance().getCacheSteadyStateKeyMinValue();
+				long keyMaxValue = GlobalConfigSingleton.getInstance().getCacheSteadyStateKeyMaxValue();
+
+				System.out.println("*********** Getting random cache entries *************");
+				System.out.println("Params:");
+				System.out.println("Number of Loader Threads: " + nbThreads);
+				System.out.println("Number of objects to fetch: " + nbOfOperations);
+				System.out.println("Number of operations per thread: " + (nbOfOperations/nbThreads));
+				System.out.println("Random Key number between " + keyMinValue + " and " + keyMaxValue);
+				
+				RunnerFactory cacheOpFactory = new CacheGetOperationFactory(
+						cache, 
+						nbOfOperations/nbThreads, 
+						new RandomNumberGenerator(keyMinValue, keyMaxValue)
+						);
+
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients()));
+			}
+		},
+		OP_STEADY_PUTS("Steady State phase: Cache Puts (Usage: @@opInput@@ <Threads> <Total Operations>)", 2)
+		{
+			@Override
+			public HarnessLauncher getHarnessLauncher(Cache cache, String[] args) {
+				int nbThreads;
+				try{
+					nbThreads = Integer.parseInt(args[0]);
+				} catch (NumberFormatException nfe){
+					nbThreads = 1;
+				}
+
+				int nbOfOperations;
+				try{
+					nbOfOperations = Integer.parseInt(args[1]);
+				} catch (NumberFormatException nfe){
+					nbOfOperations = 0;
+				}
+
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory());
+
+				RunnerFactory cacheOpFactory = new CachePutOperationFactory(
+						cache, 
+						nbOfOperations/nbThreads, 
+						(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null, 
+								(null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null
+						);
+
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients())); 
+			}
+		},
+		OP_STEADY_SEARCH("Steady State phase: Cache Searches (Usage: @@opInput@@ <Threads> <Total Operations>)", 2){
+			@Override
+			public HarnessLauncher getHarnessLauncher(Cache cache, String[] args) {
+				int nbThreads;
+				try{
+					nbThreads = Integer.parseInt(args[0]);
+				} catch (NumberFormatException nfe){
+					nbThreads = 1;
+				}
+
+				int nbOfOperations;
+				try{
+					nbOfOperations = Integer.parseInt(args[1]);
+				} catch (NumberFormatException nfe){
+					nbOfOperations = 0;
+				}
+
+				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheSearchQueryGenFactory());
+
+				RunnerFactory cacheOpFactory = new CacheSearchOperationFactory(
+						cache, 
+						nbOfOperations/nbThreads, 
+						(null != searchGeneratorFactory)? searchGeneratorFactory.createObjectGenerator():null
+						);
+
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients())); 
+			}
+		},
+		OP_STEADY_MIX("Steady State phase: Mix of Cache Gets/Puts/Searches (Usage: @@opInput@@ <Threads> <Total Operations> <% Gets> <% Puts> <% Search> (default: 60 25 15))", 2){
+			@Override
+			public HarnessLauncher getHarnessLauncher(Cache cache, String[] args) {
+				int nbThreads;
+				try{
+					nbThreads = Integer.parseInt(args[0]);
+				} catch (NumberFormatException nfe){
+					nbThreads = 1;
+				}
+
+				int nbOfOperations;
+				try{
+					nbOfOperations = Integer.parseInt(args[1]);
+				} catch (NumberFormatException nfe){
+					nbOfOperations = 0;
+				}
+
+				RamdomMixRunnerFactory cacheOpFactory = new RamdomMixRunnerFactory(nbOfOperations/nbThreads);
+				
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory());
+				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheSearchQueryGenFactory());
+
+				String[] mixArgs;
+				if(args.length <=2){
+					if(cache.isSearchable())
+						mixArgs = new String[] {"60", "25", "15"};
+					else
+						mixArgs = new String[] {"70", "30"};
+				} else {
+					mixArgs = new String[args.length - 2];
+					for(int i=2; i<args.length;i++){
+						mixArgs[i-2]=args[i];
+					}
+				}
+				
+				for(int i=0; i<mixArgs.length;i++){
+					int mix = 0;
+					try {
+						mix = Integer.parseInt(mixArgs[i]);
+						if(mix > 100)
+							throw new NumberFormatException("Mix value should be 100 or less");
+
+						switch(i){
+						case 0:
+							cacheOpFactory.addOperationMix(
+									new CacheGetOperationFactory(
+											cache, 
+											1,  
+											(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null), 
+									mix);
+							break;
+						case 1:
+							cacheOpFactory.addOperationMix(
+									new CachePutOperationFactory(
+											cache, 
+											1, 
+											(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null, 
+											(null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null
+									),
+									mix);
+							break;
+						case 2:
+							if(null != cache && !cache.isSearchable()){
+								log.error("The cache " + cache.getName() + " is not searchable...not adding this operation mix");
+								break;
+							}
+							
+							cacheOpFactory.addOperationMix(
+									new CacheSearchOperationFactory(
+											cache, 
+											1, 
+											(null != searchGeneratorFactory)?searchGeneratorFactory.createObjectGenerator():null),
+									mix);
+							
+							/*
+							int maxResults = 50;
+							List<Query> queries = new LinkedList<Query>();
+							queries.add(SearchUtils.buildSearchTextQuery(
+									getCache(),
+									new Attribute[] {getCache().getSearchAttribute("firstName")}, 
+									new String[] {"Sar*"}, 
+									false, 
+									maxResults));
+
+							queries.add(SearchUtils.buildSearchTextQuery(
+									getCache(),
+									new Attribute[] {getCache().getSearchAttribute("firstName"), getCache().getSearchAttribute("lastName")}, 
+									new String[] {"Sar*","Carls*"}, 
+									false,
+									maxResults));
+
+							if(null != queries && queries.size() > 0)
+								((CacheRandomMixLauncher)cacheLauncher).addCacheSearchOperationMix(mix, getCache(), queries.toArray(new Query[queries.size()]));
+							 */
+							break;
+						}
+					} catch (Exception e) {
+						log.error("Could not add the operation to the ramdomMix", e);
+					}
+				}
+				
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients()));
+			}
+		};
+
+		private String opInput;
 		private String opDetail;
+		private int opInputParamsMadatorySize;
 
 		private OPERATIONS() {
-			this(operationIdCounter++, "");
+			this(operationIdCounter++, "", 0);
 		}
-		
+
 		private OPERATIONS(String opDetail) {
-			this(operationIdCounter++, opDetail);
+			this(operationIdCounter++, opDetail, 0);
 		}
-		
-		private OPERATIONS(int opInput, String opDetail) {
-			this(new Integer(opInput).toString().charAt(0), opDetail);
+
+		private OPERATIONS(String opDetail, int opInputParamsMadatorySize) {
+			this(operationIdCounter++, opDetail, opInputParamsMadatorySize);
 		}
-		
-		private OPERATIONS(char opInput, String opDetail) {
+
+		private OPERATIONS(int opInput, String opDetail, int opInputParamsMadatorySize) {
+			this(new Integer(opInput).toString(), opDetail, opInputParamsMadatorySize);
+		}
+
+		private OPERATIONS(String opInput, String opDetail, int opInputParamsMadatorySize) {
 			this.opInput = opInput;
+			this.opInputParamsMadatorySize = opInputParamsMadatorySize;
 			if(null != opDetail){
 				opDetail = opDetail.replaceAll("@@opInput@@", String.valueOf(opInput));
 			}
 			this.opDetail = opDetail;
 		}
 
+		//simple validation on param counts
+		public boolean validateInputParams(String[] args){
+			boolean isValid = false;
+			if (opInputParamsMadatorySize > 0){
+				isValid = null != args && args.length >= opInputParamsMadatorySize;
+			} else {
+				isValid = true;
+			}
+			return isValid;
+		}
+
+		public abstract HarnessLauncher getHarnessLauncher(Cache cache, String[] args);
+
 		@Override
 		public String toString() {
 			return String.valueOf(opInput) + " - " + opDetail;
 		}
 
-		public static OPERATIONS getById(char input){
+		public static OPERATIONS getById(String input){
 			for(OPERATIONS op : values()){
-				if(op.opInput == input)
+				if(op.opInput.equals(input))
 					return op;
 			}
 			return null;
 		}
 	}
-	
+
 	public CacheLauncherAPI(String cacheName) {
 		try {
 			this.cache = CacheUtils.getCache(cacheName);
@@ -73,14 +374,14 @@ public class CacheLauncherAPI implements LauncherAPI {
 			log.error("An erro occured while fetching the cache", e);
 		}
 	}
-	
+
 	public CacheLauncherAPI(Cache cache) {
 		this.cache = cache;
 	}
 
 	@Override
 	public boolean isReady() {
-		return null != getCache();
+		return null != cache;
 	}
 
 	@Override
@@ -93,173 +394,31 @@ public class CacheLauncherAPI implements LauncherAPI {
 		}
 		return options;
 	}
-	
+
 	@Override
 	public boolean launch(String command, String[] args) throws Exception{
-		BaseCacheLauncher cacheLauncher = null;
-
 		if(null == command || "".equals(command)){
 			System.out.println("Null entry...do nothing.");
 			return true; 
 		}
 
 		//get the operation based on input
-		OPERATIONS opInput = OPERATIONS.getById(command.charAt(0));
-		
-		switch (opInput) {
-		case OP_LOAD:
-			cacheLauncher = getObjectLoadLauncher();
-			break;
-		case OP_WARMUP:
-			cacheLauncher = getObjectWarmupLauncher();
-			break;
-		case OP_RDM_PUTS:
-			cacheLauncher = getObjectLoadLauncher();
-			break;
-		case OP_RDM_GETS:
-			cacheLauncher = getObjectRandomGetLauncher();
-			break;
-		case OP_RDM_SEARCH:
-			cacheLauncher = getObjectSearchLauncher();
-			break;
-		case OP_RDM_MIX:
-			cacheLauncher = new CacheRandomMixLauncher(
-					getCache(),
-					GlobalConfigSingleton.getInstance().getCacheSteadyStateThreads(), 
-					GlobalConfigSingleton.getInstance().getCacheSteadyStateNbOperations());
-			
-			if(null == args){
-				if(getCache().isSearchable())
-					args = new String[] {"60", "25", "15"};
-				else
-					args = new String[] {"70", "30"};
-			}
-
-			for(int i=0; i<args.length;i++){
-				int mix = 0;
-				try {
-					mix = Integer.parseInt(args[i]);
-					if(mix > 100)
-						throw new NumberFormatException("Mix value should be 100 or less");
-
-					switch(i){
-					case 0:
-						((CacheRandomMixLauncher)cacheLauncher).addCacheGetOperationMix(mix, getCache(), getObjectRandomGetLauncher().getRunnerFactory());
-						break;
-					case 1:
-						((CacheRandomMixLauncher)cacheLauncher).addCachePutOperationMix(mix, getCache(), getObjectLoadLauncher(false, false).getRunnerFactory());
-						break;
-					case 2:
-						/*
-						int maxResults = 50;
-						List<Query> queries = new LinkedList<Query>();
-						queries.add(SearchUtils.buildSearchTextQuery(
-								getCache(),
-								new Attribute[] {getCache().getSearchAttribute("firstName")}, 
-								new String[] {"Sar*"}, 
-								false, 
-								maxResults));
-
-						queries.add(SearchUtils.buildSearchTextQuery(
-								getCache(),
-								new Attribute[] {getCache().getSearchAttribute("firstName"), getCache().getSearchAttribute("lastName")}, 
-								new String[] {"Sar*","Carls*"}, 
-								false,
-								maxResults));
-						
-						if(null != queries && queries.size() > 0)
-							((CacheRandomMixLauncher)cacheLauncher).addCacheSearchOperationMix(mix, getCache(), queries.toArray(new Query[queries.size()]));
-						*/
-						
-						((CacheRandomMixLauncher)cacheLauncher).addCacheSearchOperationMix(mix, getCache(), getObjectSearchLauncher().getRunnerFactory());
-						break;
-					}
-				} catch (Exception e) {
-					log.error("Could not add the operation to the ramdomMix", e);
-				}
-			}
-			break;
-		case OP_QUIT:
-			return false;
-		default:
+		OPERATIONS operation = OPERATIONS.getById(command);
+		if(null == operation){
 			System.out.println("Unrecognized entry...do nothing.");
 			return true;
 		}
+		
+		if(!operation.validateInputParams(args)){
+			System.out.println("Mandatory parameters not specified...do nothing.");
+			return true;
+		}
 
-		if(null != cacheLauncher){
-			cacheLauncher.setMultiClientEnabled(GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled());
-			cacheLauncher.setNumClients(GlobalConfigSingleton.getInstance().getAppNbClients());
-			cacheLauncher.launch();
+		HarnessLauncher launcher = operation.getHarnessLauncher(cache, args);
+		if(null != launcher){
+			launcher.launch();
 		}
 
 		return true;
-	}
-	
-	protected Cache getCache() {
-		return cache;
-	}
-	
-	//the following method are created to potentially be overwritten by descendant launchers
-	protected BaseCacheLauncher getObjectLoadLauncher(){
-		return getObjectLoadLauncher(GlobalConfigSingleton.getInstance().isCacheLoaderDoBulkLoad(),GlobalConfigSingleton.getInstance().isCacheLoaderRemoveAll());
-	}
-	
-	protected BaseCacheLauncher getObjectLoadLauncher(boolean doBulkLoad, boolean doRemoveAllFirst){
-		return new CachePutLauncher(
-				getCache(),
-				GlobalConfigSingleton.getInstance().getCacheLoaderThreads(),
-				GlobalConfigSingleton.getInstance().getCacheLoaderNbObjects(), 
-				getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderKeyGenFactory()),
-				getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory()),
-				GlobalConfigSingleton.getInstance().getCacheLoaderKeyStart(),
-				doBulkLoad, 
-				doRemoveAllFirst);
-	}
-	
-	protected BaseCacheLauncher getObjectWarmupLauncher(){
-		return new CacheSequentialGetLauncher(
-				getCache(),
-				GlobalConfigSingleton.getInstance().getCacheWarmerThreads(), 
-				GlobalConfigSingleton.getInstance().getCacheWarmerNbObjects(), 
-				GlobalConfigSingleton.getInstance().getCacheWarmerKeyStart());
-	}
-	
-	protected BaseCacheLauncher getObjectRandomGetLauncher(){
-		return new CacheRandomGetLauncher(
-				getCache(), 
-				GlobalConfigSingleton.getInstance().getCacheSteadyStateThreads(), 
-				GlobalConfigSingleton.getInstance().getCacheSteadyStateNbOperations(), 
-				GlobalConfigSingleton.getInstance().getCacheSteadyStateKeyMinValue(),
-				GlobalConfigSingleton.getInstance().getCacheSteadyStateKeyMaxValue()
-		);
-	}
-	
-	protected BaseCacheLauncher getObjectSearchLauncher(){
-		return new CacheSearchLauncher(
-				getCache(),
-				GlobalConfigSingleton.getInstance().getCacheLoaderThreads(),
-				GlobalConfigSingleton.getInstance().getCacheLoaderNbObjects(),
-				getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheSearchQueryGenFactory())
-		);
-	}
-
-	protected ObjectGeneratorFactory getObjectGeneratorFactory(String factoryClass){
-		ObjectGeneratorFactory objGenFactory = null;
-		log.info("Trying to instanciate the ObjectGeneratorFactory defined by:" + factoryClass);
-		if(null != factoryClass && !"".equals(factoryClass)){
-			try{
-				Class objFactoryClazz = Class.forName(factoryClass);
-				if(ObjectGeneratorFactory.class.isAssignableFrom(objFactoryClazz)){
-					objGenFactory = (ObjectGeneratorFactory)objFactoryClazz.newInstance();
-				} else {
-					new IllegalArgumentException("The class " + factoryClass + " is not an ObjectGeneratorFactory class");
-				}
-			} catch (ClassNotFoundException cne){
-				log.error("Could not find the class " + factoryClass + " in the classpath.", cne);
-			} catch (Exception exc){
-				log.error("An error occurred while instanciating the class " + factoryClass, exc);
-			}
-		}
-		return objGenFactory;
 	}
 }
