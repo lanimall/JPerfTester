@@ -2,7 +2,7 @@ package org.terracotta.utils.perftester.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.commons.cache.configs.GlobalConfigSingleton;
+import org.terracotta.utils.commons.cache.configs.ConfigWrapper;
 import org.terracotta.utils.perftester.InteractiveLauncher;
 
 /**
@@ -17,7 +17,7 @@ public class CacheLauncher extends InteractiveLauncher {
 	}
 
 	public static void main(String[] args) throws Exception {
-		CacheLauncher launcher = new CacheLauncher(new CacheLauncherAPI(GlobalConfigSingleton.getInstance().getCacheName()));
+		CacheLauncher launcher = new CacheLauncher(new CacheLauncherAPI(ConfigWrapper.getCacheName()));
 		launcher.run(args);
 		System.out.println("Completed");
 		System.exit(0);

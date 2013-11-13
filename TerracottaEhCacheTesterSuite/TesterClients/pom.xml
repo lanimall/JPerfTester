@@ -13,5 +13,6 @@
 		<module>POJOCacheTester</module>
 		<module>CustomCacheSearchTester</module>
 		<module>CacheWriterTester</module>
+		<module>GenericCacheTester</module>
 	</modules>
 </project>

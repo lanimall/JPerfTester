@@ -10,6 +10,7 @@ import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.monitoring.StatsOperationObserver;
 import org.terracotta.utils.perftester.runners.OpsCountRunnerFactory;
 import org.terracotta.utils.perftester.runners.Runner;
+import org.terracotta.utils.perftester.runners.RunnerDecoratorDefault;
 import org.terracotta.utils.perftester.runners.RunnerFactory;
 
 /**
@@ -34,7 +35,7 @@ public class RamdomMixRunner extends BaseRunner {
 	 * @param operations
 	 * @param randomOperationMix
 	 */
-	public RamdomMixRunner(Condition termination, Runner[] operations, Integer[] randomOperationMix) {
+	private RamdomMixRunner(Condition termination, Runner[] operations, Integer[] randomOperationMix) {
 		super(termination);
 
 		if(termination == null)
@@ -47,12 +48,24 @@ public class RamdomMixRunner extends BaseRunner {
 		
 		//TODO: cleanup the null operations in the array...as well as the operations corresponding to a mix = 0
 		
-		
 		//ensures that all the inner operations are not resetting / finalizing stats
 		for(Runner op : operations){
-			op.setResetStatsBtwExecute(false);
-			op.setFinalizeStatsBtwExecute(false);
-			op.setPrintStatsAfterExecute(false);
+			op.setRunnerDecorator(new RunnerDecoratorDefault() {
+				@Override
+				public boolean doResetStatsBeforeRun() {
+					return false;
+				}
+				
+				@Override
+				public boolean doPrintStatsAfterRun() {
+					return false;
+				}
+				
+				@Override
+				public boolean doFinalizeStatsAfterRun() {
+					return false;
+				}
+			});
 		}
 
 		this.randomOperationsPercentMix = randomOperationMix;
@@ -65,25 +78,7 @@ public class RamdomMixRunner extends BaseRunner {
 
 		this.statsOperationObserver = new StatsOperationObserver(operations);
 	}
-
-	@Override
-	public boolean isResetStatsBtwExecute() {
-		// TODO Auto-generated method stub
-		return super.isResetStatsBtwExecute();
-	}
-
-	@Override
-	public boolean isFinalizeStatsBtwExecute() {
-		// TODO Auto-generated method stub
-		return super.isFinalizeStatsBtwExecute();
-	}
-
-	@Override
-	public boolean isPrintStatsAfterExecute() {
-		// TODO Auto-generated method stub
-		return super.isPrintStatsAfterExecute();
-	}
-
+	
 	private void resetCounterOperationMix(){
 		opsIterationsCountDown.clear();
 		for(int i=0; i<randomOperationsPercentMix.length; i++){

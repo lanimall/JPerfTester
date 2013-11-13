@@ -21,19 +21,17 @@ public class RandomMixRunnerTest {
 
 	private OpsCountRunnerFactory createRunnerFactory(long numOperations){
 		RamdomMixRunnerFactory runnerFactory = new RamdomMixRunnerFactory(numOperations);
-		runnerFactory.addOperationMix(new SimpleIterativeRunnerFactory(1L) {
+		runnerFactory.addOperationMix(new SimpleIterativeRunnerFactory(1L), 45);
+		runnerFactory.addOperationMix(new SimpleIterativeRunnerFactory(1L), 35);
+		runnerFactory.addOperationMix(new SimpleIterativeRunnerFactory(1L), 20);
+		
+		/*runnerFactory.addOperationMix(new SimpleIterativeRunnerFactory(1L) {
 			@Override
 			public SimpleRunner create() {
 				return new SimpleRunner(getTerminationCondition(), new SequentialGenerator(), null){
 					@Override
 					public String getName() {
 						return super.getName() + "1";
-					}
-
-					@Override
-					public Object doUnitOfWork(Long key, Object value) {
-						//log.info("Running " + getName() + " and do something with this key:" + key);
-						return null;
 					}
 				};
 			}
@@ -46,12 +44,6 @@ public class RandomMixRunnerTest {
 					public String getName() {
 						return super.getName() + "2";
 					}
-
-					@Override
-					public Object doUnitOfWork(Long key, Object value) {
-						//log.info("Running " + getName() + " and do something with this key:" + key);
-						return null;
-					}
 				};
 			}
 		}, 35);
@@ -63,15 +55,10 @@ public class RandomMixRunnerTest {
 					public String getName() {
 						return super.getName() + "3";
 					}
-
-					@Override
-					public Object doUnitOfWork(Long key, Object value) {
-						//log.info("Running " + getName() + " and do something with this key:" + key);
-						return null;
-					}
 				};
 			}
 		}, 20);
+		*/
 		
 		return runnerFactory;
 	}

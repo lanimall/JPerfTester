@@ -13,9 +13,5 @@ public interface Runner extends Cloneable, Runnable {
 	
 	Object clone();
 	
-	void setResetStatsBtwExecute(boolean enableReset);
-
-	void setFinalizeStatsBtwExecute(boolean enableFinalize);
-	
-	void setPrintStatsAfterExecute(boolean enablePrint);
+	void setRunnerDecorator(RunnerDecorator runnerDecorator);
 }

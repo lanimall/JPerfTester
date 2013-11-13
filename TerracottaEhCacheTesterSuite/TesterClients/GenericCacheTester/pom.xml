@@ -8,10 +8,10 @@
 		<relativePath>../../Base/pom.xml</relativePath>
 	</parent>
 	<groupId>org.terracotta.utils.jperftester.ehcache.clients</groupId>
-	<artifactId>jperftester-terracotta-ehcache-client-pojocachetester</artifactId>
+	<artifactId>jperftester-terracotta-ehcache-client-genericcachetester</artifactId>
 	<version>0.0.1</version>
-	<name>JPerfTester - Terracotta EhCache Tester Client - Sample POJO</name>
-	<description>This is a sample client to demonstrate what it takes to use the library in order to build a "pounder" client that uses some custom business objects throughout the common tests.</description>
+	<name>JPerfTester - Terracotta EhCache Generic Tester Client</name>
+	<description>This is a sample client to demonstrate what it takes to use the library in order to build a "pounder" client that uses byte arrays for stored entries</description>
 
 	<properties>
 		<ehcache.tmppath>java.io.tmpdir</ehcache.tmppath>
@@ -135,9 +135,12 @@
 	<profiles>
 		<profile>
 			<id>ehcache-2.6.x</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
-				<ehcache-core-ee.version>2.6.2</ehcache-core-ee.version>
-				<ehcache-terracotta-ee.version>2.6.2</ehcache-terracotta-ee.version>
+				<ehcache-core-ee.version>2.6.7</ehcache-core-ee.version>
+				<ehcache-terracotta-ee.version>2.6.7</ehcache-terracotta-ee.version>
 				<slf4j.version>1.6.1</slf4j.version>
 				<junit.version>4.6</junit.version>
 				<net.sf.ehcache.configurationResourceName>classpath:ehcache.xml</net.sf.ehcache.configurationResourceName>
@@ -159,9 +162,6 @@
 		</profile>
 		<profile>
 			<id>ehcache-2.7.x</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<properties>
 				<bigmemory.version>4.0.3</bigmemory.version>
 				<ehcache-ee.version>2.7.3</ehcache-ee.version>

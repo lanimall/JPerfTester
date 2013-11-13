@@ -2,10 +2,10 @@ package org.terracotta.utils.perftester.runners.impl;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terracotta.utils.commons.ExecutorsUtil;
 import org.terracotta.utils.perftester.monitoring.StatsOperationObserver;
 import org.terracotta.utils.perftester.runners.Runner;
 import org.terracotta.utils.perftester.runners.RunnerFactory;
@@ -44,33 +44,10 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
 			//make sure to wait until all threads are done before moving forward...
-			shutdownAndAwaitTermination(executorService);
+			ExecutorsUtil.shutdownAndAwaitTermination(executorService, true);
 		}
 
 		log.info("End " + getName());
-	}
-
-	private void shutdownAndAwaitTermination(ExecutorService pool) {
-		pool.shutdown(); // Disable new tasks from being submitted
-
-		try {
-			// Wait until existing tasks to terminate
-			while(!pool.awaitTermination(5, TimeUnit.SECONDS)){
-				System.out.print(".");
-			}
-
-			pool.shutdownNow(); // Cancel currently executing tasks
-
-			// Wait a while for tasks to respond to being canceled
-			if (!pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS))
-				log.error("Pool did not terminate");
-		} catch (InterruptedException ie) {
-			// (Re-)Cancel if current thread also interrupted
-			pool.shutdownNow();
-
-			// Preserve interrupt status
-			Thread.currentThread().interrupt();
-		}
 	}
 
 	private void submitOperations() throws Exception {

@@ -11,14 +11,13 @@
 		timeToIdleSeconds="120" timeToLiveSeconds="120" maxElementsOnDisk="10000000"
 		statistics="${ehcache.cache.statistics}" />
 
-	<cache name="Customers" maxEntriesLocalHeap="${ehcache.maxEntriesLocalHeap}"
+	<cache name="BytesCache" maxEntriesLocalHeap="${ehcache.maxEntriesLocalHeap}"
 		overflowToOffHeap="${ehcache.overflowToOffHeap}" maxBytesLocalOffHeap="${ehcache.maxBytesLocalOffHeap}"
 		eternal="false" timeToLiveSeconds="120" maxElementsOnDisk="${ehcache.maxElementsOnDisk}"
 		statistics="${ehcache.cache.statistics}">
 
 		<terracotta>
-			<nonstop enabled="true" immediateTimeout="false"
-				timeoutMillis="5000">
+			<nonstop enabled="true" immediateTimeout="false" timeoutMillis="5000">
 				<timeoutBehavior type="noop" />
 			</nonstop>
 		</terracotta>

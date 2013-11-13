@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.OperationNotSupportedException;
@@ -24,6 +25,10 @@ public class PropertyUtils {
 		this.properties = loadProperties(propLocation);
 	}
 
+	public Properties getProperties(){
+		return properties;
+	}
+	
 	public String getProperty(String key){
 		if(log.isDebugEnabled())
 			log.debug("Getting key:" + key);

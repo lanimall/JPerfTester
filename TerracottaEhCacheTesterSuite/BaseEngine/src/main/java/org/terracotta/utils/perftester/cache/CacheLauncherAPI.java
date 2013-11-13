@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.utils.commons.ClazzUtils;
 import org.terracotta.utils.commons.cache.CacheUtils;
-import org.terracotta.utils.commons.cache.configs.GlobalConfigSingleton;
+import org.terracotta.utils.commons.cache.configs.ConfigWrapper;
 import org.terracotta.utils.perftester.LauncherAPI;
 import org.terracotta.utils.perftester.cache.launchers.HarnessCachePutDecorator;
 import org.terracotta.utils.perftester.cache.launchers.HarnessClientSyncDecorator;
@@ -56,8 +56,8 @@ public class CacheLauncherAPI implements LauncherAPI {
 					}
 				}
 
-				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderKeyGenFactory());
-				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory());
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderValueGenFactory());
 
 				RunnerFactory cacheOpFactory = new CachePutOperationFactory(
 						cache, 
@@ -69,7 +69,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 				return new ConcurrentLauncher(
 						nbThreads, 
 						cacheOpFactory, 
-						new HarnessCachePutDecorator(cache, doBulkLoad, doClearAllFirst, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients()));
+						new HarnessCachePutDecorator(cache, doBulkLoad, doClearAllFirst, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
 			}
 		},
 		OP_WARMUP_GETS("Warmup phase: Get all cache elements (Usage: @@opInput@@ <Threads> <Total Operations>)", 2)
@@ -90,7 +90,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 					nbOfOperations = 0;
 				}
 
-				long keyStart = GlobalConfigSingleton.getInstance().getCacheWarmerKeyStart();
+				long keyStart = ConfigWrapper.getCacheWarmerKeyStart();
 				
 				System.out.println("*********** Getting cache entries *************");
 				System.out.println("Params:");
@@ -106,7 +106,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 						new SequentialGenerator(keyStart)
 						);
 
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients()));
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
 			}
 		},
 		OP_STEADY_GETS("Steady State phase: Cache Gets (Usage: @@opInput@@ <Threads> <Total Operations>)", 2)
@@ -127,8 +127,8 @@ public class CacheLauncherAPI implements LauncherAPI {
 					nbOfOperations = 0;
 				}
 
-				long keyMinValue = GlobalConfigSingleton.getInstance().getCacheSteadyStateKeyMinValue();
-				long keyMaxValue = GlobalConfigSingleton.getInstance().getCacheSteadyStateKeyMaxValue();
+				long keyMinValue = ConfigWrapper.getCacheSteadyStateKeyMinValue();
+				long keyMaxValue = ConfigWrapper.getCacheSteadyStateKeyMaxValue();
 
 				System.out.println("*********** Getting random cache entries *************");
 				System.out.println("Params:");
@@ -143,7 +143,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 						new RandomNumberGenerator(keyMinValue, keyMaxValue)
 						);
 
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients()));
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
 			}
 		},
 		OP_STEADY_PUTS("Steady State phase: Cache Puts (Usage: @@opInput@@ <Threads> <Total Operations>)", 2)
@@ -164,8 +164,8 @@ public class CacheLauncherAPI implements LauncherAPI {
 					nbOfOperations = 0;
 				}
 
-				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderKeyGenFactory());
-				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory());
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderValueGenFactory());
 
 				RunnerFactory cacheOpFactory = new CachePutOperationFactory(
 						cache, 
@@ -174,7 +174,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 								(null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null
 						);
 
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients())); 
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients())); 
 			}
 		},
 		OP_STEADY_SEARCH("Steady State phase: Cache Searches (Usage: @@opInput@@ <Threads> <Total Operations>)", 2){
@@ -194,7 +194,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 					nbOfOperations = 0;
 				}
 
-				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheSearchQueryGenFactory());
+				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSearchQueryGenFactory());
 
 				RunnerFactory cacheOpFactory = new CacheSearchOperationFactory(
 						cache, 
@@ -202,7 +202,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 						(null != searchGeneratorFactory)? searchGeneratorFactory.createObjectGenerator():null
 						);
 
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients())); 
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients())); 
 			}
 		},
 		OP_STEADY_MIX("Steady State phase: Mix of Cache Gets/Puts/Searches (Usage: @@opInput@@ <Threads> <Total Operations> <% Gets> <% Puts> <% Search> (default: 60 25 15))", 2){
@@ -224,9 +224,9 @@ public class CacheLauncherAPI implements LauncherAPI {
 
 				RamdomMixRunnerFactory cacheOpFactory = new RamdomMixRunnerFactory(nbOfOperations/nbThreads);
 				
-				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderKeyGenFactory());
-				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheLoaderValueGenFactory());
-				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(GlobalConfigSingleton.getInstance().getCacheSearchQueryGenFactory());
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderValueGenFactory());
+				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSearchQueryGenFactory());
 
 				String[] mixArgs;
 				if(args.length <=2){
@@ -307,7 +307,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 					}
 				}
 				
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, GlobalConfigSingleton.getInstance().isAppMultiClientsSyncEnabled(), GlobalConfigSingleton.getInstance().getAppNbClients()));
+				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
 			}
 		};
 

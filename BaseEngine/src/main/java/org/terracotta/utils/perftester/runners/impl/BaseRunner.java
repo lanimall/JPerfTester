@@ -7,6 +7,8 @@ import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.monitoring.Stats;
 import org.terracotta.utils.perftester.monitoring.StatsOperationObserver;
 import org.terracotta.utils.perftester.runners.Runner;
+import org.terracotta.utils.perftester.runners.RunnerDecorator;
+import org.terracotta.utils.perftester.runners.RunnerDecoratorDefault;
 
 /**
  * @author Fabien Sanglier
@@ -22,17 +24,28 @@ public abstract class BaseRunner implements Runner {
 	private static Logger log = LoggerFactory.getLogger(BaseRunner.class);
 
 	protected Stats stats = new Stats();
-	protected Condition termination;
 	protected final RandomUtil randomUtil = new RandomUtil();
 	protected StatsOperationObserver statsOperationObserver;
 
-	private boolean resetStatsBtwExecute = true;
-	private boolean finalizeStatsBtwExecute = true;
-	private boolean printStatsAfterExecute = true;
-
+	protected Condition termination;
+	private RunnerDecorator runnerDecorator;
+	
 	protected BaseRunner(Condition termination) {
+		this(termination, null);
+	}
+	
+	protected BaseRunner(Condition termination, RunnerDecorator runnerDecorator) {
 		super();
 		this.termination = termination;
+		setRunnerDecorator(runnerDecorator);
+	}
+
+	@Override
+	public void setRunnerDecorator(RunnerDecorator runnerDecorator) {
+		if(null == runnerDecorator)
+			this.runnerDecorator = new RunnerDecoratorDefault();
+		else
+			this.runnerDecorator = runnerDecorator;
 	}
 
 	@Override
@@ -84,7 +97,7 @@ public abstract class BaseRunner implements Runner {
 	public void run() {
 		try {
 			//reset stat before execute
-			if(isResetStatsBtwExecute())
+			if(runnerDecorator.doResetStatsBeforeRun())
 				stats.reset();
 
 			execute();
@@ -92,50 +105,15 @@ public abstract class BaseRunner implements Runner {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
 			//finalize stats after execute
-			if(isFinalizeStatsBtwExecute())
+			if(runnerDecorator.doFinalizeStatsAfterRun())
 				stats.finalise();
 
 			if(null != getStatsOperationObserver())
 				stats.add(getStatsOperationObserver().getAggregateStats());
 
-			if(isPrintStatsAfterExecute())
-				stats.printToConsole(printStatsHeaderText(),printStatsFooterText());
+			if(runnerDecorator.doPrintStatsAfterRun())
+				stats.printToConsole(runnerDecorator.printStatsHeaderText(getName()),runnerDecorator.printStatsFooterText(getName()));
 		}
-	}
-
-	@Override
-	public void setResetStatsBtwExecute(boolean enableReset) {
-		this.resetStatsBtwExecute = enableReset;
-	}
-
-	@Override
-	public void setFinalizeStatsBtwExecute(boolean enableFinalize) {
-		this.finalizeStatsBtwExecute = enableFinalize;
-	}
-
-	@Override
-	public void setPrintStatsAfterExecute(boolean enablePrint) {
-		this.printStatsAfterExecute = enablePrint;
-	}
-
-	public boolean isResetStatsBtwExecute() {
-		return resetStatsBtwExecute;
-	}
-
-	public boolean isFinalizeStatsBtwExecute() {
-		return finalizeStatsBtwExecute;
-	}
-
-	public boolean isPrintStatsAfterExecute() {
-		return printStatsAfterExecute;
-	}
-
-	protected String printStatsHeaderText(){
-		return "Final Stats for:" + getName();
-	}
-
-	protected String printStatsFooterText(){
-		return "";
 	}
 
 	protected abstract void execute();

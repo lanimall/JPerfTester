@@ -1,9 +1,12 @@
 package org.terracotta.utils.perftester.runners.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.utils.perftester.conditions.Condition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
+import org.terracotta.utils.perftester.generators.impl.NullValueGenerator;
 import org.terracotta.utils.perftester.runners.Runner;
 
 /**
@@ -20,6 +23,7 @@ public abstract class KeyRunner<K> extends BareRunner implements Runner {
 	private static Logger log = LoggerFactory.getLogger(KeyRunner.class);
 
 	protected final ObjectGenerator<K> keyGenerator;
+	private List<K> buffer;
 
 	protected KeyRunner(Condition termination, ObjectGenerator<K> keyGenerator) {
 		super(termination);
@@ -29,16 +33,17 @@ public abstract class KeyRunner<K> extends BareRunner implements Runner {
 
 		if(null == keyGenerator){
 			log.warn("The keyGenerator object is null...make sure it's intended.");
+			this.keyGenerator = new NullValueGenerator();
+		} else {
+			this.keyGenerator = keyGenerator;
 		}
-
-		this.keyGenerator = keyGenerator;
 	}
 
 	public abstract Object doUnitOfWork(K key);
 
 	@Override
 	public Object doUnitOfWork(){
-		return doUnitOfWork(null);
+		throw new UnsupportedOperationException("This method should not be accessed through the KeyRunner implementation");
 	}
 
 	@Override
@@ -46,33 +51,28 @@ public abstract class KeyRunner<K> extends BareRunner implements Runner {
 		Object unitOfWorkResult = null;
 		K key = null;
 
-		//avoid performing null check at every iteration
-		if(null != keyGenerator){
-			long iterationStartTime;
-			if(enableDefaultStats()){
-				do {
-					try {
-						//perform the object generation outside the timing to time more accurately the doUnitOfWork operation
-						key = keyGenerator.generate();
-						iterationStartTime = System.currentTimeMillis();
-						unitOfWorkResult = doUnitOfWork(key);
-						stats.add(System.currentTimeMillis() - iterationStartTime);
-					} catch (Exception e) {
-						log.error("Error during execution of unit of work. will not count this operation in the timing stats.", e);
-					}
-				} while (!termination.isDone(unitOfWorkResult));
-			} else {
-				do {
-					try {
-						key = keyGenerator.generate();
-						unitOfWorkResult = doUnitOfWork(key);
-					} catch (Exception e) {
-						log.error("Error during execution of unit of work. will not count this operation in the timing stats.", e);
-					}
-				} while (!termination.isDone(unitOfWorkResult));
-			}
+		long iterationStartTime;
+		if(enableDefaultStats()){
+			do {
+				try {
+					//perform the object generation outside the timing to time more accurately the doUnitOfWork operation
+					key = keyGenerator.generate();
+					iterationStartTime = System.currentTimeMillis();
+					unitOfWorkResult = doUnitOfWork(key);
+					stats.add(System.currentTimeMillis() - iterationStartTime);
+				} catch (Exception e) {
+					log.error("Error during execution of unit of work. will not count this operation in the timing stats.", e);
+				}
+			} while (!termination.isDone(unitOfWorkResult));
 		} else {
-			super.execute();
+			do {
+				try {
+					key = keyGenerator.generate();
+					unitOfWorkResult = doUnitOfWork(key);
+				} catch (Exception e) {
+					log.error("Error during execution of unit of work. will not count this operation in the timing stats.", e);
+				}
+			} while (!termination.isDone(unitOfWorkResult));
 		}
 	}
 }
