@@ -26,7 +26,7 @@ public abstract class KeyValueRunner<K, V> extends KeyRunner<K> implements Runne
 		super(termination, keyGenerator);
 
 		if(null == valueGenerator){
-			log.warn("The valueGenerator object is null...make sure it's intended.");
+			log.warn("The valueGenerator object is null...defaulting to the NullValueGenerator. Make sure it's intended.");
 			this.valueGenerator = new NullValueGenerator();
 		} else {
 			this.valueGenerator = valueGenerator;

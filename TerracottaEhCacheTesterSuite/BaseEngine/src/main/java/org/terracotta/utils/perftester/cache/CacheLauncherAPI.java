@@ -56,8 +56,8 @@ public class CacheLauncherAPI implements LauncherAPI {
 					}
 				}
 
-				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderKeyGenFactory());
-				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderValueGenFactory());
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheWarmupKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheWarmupValueGenFactory());
 
 				RunnerFactory cacheOpFactory = new CachePutOperationFactory(
 						cache, 
@@ -164,8 +164,8 @@ public class CacheLauncherAPI implements LauncherAPI {
 					nbOfOperations = 0;
 				}
 
-				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderKeyGenFactory());
-				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderValueGenFactory());
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSteadyKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSteadyValueGenFactory());
 
 				RunnerFactory cacheOpFactory = new CachePutOperationFactory(
 						cache, 
@@ -194,7 +194,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 					nbOfOperations = 0;
 				}
 
-				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSearchQueryGenFactory());
+				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSteadySearchQueryGenFactory());
 
 				RunnerFactory cacheOpFactory = new CacheSearchOperationFactory(
 						cache, 
@@ -224,9 +224,9 @@ public class CacheLauncherAPI implements LauncherAPI {
 
 				RamdomMixRunnerFactory cacheOpFactory = new RamdomMixRunnerFactory(nbOfOperations/nbThreads);
 				
-				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderKeyGenFactory());
-				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheLoaderValueGenFactory());
-				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSearchQueryGenFactory());
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSteadyKeyGenFactory());
+				ObjectGeneratorFactory valueGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSteadyValueGenFactory());
+				ObjectGeneratorFactory searchGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSteadySearchQueryGenFactory());
 
 				String[] mixArgs;
 				if(args.length <=2){
@@ -268,7 +268,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 									mix);
 							break;
 						case 2:
-							if(null != cache && !cache.isSearchable()){
+							if(mix > 0 && null != cache && !cache.isSearchable()){
 								log.error("The cache " + cache.getName() + " is not searchable...not adding this operation mix");
 								break;
 							}

@@ -30,9 +30,12 @@ public class ConfigWrapper {
 	private static final String CACHEPOUNDER_TX_KEYGEN_MAXVALUE = "jperftester.cache.terracotta.steadystate.keygen.maxvalue";
 
 	//various object generator factories
-	private static final String CACHEPOUNDER_OBJLOADER_KEYGENFACTORY = "jperftester.cache.terracotta.objectload.keygenfactory";
-	private static final String CACHEPOUNDER_OBJLOADER_VALUEGENFACTORY = "jperftester.cache.terracotta.objectload.valuegenfactory";
-	private static final String CACHEPOUNDER_SEARCH_QUERYGENFACTORY = "jperftester.cache.terracotta.objectload.querygenfactory";
+	private static final String CACHEPOUNDER_WARMUP_KEYGENFACTORY = "jperftester.cache.terracotta.warmup.keygenfactory";
+	private static final String CACHEPOUNDER_WARMUP_VALUEGENFACTORY = "jperftester.cache.terracotta.warmup.valuegenfactory";
+	
+	private static final String CACHEPOUNDER_STEADY_KEYGENFACTORY = "jperftester.cache.terracotta.steady.keygenfactory";
+	private static final String CACHEPOUNDER_STEADY_VALUEGENFACTORY = "jperftester.cache.terracotta.steady.valuegenfactory";
+	private static final String CACHEPOUNDER_STEADY_SEARCHQUERYGENFACTORY = "jperftester.cache.terracotta.steady.searchquerygenfactory";
 
 	static {
 		if(log.isDebugEnabled()){
@@ -44,9 +47,6 @@ public class ConfigWrapper {
 			log.debug("*********** Cache Objects Load Params *************");
 			log.debug("Number of Loader Threads: " + ConfigWrapper.getCacheLoaderThreads());
 			log.debug("Number of objects to load: " + ConfigWrapper.getCacheLoaderNbObjects());
-			log.debug("Key generator factory: " + ConfigWrapper.getCacheLoaderKeyGenFactory());
-			log.debug("Key number ot start with: " + ConfigWrapper.getCacheLoaderKeyStart());
-			log.debug("Value generator factory: " + ConfigWrapper.getCacheLoaderValueGenFactory());
 			log.debug("Put cache in bulk mode during loading operation: " + ConfigWrapper.isCacheLoaderDoBulkLoad());
 			log.debug("Remove all before reloading: " + ConfigWrapper.isCacheLoaderRemoveAll());
 			log.debug("Number of operations per thread: " + (ConfigWrapper.getCacheLoaderNbObjects()/ConfigWrapper.getCacheLoaderThreads()));
@@ -56,6 +56,8 @@ public class ConfigWrapper {
 			log.debug("Number of objects to fetch: " + ConfigWrapper.getCacheWarmerNbObjects());
 			log.debug("Key number to start with: " + ConfigWrapper.getCacheWarmerKeyStart());
 			log.debug("Number of operations per thread: " + (ConfigWrapper.getCacheWarmerNbObjects()/ConfigWrapper.getCacheWarmerThreads()));
+			log.debug("Key generator factory: " + ConfigWrapper.getCacheWarmupKeyGenFactory());
+			log.debug("Value generator factory: " + ConfigWrapper.getCacheWarmupValueGenFactory());
 
 			log.debug("*********** Cache Steady State Params *************");
 			log.debug("Number of transaction Threads: " + ConfigWrapper.getCacheSteadyStateThreads());
@@ -63,8 +65,10 @@ public class ConfigWrapper {
 			log.debug("Number of operations per thread: " + (ConfigWrapper.getCacheSteadyStateNbOperations()/ConfigWrapper.getCacheSteadyStateThreads()));
 			log.debug("Key number between " + ConfigWrapper.getCacheSteadyStateKeyMinValue() + " and " + ConfigWrapper.getCacheSteadyStateKeyMaxValue());
 
-			log.debug("*********** Cache Object Generation Factories *************");
-			log.debug("Search query generator factory: " + ConfigWrapper.getCacheSearchQueryGenFactory());
+			log.debug("*********** Cache Object Generation Factories for Steady State *************");
+			log.debug("Key generator factory: " + ConfigWrapper.getCacheSteadyKeyGenFactory());
+			log.debug("Value generator factory: " + ConfigWrapper.getCacheSteadyValueGenFactory());
+			log.debug("Search query generator factory: " + ConfigWrapper.getCacheSteadySearchQueryGenFactory());
 		}
 	}
 
@@ -100,12 +104,12 @@ public class ConfigWrapper {
 		return GlobalConfigSingleton.getInstance().getPropWrapper().getPropertyAsBoolean(CACHEPOUNDER_OBJLOADER_BULKLOAD, true);
 	}
 
-	public static String getCacheLoaderKeyGenFactory() {
-		return GlobalConfigSingleton.getInstance().getPropWrapper().getProperty(CACHEPOUNDER_OBJLOADER_KEYGENFACTORY, "");
+	public static String getCacheWarmupKeyGenFactory() {
+		return GlobalConfigSingleton.getInstance().getPropWrapper().getProperty(CACHEPOUNDER_WARMUP_KEYGENFACTORY, "");
 	}
 
-	public static String getCacheLoaderValueGenFactory() {
-		return GlobalConfigSingleton.getInstance().getPropWrapper().getProperty(CACHEPOUNDER_OBJLOADER_VALUEGENFACTORY, "");
+	public static String getCacheWarmupValueGenFactory() {
+		return GlobalConfigSingleton.getInstance().getPropWrapper().getProperty(CACHEPOUNDER_WARMUP_VALUEGENFACTORY, "");
 	}
 
 	public static int getCacheWarmerThreads() {
@@ -120,8 +124,16 @@ public class ConfigWrapper {
 		return GlobalConfigSingleton.getInstance().getPropWrapper().getPropertyAsLong(CACHEPOUNDER_WARMUP_KEYGENSTART, 0);
 	}
 
-	public static String getCacheSearchQueryGenFactory() {
-		return GlobalConfigSingleton.getInstance().getPropWrapper().getProperty(CACHEPOUNDER_SEARCH_QUERYGENFACTORY, "");
+	public static String getCacheSteadyKeyGenFactory() {
+		return GlobalConfigSingleton.getInstance().getPropWrapper().getProperty(CACHEPOUNDER_STEADY_KEYGENFACTORY, "");
+	}
+
+	public static String getCacheSteadyValueGenFactory() {
+		return GlobalConfigSingleton.getInstance().getPropWrapper().getProperty(CACHEPOUNDER_STEADY_VALUEGENFACTORY, "");
+	}
+	
+	public static String getCacheSteadySearchQueryGenFactory() {
+		return GlobalConfigSingleton.getInstance().getPropWrapper().getProperty(CACHEPOUNDER_STEADY_SEARCHQUERYGENFACTORY, "");
 	}
 
 	public static int getCacheSteadyStateThreads() {
