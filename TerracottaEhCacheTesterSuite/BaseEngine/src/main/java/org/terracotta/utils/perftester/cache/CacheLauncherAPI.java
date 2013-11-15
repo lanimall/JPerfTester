@@ -14,8 +14,6 @@ import org.terracotta.utils.perftester.cache.runnerFactories.CachePutOperationFa
 import org.terracotta.utils.perftester.cache.runners.CacheGetOperation.CacheGetOperationFactory;
 import org.terracotta.utils.perftester.cache.runners.CacheSearchOperation.CacheSearchOperationFactory;
 import org.terracotta.utils.perftester.generators.ObjectGeneratorFactory;
-import org.terracotta.utils.perftester.generators.impl.RandomNumberGenerator;
-import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
 import org.terracotta.utils.perftester.launchers.ConcurrentLauncher;
 import org.terracotta.utils.perftester.launchers.HarnessLauncher;
 import org.terracotta.utils.perftester.runners.RunnerFactory;
@@ -90,20 +88,18 @@ public class CacheLauncherAPI implements LauncherAPI {
 					nbOfOperations = 0;
 				}
 
-				long keyStart = ConfigWrapper.getCacheWarmerKeyStart();
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheWarmupKeyGenFactory());
 				
 				System.out.println("*********** Getting cache entries *************");
 				System.out.println("Params:");
 				System.out.println("Number of Loader Threads: " + nbThreads);
 				System.out.println("Number of objects to fetch: " + nbOfOperations);
-				System.out.println("Start at key: " + keyStart);
 				System.out.println("Number of operations per thread: " + (nbOfOperations/nbThreads));
-				
 				
 				RunnerFactory cacheOpFactory = new CacheGetOperationFactory(
 						cache, 
 						nbOfOperations/nbThreads,
-						new SequentialGenerator(keyStart)
+						(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null
 						);
 
 				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
@@ -127,20 +123,18 @@ public class CacheLauncherAPI implements LauncherAPI {
 					nbOfOperations = 0;
 				}
 
-				long keyMinValue = ConfigWrapper.getCacheSteadyStateKeyMinValue();
-				long keyMaxValue = ConfigWrapper.getCacheSteadyStateKeyMaxValue();
-
+				ObjectGeneratorFactory keyGeneratorFactory = ClazzUtils.getObjectGeneratorFactory(ConfigWrapper.getCacheSteadyKeyGenFactory());
+				
 				System.out.println("*********** Getting random cache entries *************");
 				System.out.println("Params:");
 				System.out.println("Number of Loader Threads: " + nbThreads);
 				System.out.println("Number of objects to fetch: " + nbOfOperations);
 				System.out.println("Number of operations per thread: " + (nbOfOperations/nbThreads));
-				System.out.println("Random Key number between " + keyMinValue + " and " + keyMaxValue);
 				
 				RunnerFactory cacheOpFactory = new CacheGetOperationFactory(
 						cache, 
 						nbOfOperations/nbThreads, 
-						new RandomNumberGenerator(keyMinValue, keyMaxValue)
+						(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null
 						);
 
 				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));

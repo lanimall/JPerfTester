@@ -6,6 +6,8 @@ import org.terracotta.utils.perftester.generators.ObjectGenerator;
 
 /**
  * @author Fabien Sanglier
+ * A generator that creates sequential numbers
+ * Thread-Safe
  * 
  */
 public class SequentialGenerator implements ObjectGenerator<Long> {
