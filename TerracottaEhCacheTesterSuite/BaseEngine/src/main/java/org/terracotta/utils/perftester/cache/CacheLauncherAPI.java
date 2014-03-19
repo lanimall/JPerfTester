@@ -5,7 +5,7 @@ import net.sf.ehcache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.utils.commons.ClazzUtils;
-import org.terracotta.utils.commons.cache.CacheUtils;
+import org.terracotta.utils.commons.cache.CacheManagerDecorator;
 import org.terracotta.utils.commons.cache.configs.ConfigWrapper;
 import org.terracotta.utils.perftester.LauncherAPI;
 import org.terracotta.utils.perftester.cache.launchers.HarnessCachePutDecorator;
@@ -26,12 +26,12 @@ public class CacheLauncherAPI implements LauncherAPI {
 	private static int operationIdCounter = 1;
 
 	private enum OPERATIONS {
-		OP_WARMUP_PUTS("Warmup phase: Puts cache elements (Usage: @@opInput@@ <Threads> <Total Operations> <?bulk load=*true*|false> <?clear all first=*true*|false>)", 2)
+		OP_WARMUP_PUTS("Warmup phase: Puts cache elements (Usage: @@opInput@@ <Threads> <Total Operations> <?bulk load=*true*|false> <?clear all first=true|*false*>)", 2)
 		{
 			@Override
 			public HarnessLauncher getHarnessLauncher(Cache cache, String[] args) {
 				boolean doBulkLoad = true;
-				boolean doClearAllFirst = true;
+				boolean doClearAllFirst = false;
 
 				int nbThreads;
 				try{
@@ -61,7 +61,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 						cache, 
 						nbOfOperations/nbThreads, 
 						(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null, 
-								(null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null
+						(null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null
 						);
 
 				return new ConcurrentLauncher(
@@ -363,7 +363,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 
 	public CacheLauncherAPI(String cacheName) {
 		try {
-			this.cache = CacheUtils.getCache(cacheName);
+			this.cache = CacheManagerDecorator.getInstance().getCache(cacheName);
 		} catch (Exception e) {
 			log.error("An erro occured while fetching the cache", e);
 		}

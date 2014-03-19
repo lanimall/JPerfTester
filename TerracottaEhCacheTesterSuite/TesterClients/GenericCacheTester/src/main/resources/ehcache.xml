@@ -17,7 +17,21 @@
 		statistics="${ehcache.cache.statistics}">
 
 		<terracotta>
-			<nonstop enabled="true" immediateTimeout="false" timeoutMillis="5000">
+			<nonstop enabled="true" immediateTimeout="false"
+				timeoutMillis="5000">
+				<timeoutBehavior type="noop" />
+			</nonstop>
+		</terracotta>
+	</cache>
+	
+	<cache name="BytesCache2" maxEntriesLocalHeap="${ehcache.maxEntriesLocalHeap}"
+		overflowToOffHeap="${ehcache.overflowToOffHeap}" maxBytesLocalOffHeap="${ehcache.maxBytesLocalOffHeap}"
+		eternal="false" timeToLiveSeconds="120" maxElementsOnDisk="${ehcache.maxElementsOnDisk}"
+		statistics="${ehcache.cache.statistics}">
+
+		<terracotta>
+			<nonstop enabled="true" immediateTimeout="false"
+				timeoutMillis="5000">
 				<timeoutBehavior type="noop" />
 			</nonstop>
 		</terracotta>

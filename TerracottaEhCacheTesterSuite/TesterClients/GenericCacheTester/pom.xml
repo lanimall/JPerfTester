@@ -15,11 +15,11 @@
 
 	<properties>
 		<ehcache.tmppath>java.io.tmpdir</ehcache.tmppath>
-		<tc-connect-serversports>localhost:9510</tc-connect-serversports>
+		<tc-connect-serversports>tcvm:9510,tcvm:9610,tcvm:9710,tcvm:9810</tc-connect-serversports>
 		<ehcache.maxEntriesLocalHeap>10000</ehcache.maxEntriesLocalHeap>
 		<ehcache.overflowToOffHeap>true</ehcache.overflowToOffHeap>
-		<ehcache.maxBytesLocalOffHeap>1G</ehcache.maxBytesLocalOffHeap>
-		<ehcache.maxElementsOnDisk>1000000</ehcache.maxElementsOnDisk>
+		<ehcache.maxBytesLocalOffHeap>512m</ehcache.maxBytesLocalOffHeap>
+		<ehcache.maxElementsOnDisk>100000</ehcache.maxElementsOnDisk>
 		<ehcache.cache.statistics>false</ehcache.cache.statistics>
 		<build.dist.excludedependencies>false</build.dist.excludedependencies>
 	</properties>
@@ -111,6 +111,7 @@
 						-XX:MaxDirectMemorySize=10G
 						-Dcom.tc.productkey.path=${user.home}/terracotta-license.key
 						-Dehcache.config.path=${net.sf.ehcache.configurationResourceName}
+						-javaagent:/Users/FabienSanglier/MyDev/MyTools/Monitoring/newrelic/newrelic.jar
 					</extraJvmArguments>
 					<programs>
 						<program>
@@ -135,12 +136,9 @@
 	<profiles>
 		<profile>
 			<id>ehcache-2.6.x</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<properties>
-				<ehcache-core-ee.version>2.6.7</ehcache-core-ee.version>
-				<ehcache-terracotta-ee.version>2.6.7</ehcache-terracotta-ee.version>
+				<ehcache-core-ee.version>2.6.8</ehcache-core-ee.version>
+				<ehcache-terracotta-ee.version>2.6.8</ehcache-terracotta-ee.version>
 				<slf4j.version>1.6.1</slf4j.version>
 				<junit.version>4.6</junit.version>
 				<net.sf.ehcache.configurationResourceName>classpath:ehcache.xml</net.sf.ehcache.configurationResourceName>
@@ -162,10 +160,12 @@
 		</profile>
 		<profile>
 			<id>ehcache-2.7.x</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
-				<bigmemory.version>4.0.3</bigmemory.version>
-				<ehcache-ee.version>2.7.3</ehcache-ee.version>
-				<toolkit.version>4.0.3</toolkit.version>
+				<ehcache-ee.version>2.7.5</ehcache-ee.version>
+				<toolkit.version>4.0.5</toolkit.version>
 				<slf4j.version>1.7.1</slf4j.version>
 				<junit.version>4.11</junit.version>
 				<net.sf.ehcache.configurationResourceName>classpath:ehcache4x.xml</net.sf.ehcache.configurationResourceName>

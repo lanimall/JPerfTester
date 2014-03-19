@@ -5,7 +5,7 @@ import net.sf.ehcache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terracotta.coordination.Barrier;
-import org.terracotta.utils.commons.cache.CacheUtils;
+import org.terracotta.utils.commons.cache.CacheManagerDecorator;
 import org.terracotta.utils.perftester.launchers.HarnessDecorator;
 import org.terracotta.utils.perftester.launchers.HarnessDecoratorNoOp;
 
@@ -46,7 +46,7 @@ public class HarnessClientSyncDecorator extends HarnessDecoratorNoOp implements 
 		super.doBefore();
 		if(null != cache && multiClientEnabled && numClients > 1){
 			log.info("Implementing a thread barrier with name=" + this.getClass().toString() + " and barrier count=" + numClients);
-			this.barrier = CacheUtils.getBarrier(cache.getCacheManager(), this.getClass().toString(), numClients);
+			this.barrier = CacheManagerDecorator.getInstance().getBarrier(this.getClass().toString(), numClients);
 		}
 		log.info("End doBefore()");
 	}
