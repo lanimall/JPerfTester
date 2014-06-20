@@ -10,6 +10,10 @@ import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 public abstract class OpsCountRunnerFactory implements RunnerFactory {
 	private final long numOperations;
 	
+	protected OpsCountRunnerFactory(){
+		numOperations = 0;
+	}
+	
 	protected OpsCountRunnerFactory(long numOperations) {
 		this.numOperations = numOperations;
 	}

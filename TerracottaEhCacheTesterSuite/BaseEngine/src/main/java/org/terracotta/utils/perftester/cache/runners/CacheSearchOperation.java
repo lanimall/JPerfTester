@@ -1,6 +1,7 @@
 package org.terracotta.utils.perftester.cache.runners;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.search.Query;
 import net.sf.ehcache.search.Result;
@@ -22,7 +23,7 @@ public class CacheSearchOperation extends AbstractCacheKeyRunner<Query> {
 	private static final boolean isDebug = log.isDebugEnabled();
 	private static final boolean isTrace = log.isTraceEnabled();
 	
-	public CacheSearchOperation(Cache cache, Condition termination, ObjectGenerator<Query> keyGenerator) {
+	public CacheSearchOperation(Ehcache cache, Condition termination, ObjectGenerator<Query> keyGenerator) {
 		super(cache, termination, keyGenerator);
 	}
 	

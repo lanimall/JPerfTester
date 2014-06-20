@@ -1,6 +1,7 @@
 package org.terracotta.utils.perftester.cache.runners;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ public class CacheGetOperation<K> extends AbstractCacheKeyRunner<K> {
 	private static Logger log = LoggerFactory.getLogger(CacheGetOperation.class);
 	private static final boolean isDebug = log.isDebugEnabled();
 	
-	public CacheGetOperation(Cache cache, Condition termination, ObjectGenerator<K> keyGenerator) {
+	public CacheGetOperation(Ehcache cache, Condition termination, ObjectGenerator<K> keyGenerator) {
 		super(cache, termination, keyGenerator);
 	}
 
@@ -47,7 +48,7 @@ public class CacheGetOperation<K> extends AbstractCacheKeyRunner<K> {
 	public static class CacheGetOperationFactory extends CacheRunnerFactory {
 		private final ObjectGenerator keyGen;
 		
-		public CacheGetOperationFactory(Cache cache, long numOperations, ObjectGenerator keyGen) {
+		public CacheGetOperationFactory(Ehcache cache, long numOperations, ObjectGenerator keyGen) {
 			super(cache, numOperations);
 			this.keyGen = keyGen;
 		}

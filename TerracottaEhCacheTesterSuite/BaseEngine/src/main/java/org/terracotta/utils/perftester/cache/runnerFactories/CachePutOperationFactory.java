@@ -1,9 +1,10 @@
 package org.terracotta.utils.perftester.cache.runnerFactories;
 
-import net.sf.ehcache.Cache;
+import net.sf.ehcache.Ehcache;
 
 import org.terracotta.utils.perftester.cache.runners.CachePutOperation;
 import org.terracotta.utils.perftester.cache.runners.CachePutWithWriterOperation;
+import org.terracotta.utils.perftester.cache.runners.CacheUpdateOperation;
 import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
 import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
@@ -16,12 +17,23 @@ public class CachePutOperationFactory extends CacheRunnerFactory {
 	//that way multiple thread can all work against the same thread-safe generator
 	private final ObjectGenerator keyGen;
 	
+	private final boolean doUpdates;
+	
 	//if using this constructor, sequential generator 
-	public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator valueGenerator) {
-		this(cache, numOperations, null, valueGenerator);
+	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator valueGenerator){
+		this(cache, numOperations, null, valueGenerator, false);
 	}
 
-	public CachePutOperationFactory(Cache cache, long numOperations, ObjectGenerator keyGenerator, ObjectGenerator valueGenerator) {
+	//if using this constructor, sequential generator 
+	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator valueGenerator, final boolean doUpdates) {
+		this(cache, numOperations, null, valueGenerator, doUpdates);
+	}
+
+	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator keyGenerator, ObjectGenerator valueGenerator) {
+		this(cache, numOperations, keyGenerator, valueGenerator, false);
+	}
+	
+	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator keyGenerator, ObjectGenerator valueGenerator, final boolean doUpdates) {
 		super(cache, numOperations);
 		this.valueGenerator = valueGenerator;
 		
@@ -29,12 +41,16 @@ public class CachePutOperationFactory extends CacheRunnerFactory {
 			this.keyGen = new SequentialGenerator(0);
 		else
 			this.keyGen = keyGenerator;
+		
+		this.doUpdates = doUpdates;
 	}
 
 	@Override
 	public KeyValueRunner create() {
 		if(null != getCache() && null != getCache().getRegisteredCacheWriter())
 			return new CachePutWithWriterOperation(getCache(), new IterationCondition(getNumOperations()), keyGen, valueGenerator);
+		else if(doUpdates)
+			return new CacheUpdateOperation(getCache(), new IterationCondition(getNumOperations()), keyGen, valueGenerator);
 		else
 			return new CachePutOperation(getCache(), new IterationCondition(getNumOperations()), keyGen, valueGenerator);
 	}

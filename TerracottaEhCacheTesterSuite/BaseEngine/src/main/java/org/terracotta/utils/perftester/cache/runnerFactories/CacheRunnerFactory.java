@@ -1,6 +1,7 @@
 package org.terracotta.utils.perftester.cache.runnerFactories;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.Ehcache;
 
 import org.terracotta.utils.perftester.runners.OpsCountRunnerFactory;
 
@@ -9,14 +10,14 @@ import org.terracotta.utils.perftester.runners.OpsCountRunnerFactory;
  * 
  */
 public abstract class CacheRunnerFactory extends OpsCountRunnerFactory {
-	private Cache cache;
+	private Ehcache cache;
 	
-	protected CacheRunnerFactory(Cache cache, long numOperations) {
+	protected CacheRunnerFactory(Ehcache cache, long numOperations) {
 		super(numOperations);
 		this.cache = cache;
 	}
 
-	public Cache getCache() {
+	public Ehcache getCache() {
 		return cache;
 	}
 

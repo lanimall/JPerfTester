@@ -2,8 +2,6 @@ package org.terracotta.utils.perftester.generators.impl;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.naming.OperationNotSupportedException;
-
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
 
 /**
@@ -18,9 +16,9 @@ public class RangeGenerator implements ObjectGenerator<Long[]> {
 		this(0, stride);
 	}
 
-	public RangeGenerator(long start, int stride) throws Exception {
+	public RangeGenerator(long start, int stride) {
 		if(stride < 1)
-			throw new OperationNotSupportedException("Stride param must be positive integer.");
+			throw new IllegalArgumentException("Stride param must be positive integer.");
 		
 		this.counter =  new AtomicLong(start);
 		this.stride = stride;

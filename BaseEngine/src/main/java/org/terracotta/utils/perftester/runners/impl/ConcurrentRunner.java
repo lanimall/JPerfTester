@@ -62,19 +62,34 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 	public static class ConcurrentRunnerFactory implements RunnerFactory {
 		private final int numThread;
 		private final RunnerFactory runnerFactory;
+		private final Runner[] runners;
 
 		public ConcurrentRunnerFactory(int numThread, RunnerFactory runnerFactory) {
 			this.numThread = numThread;
 			this.runnerFactory = runnerFactory;
+			this.runners = null;
+		}
+		
+		public ConcurrentRunnerFactory(Runner[] runners) {
+			this.numThread = 0;
+			this.runnerFactory = null;
+			this.runners = runners;
 		}
 
 		@Override
 		public ConcurrentRunner create() {
-			Runner[] ops = new Runner[numThread];
-			for(int i=0 ; i < numThread; i++){
-				ops[i]=runnerFactory.create();
+			if(null != runners && runners.length > 0)
+				return new ConcurrentRunner(runners);
+			else{
+				if(null != runnerFactory){
+					Runner[] ops = new Runner[numThread];
+					for(int i=0 ; i < numThread; i++){
+						ops[i]=runnerFactory.create();
+					}
+					return new ConcurrentRunner(ops);
+				}
 			}
-			return new ConcurrentRunner(ops);
+			return null;
 		}
 	}
 }

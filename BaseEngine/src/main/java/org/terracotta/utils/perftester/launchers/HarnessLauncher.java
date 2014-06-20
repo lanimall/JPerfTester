@@ -28,7 +28,7 @@ public class HarnessLauncher {
 		this.harnessLauncherDecorator = harnessLauncherDecorator;
 	}
 
-	public void launch() throws Exception {
+	public void launch() {
 		log.info("Starting launch...");
 
 		//create the runner object

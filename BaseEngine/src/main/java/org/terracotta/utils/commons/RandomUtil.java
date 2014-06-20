@@ -19,6 +19,10 @@ public class RandomUtil {
 	public RandomUtil(){
 		hdrRndm.setSeed(System.currentTimeMillis());
 	}
+	
+	public RandomUtil(long seed){
+		hdrRndm.setSeed(seed);
+	}
 
 	public String generateRandomUUID(){
 		return UUID.randomUUID().toString();

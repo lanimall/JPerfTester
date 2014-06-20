@@ -16,9 +16,9 @@
 	<properties>
 		<ehcache.tmppath>java.io.tmpdir</ehcache.tmppath>
 		<tc-connect-serversports>tcvm:9510,tcvm:9610,tcvm:9710,tcvm:9810</tc-connect-serversports>
-		<ehcache.maxEntriesLocalHeap>10000</ehcache.maxEntriesLocalHeap>
+		<ehcache.maxEntriesLocalHeap>50</ehcache.maxEntriesLocalHeap>
 		<ehcache.overflowToOffHeap>true</ehcache.overflowToOffHeap>
-		<ehcache.maxBytesLocalOffHeap>512m</ehcache.maxBytesLocalOffHeap>
+		<ehcache.maxBytesLocalOffHeap>1G</ehcache.maxBytesLocalOffHeap>
 		<ehcache.maxElementsOnDisk>100000</ehcache.maxElementsOnDisk>
 		<ehcache.cache.statistics>false</ehcache.cache.statistics>
 		<build.dist.excludedependencies>false</build.dist.excludedependencies>

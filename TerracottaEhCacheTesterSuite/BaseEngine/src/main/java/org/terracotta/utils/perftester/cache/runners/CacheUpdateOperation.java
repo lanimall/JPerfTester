@@ -12,11 +12,11 @@ import org.terracotta.utils.perftester.generators.ObjectGenerator;
  * @author Fabien Sanglier
  * 
  */
-public class CachePutOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
-	private static Logger log = LoggerFactory.getLogger(CachePutOperation.class);
+public class CacheUpdateOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
+	private static Logger log = LoggerFactory.getLogger(CacheUpdateOperation.class);
 	private static final boolean isDebug = log.isDebugEnabled();
 
-	public CachePutOperation(Ehcache cache, Condition termination,
+	public CacheUpdateOperation(Ehcache cache, Condition termination,
 			ObjectGenerator<K> keyGenerator, ObjectGenerator<V> valueGenerator) {
 		super(cache, termination, keyGenerator, valueGenerator);
 	}
@@ -32,9 +32,9 @@ public class CachePutOperation<K, V> extends AbstractCacheKeyValueRunner<K, V> {
 			log.debug("Putting cache entry with key:" + key);
 		
 		if(null != key)
-			cache.put(new Element(key, value));
+			cache.replace(new Element(key, value));
 		else
-			log.warn("key is null...cannot add a new cache entry");
+			log.warn("key is null...cannot update entry without the key");
 		
 		//do a get right after
 		Element elem = cache.get(key);
