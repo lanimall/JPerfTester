@@ -44,7 +44,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -59,4 +59,18 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<distributionManagement>
+		<downloadUrl>https://github.com/lanimall/JPerfTester</downloadUrl>
+		<repository>
+			<id>saggs_releases</id>
+			<name>JackBe Releases</name>
+			<url>http://bieber.softwareaggov.com:8080/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>saggs_snapshots</id>
+			<name>JackBe Snapshots</name>
+			<url>http://bieber.softwareaggov.com:8080/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

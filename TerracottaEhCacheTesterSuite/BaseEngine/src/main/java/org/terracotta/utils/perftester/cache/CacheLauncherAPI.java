@@ -65,6 +65,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 						);
 
 				return new ConcurrentLauncher(
+						null,
 						nbThreads, 
 						cacheOpFactory, 
 						new HarnessCachePutDecorator(cache, doBulkLoad, doClearAllFirst, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
@@ -102,7 +103,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 						(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null
 						);
 
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
+				return new ConcurrentLauncher(null, nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
 			}
 		},
 		OP_STEADY_GETS("Steady State phase: Cache Gets (Usage: @@opInput@@ <Threads> <Total Operations>)", 2)
@@ -137,7 +138,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 						(null != keyGeneratorFactory)? keyGeneratorFactory.createObjectGenerator():null
 						);
 
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
+				return new ConcurrentLauncher(null, nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
 			}
 		},
 		OP_STEADY_PUTS("Steady State phase: Cache Puts (Usage: @@opInput@@ <Threads> <Total Operations>)", 2)
@@ -168,7 +169,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 								(null != valueGeneratorFactory)?valueGeneratorFactory.createObjectGenerator():null
 						);
 
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients())); 
+				return new ConcurrentLauncher(null, nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients())); 
 			}
 		},
 		OP_STEADY_SEARCH("Steady State phase: Cache Searches (Usage: @@opInput@@ <Threads> <Total Operations>)", 2){
@@ -196,7 +197,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 						(null != searchGeneratorFactory)? searchGeneratorFactory.createObjectGenerator():null
 						);
 
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients())); 
+				return new ConcurrentLauncher(null, nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients())); 
 			}
 		},
 		OP_STEADY_MIX("Steady State phase: Mix of Cache Gets/Puts/Searches (Usage: @@opInput@@ <Threads> <Total Operations> <% Gets> <% Puts> <% Search> (default: 60 25 15))", 2){
@@ -301,7 +302,7 @@ public class CacheLauncherAPI implements LauncherAPI {
 					}
 				}
 				
-				return new ConcurrentLauncher(nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
+				return new ConcurrentLauncher(null, nbThreads, cacheOpFactory, new HarnessClientSyncDecorator(cache, ConfigWrapper.isAppMultiClientsSyncEnabled(), ConfigWrapper.getAppNbClients()));
 			}
 		};
 

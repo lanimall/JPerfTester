@@ -2,14 +2,14 @@ package org.terracotta.utils.perftester.runners;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.concurrent.Executors;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.perftester.generators.impl.SequentialGenerator;
 import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner;
 import org.terracotta.utils.perftester.runners.impl.ConcurrentRunner.ConcurrentRunnerFactory;
 import org.terracotta.utils.perftester.runners.impl.RamdomMixRunner.RamdomMixRunnerFactory;
-import org.terracotta.utils.perftester.runners.impl.SimpleRunner;
 import org.terracotta.utils.perftester.runners.impl.SimpleRunner.SimpleIterativeRunnerFactory;
 
 /**
@@ -71,7 +71,7 @@ public class RandomMixRunnerTest {
 		//number of iteration per thread
 		long numTotalOperations = 100000;
 		
-		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(Executors.newFixedThreadPool(numThreads), numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
 		runner.run();
 		
 		assertEquals(numTotalOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
@@ -85,7 +85,7 @@ public class RandomMixRunnerTest {
 		//number of iteration per thread
 		long numTotalOperations = 100000;
 		
-		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(Executors.newFixedThreadPool(numThreads), numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
 		runner.run();
 		
 		assertEquals(numTotalOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());

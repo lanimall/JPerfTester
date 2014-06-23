@@ -20,12 +20,17 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 	private static Logger log = LoggerFactory.getLogger(ConcurrentRunner.class);
 
 	private final Runner[] operations;
-	private ExecutorService executorService;
+	private final ExecutorService executorService;
 
-	private ConcurrentRunner(Runner[] operations) {
+	private ConcurrentRunner(ExecutorService executorService, Runner[] operations) {
 		super(null);
 		this.operations = operations;
-		this.executorService = Executors.newFixedThreadPool(operations.length);
+
+		if(null == executorService)
+			this.executorService = Executors.newFixedThreadPool(operations.length);
+		else
+			this.executorService = executorService;
+		
 		this.statsOperationObserver = new StatsOperationObserver(operations);
 	}
 
@@ -63,14 +68,17 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 		private final int numThread;
 		private final RunnerFactory runnerFactory;
 		private final Runner[] runners;
-
-		public ConcurrentRunnerFactory(int numThread, RunnerFactory runnerFactory) {
+		private final ExecutorService executorService;
+		
+		public ConcurrentRunnerFactory(ExecutorService executorService, int numThread, RunnerFactory runnerFactory) {
+			this.executorService = executorService;
 			this.numThread = numThread;
 			this.runnerFactory = runnerFactory;
 			this.runners = null;
 		}
-		
-		public ConcurrentRunnerFactory(Runner[] runners) {
+
+		public ConcurrentRunnerFactory(ExecutorService executorService, Runner[] runners) {
+			this.executorService = executorService;
 			this.numThread = 0;
 			this.runnerFactory = null;
 			this.runners = runners;
@@ -79,14 +87,14 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 		@Override
 		public ConcurrentRunner create() {
 			if(null != runners && runners.length > 0)
-				return new ConcurrentRunner(runners);
+				return new ConcurrentRunner(executorService, runners);
 			else{
 				if(null != runnerFactory){
 					Runner[] ops = new Runner[numThread];
 					for(int i=0 ; i < numThread; i++){
 						ops[i]=runnerFactory.create();
 					}
-					return new ConcurrentRunner(ops);
+					return new ConcurrentRunner(executorService, ops);
 				}
 			}
 			return null;

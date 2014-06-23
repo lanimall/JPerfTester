@@ -2,6 +2,8 @@ package org.terracotta.utils.perftester.runners;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.concurrent.Executors;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,7 @@ public class SimpleRunnerTest {
 		//number of iteration per thread
 		long numTotalOperations = 100000000;
 		
-		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(Executors.newFixedThreadPool(numThreads), numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
 		runner.run();
 		
 		assertEquals(numTotalOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
@@ -42,7 +44,7 @@ public class SimpleRunnerTest {
 		//number of iteration per thread
 		long numTotalOperations = 100000000;
 		
-		ConcurrentRunner runner = new ConcurrentRunnerFactory(numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
+		ConcurrentRunner runner = new ConcurrentRunnerFactory(Executors.newFixedThreadPool(numThreads), numThreads,createRunnerFactory(numTotalOperations / numThreads)).create();
 		runner.run();
 		
 		assertEquals(numTotalOperations, runner.getStatsOperationObserver().getAggregateStats().getTxnCount());
