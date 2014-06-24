@@ -1,7 +1,11 @@
 package org.terracotta.utils.perftester.runners.impl;
 
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +25,7 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 
 	private final Runner[] operations;
 	private final ExecutorService executorService;
+	private final CompletionService poolCompletionService;
 
 	private ConcurrentRunner(ExecutorService executorService, Runner[] operations) {
 		super(null);
@@ -30,7 +35,10 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 			this.executorService = Executors.newFixedThreadPool(operations.length);
 		else
 			this.executorService = executorService;
-		
+
+		//wrapping the executor in a CompletionService for easy access ot the finished tasks
+		this.poolCompletionService = new ExecutorCompletionService(executorService);
+
 		this.statsOperationObserver = new StatsOperationObserver(operations);
 	}
 
@@ -45,6 +53,7 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 
 		try {
 			submitOperations();
+			waitForOpCompletion();
 		} catch(Exception e) {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
@@ -60,7 +69,28 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 			throw new NullPointerException("The executor service should be created at this point. If not, startProcess() must have been called instead of run()...");
 
 		for (Runner op : operations) {
-			executorService.submit(op);
+			poolCompletionService.submit(op, "done");
+		}
+	}
+	
+	private void waitForOpCompletion() throws Exception {
+		if(null == executorService)
+			throw new NullPointerException("The executor service should be created at this point. If not, startProcess() must have been called instead of run()...");
+		
+		System.out.println("Waiting for all " + operations.length + " operations to complete...");
+		
+		int completedTasks = 0;
+		while(completedTasks < operations.length){
+			Future fut = null;
+			while(null == (fut = poolCompletionService.poll(5, TimeUnit.SECONDS))){
+				System.out.print(".");
+			}
+			
+			//checking that the future is successful
+			if("done".equals(fut.get()))
+				completedTasks++;
+			else
+				throw new Exception("The future returned by the operation does not have the expected result.");
 		}
 	}
 
@@ -69,7 +99,7 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 		private final RunnerFactory runnerFactory;
 		private final Runner[] runners;
 		private final ExecutorService executorService;
-		
+
 		public ConcurrentRunnerFactory(ExecutorService executorService, int numThread, RunnerFactory runnerFactory) {
 			this.executorService = executorService;
 			this.numThread = numThread;
