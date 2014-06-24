@@ -17,23 +17,14 @@ public class CachePutOperationFactory extends CacheRunnerFactory {
 	//that way multiple thread can all work against the same thread-safe generator
 	private final ObjectGenerator keyGen;
 	
-	private final boolean doUpdates;
+	private boolean doUpdates = false;
 	
 	//if using this constructor, sequential generator 
 	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator valueGenerator){
-		this(cache, numOperations, null, valueGenerator, false);
-	}
-
-	//if using this constructor, sequential generator 
-	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator valueGenerator, final boolean doUpdates) {
-		this(cache, numOperations, null, valueGenerator, doUpdates);
-	}
-
-	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator keyGenerator, ObjectGenerator valueGenerator) {
-		this(cache, numOperations, keyGenerator, valueGenerator, false);
+		this(cache, numOperations, null, valueGenerator);
 	}
 	
-	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator keyGenerator, ObjectGenerator valueGenerator, final boolean doUpdates) {
+	public CachePutOperationFactory(Ehcache cache, long numOperations, ObjectGenerator keyGenerator, ObjectGenerator valueGenerator) {
 		super(cache, numOperations);
 		this.valueGenerator = valueGenerator;
 		
@@ -41,7 +32,13 @@ public class CachePutOperationFactory extends CacheRunnerFactory {
 			this.keyGen = new SequentialGenerator(0);
 		else
 			this.keyGen = keyGenerator;
-		
+	}
+
+	public boolean isDoUpdates() {
+		return doUpdates;
+	}
+
+	public void setDoUpdates(boolean doUpdates) {
 		this.doUpdates = doUpdates;
 	}
 

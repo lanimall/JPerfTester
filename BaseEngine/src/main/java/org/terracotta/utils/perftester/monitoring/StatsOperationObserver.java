@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.commons.RandomUtil;
 import org.terracotta.utils.perftester.runners.Runner;
-import org.terracotta.utils.perftester.runners.impl.BaseRunner;
 
 /**
  * @author Fabien Sanglier

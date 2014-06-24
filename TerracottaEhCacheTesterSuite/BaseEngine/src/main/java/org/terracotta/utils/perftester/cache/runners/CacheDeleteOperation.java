@@ -4,9 +4,7 @@ import net.sf.ehcache.Ehcache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terracotta.utils.perftester.cache.runnerFactories.CacheRunnerFactory;
 import org.terracotta.utils.perftester.conditions.Condition;
-import org.terracotta.utils.perftester.conditions.impl.IterationCondition;
 import org.terracotta.utils.perftester.generators.ObjectGenerator;
 
 /**
@@ -33,22 +31,5 @@ public class CacheDeleteOperation<K> extends AbstractCacheKeyRunner<K> {
 		
 		cache.remove(key);
 		return null;
-	}
-
-	public static class CacheDeleteOperationFactory extends CacheRunnerFactory {
-		private final ObjectGenerator keyGen;
-		
-		public CacheDeleteOperationFactory(Ehcache cache, long numOperations, ObjectGenerator keyGen) {
-			super(cache, numOperations);
-			this.keyGen = keyGen;
-		}
-
-		@Override
-		public CacheDeleteOperation create() {
-			if(null == keyGen)
-				throw new IllegalArgumentException("KenGen object may not be null");
-			
-			return new CacheDeleteOperation(getCache(), new IterationCondition(getNumOperations()), keyGen);	
-		}
 	}
 }
