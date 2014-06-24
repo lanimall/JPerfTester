@@ -26,15 +26,19 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 	private final Runner[] operations;
 	private final ExecutorService executorService;
 	private final CompletionService poolCompletionService;
+	private final boolean shutdownPoolAfterExecution;
 
 	private ConcurrentRunner(ExecutorService executorService, Runner[] operations) {
 		super(null);
 		this.operations = operations;
 
-		if(null == executorService)
+		if(null == executorService){
 			this.executorService = Executors.newFixedThreadPool(operations.length);
-		else
+			this.shutdownPoolAfterExecution = true;
+		} else {
 			this.executorService = executorService;
+			this.shutdownPoolAfterExecution = false;
+		}
 
 		//wrapping the executor in a CompletionService for easy access ot the finished tasks
 		this.poolCompletionService = new ExecutorCompletionService(executorService);
@@ -57,8 +61,10 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 		} catch(Exception e) {
 			log.error("Error in processing Pending Events.", e);
 		} finally {
-			//make sure to wait until all threads are done before moving forward...
-			ExecutorsUtil.shutdownAndAwaitTermination(executorService, true);
+			if(shutdownPoolAfterExecution){
+				//make sure to wait until all threads are done before moving forward...
+				ExecutorsUtil.shutdownAndAwaitTermination(executorService, true);
+			}
 		}
 
 		log.info("End " + getName());
@@ -72,20 +78,20 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 			poolCompletionService.submit(op, "done");
 		}
 	}
-	
+
 	private void waitForOpCompletion() throws Exception {
 		if(null == executorService)
 			throw new NullPointerException("The executor service should be created at this point. If not, startProcess() must have been called instead of run()...");
-		
+
 		System.out.println("Waiting for all " + operations.length + " operations to complete...");
-		
+
 		int completedTasks = 0;
 		while(completedTasks < operations.length){
 			Future fut = null;
 			while(null == (fut = poolCompletionService.poll(5, TimeUnit.SECONDS))){
 				System.out.print(".");
 			}
-			
+
 			//checking that the future is successful
 			if("done".equals(fut.get()))
 				completedTasks++;
