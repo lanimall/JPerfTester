@@ -130,7 +130,7 @@ public class AggregateRunner extends BaseRunner {
 		//operationStats[opCounter.getOperationIndex()].add(System.currentTimeMillis() - iterationStartTime);
 
 		//decrement the counter
-		decrementAndGetCountOperation(opCounter.getOperationIndex());
+		decrementAndGetCountOperation(opsIndex);
 	}
 	
 	private static class OperationsCounter {
