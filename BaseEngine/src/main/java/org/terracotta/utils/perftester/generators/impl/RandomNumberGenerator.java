@@ -27,4 +27,9 @@ public class RandomNumberGenerator extends RandomGenerator<Long> {
 	protected Long generateSafe() throws Exception {
 		return randomUtil.generateRandomLong(min, max);
 	}
+
+	@Override
+	public String toString() {
+		return "RandomNumberGenerator [min=" + min + ", max=" + max + "]";
+	}
 }

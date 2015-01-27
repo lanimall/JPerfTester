@@ -10,10 +10,16 @@ public class SequentialGeneratorFactory implements ObjectGeneratorFactory {
 	private static Logger log = LoggerFactory.getLogger(SequentialGeneratorFactory.class);
 	public static final int DEFAULT_START = 0;
 	public static final String PARAM_START = "start";
-	
+
 	@Override
 	public ObjectGenerator createObjectGenerator() {
 		long start = GlobalConfigSingleton.getInstance().getPropWrapper().getPropertyAsInt(SequentialGeneratorFactory.class.getName() + "." + PARAM_START, DEFAULT_START);
-		return new SequentialGenerator(start);
+
+		SequentialGenerator generator = new SequentialGenerator(start);
+
+		if(log.isInfoEnabled())
+			log.info(String.format("Creating generator %s", generator.toString()));
+
+		return generator;
 	}
 }

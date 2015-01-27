@@ -67,4 +67,10 @@ public class RandomByteArrayGenerator extends RandomGenerator<Collection<byte[]>
 	protected Collection<byte[]> generateSafe() throws Exception {
 		return getCollection(depth);
 	}
+
+	@Override
+	public String toString() {
+		return "RandomByteArrayGenerator [minSize=" + minSize + ", maxSize="
+				+ maxSize + ", depth=" + depth + "]";
+	}
 }

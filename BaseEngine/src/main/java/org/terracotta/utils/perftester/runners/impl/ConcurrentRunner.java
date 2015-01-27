@@ -33,17 +33,16 @@ public class ConcurrentRunner extends BaseRunner implements Runner {
 		this.operations = operations;
 
 		if(null == executorService){
-			this.executorService = Executors.newFixedThreadPool(operations.length);
+			this.executorService = Executors.newCachedThreadPool();
 			this.shutdownPoolAfterExecution = true;
 		} else {
 			this.executorService = executorService;
 			this.shutdownPoolAfterExecution = false;
 		}
 
-		//wrapping the executor in a CompletionService for easy access ot the finished tasks
-		this.poolCompletionService = new ExecutorCompletionService(executorService);
-
-		this.statsOperationObserver = new StatsOperationObserver(operations);
+		//wrapping the executor in a CompletionService for easy access to the finished tasks
+		this.poolCompletionService = new ExecutorCompletionService(this.executorService);
+		this.statsOperationObserver = new StatsOperationObserver(this.operations);
 	}
 
 	@Override

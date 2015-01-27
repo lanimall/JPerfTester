@@ -34,4 +34,10 @@ public class RangeGenerator implements ObjectGenerator<Long[]> {
 		}
 		return range;
 	}
+
+	@Override
+	public String toString() {
+		return "RangeGenerator [counter=" + counter + ", stride=" + stride
+				+ "]";
+	}
 }

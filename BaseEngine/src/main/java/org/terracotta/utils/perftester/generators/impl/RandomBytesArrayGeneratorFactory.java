@@ -21,6 +21,11 @@ public class RandomBytesArrayGeneratorFactory implements ObjectGeneratorFactory 
 		int maxSize = GlobalConfigSingleton.getInstance().getPropWrapper().getPropertyAsInt(RandomBytesArrayGeneratorFactory.class.getName() + "." + PARAM_MAXSIZE, DEFAULT_SIZE);
 		int depth = GlobalConfigSingleton.getInstance().getPropWrapper().getPropertyAsInt(RandomBytesArrayGeneratorFactory.class.getName() + "." + PARAM_DEPTH, DEFAULT_SIZE);
 
-		return new RandomByteArrayGenerator(minSize, maxSize, depth);
+		RandomByteArrayGenerator generator = new RandomByteArrayGenerator(minSize, maxSize, depth);
+		
+		if(log.isInfoEnabled())
+			log.info(String.format("Creating generator %s", generator.toString()));
+		
+		return generator;
 	}
 }

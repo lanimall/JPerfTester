@@ -10,15 +10,20 @@ public class RandomNumberGeneratorFactory implements ObjectGeneratorFactory {
 	private static Logger log = LoggerFactory.getLogger(RandomNumberGeneratorFactory.class);
 	public static final int DEFAULT_MIN = 0;
 	public static final int DEFAULT_MAX = 10000;
-	
+
 	public static final String PARAM_MINSIZE = "min";
 	public static final String PARAM_MAXSIZE = "max";
-	
+
 	@Override
 	public ObjectGenerator createObjectGenerator() {
 		int min = GlobalConfigSingleton.getInstance().getPropWrapper().getPropertyAsInt(RandomNumberGeneratorFactory.class.getName() + "." + PARAM_MINSIZE, DEFAULT_MIN);
 		int max = GlobalConfigSingleton.getInstance().getPropWrapper().getPropertyAsInt(RandomNumberGeneratorFactory.class.getName() + "." + PARAM_MAXSIZE, DEFAULT_MAX);
+
+		RandomNumberGenerator generator = new RandomNumberGenerator(min, max);
 		
-		return new RandomNumberGenerator(min, max);
+		if(log.isInfoEnabled())
+			log.info(String.format("Creating generator %s", generator.toString()));
+		
+		return generator;
 	}
 }

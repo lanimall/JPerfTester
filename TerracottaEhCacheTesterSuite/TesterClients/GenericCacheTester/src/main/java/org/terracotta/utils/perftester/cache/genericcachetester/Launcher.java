@@ -1,4 +1,4 @@
-package org.terracotta.utils.perftester.cache.pojocachetester;
+package org.terracotta.utils.perftester.cache.genericcachetester;
 
 import org.terracotta.utils.perftester.cache.CacheLauncher;
 

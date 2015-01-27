@@ -24,4 +24,9 @@ public class SequentialGenerator implements ObjectGenerator<Long> {
 	public Long generate() {
 		return counter.getAndIncrement();
 	}
+
+	@Override
+	public String toString() {
+		return "SequentialGenerator [counter=" + counter.toString() + "]";
+	}
 }
